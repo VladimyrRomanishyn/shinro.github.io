@@ -1,5 +1,9 @@
 {
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
-  "projects": {}
+  "projects": {
+    "builder-feature": "libs/builder-feature",
+    "template-builder": "apps/template-builder",
+    "template-builder-e2e": "apps/template-builder-e2e"
+  }
 }

@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@libs/*": ["libs/*"],
+      "@pets/builder-feature": ["libs/builder-feature/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
