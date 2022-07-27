@@ -8,6 +8,5 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 })
 export class BuilderViewComponent implements OnInit {
   constructor() {}
-
   ngOnInit(): void {}
 }

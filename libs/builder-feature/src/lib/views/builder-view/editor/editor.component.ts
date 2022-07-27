@@ -10,4 +10,8 @@ export class EditorComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  context(event: PointerEvent): void {
+    console.log(event);
+  }
 }

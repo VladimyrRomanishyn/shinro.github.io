@@ -1,0 +1,6 @@
+.bv {
+  display: grid;
+  grid-template-rows: 100vh;
+  grid-template-columns: 5fr 2fr 2fr;
+  column-gap: 5px;
+}

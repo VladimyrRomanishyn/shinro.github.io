@@ -5,6 +5,7 @@ import { BuilderViewComponent } from './views/builder-view/builder-view.componen
 import { EditorComponent } from './views/builder-view/editor/editor.component';
 import { HtmlMarkupComponent } from './views/builder-view/html-markup/html-markup.component';
 import { StyleSectionComponent } from './views/builder-view/style-section/style-section.component';
+import { ContextDirective } from './directives/context.directive';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { StyleSectionComponent } from './views/builder-view/style-section/style-
     EditorComponent,
     HtmlMarkupComponent,
     StyleSectionComponent,
+    ContextDirective,
   ],
 })
 export class BuilderFeatureModule {}
