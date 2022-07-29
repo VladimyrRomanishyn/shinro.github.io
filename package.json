@@ -5,8 +5,8 @@
   "scripts": {
     "start:template-builder": "nx serve --project='template-builder'",
     "build:template-builder": "nx build --project='template-builder'",
-    "test:builder-feature": "nx test --project='builder-feature'",
     "test:template-builder": "nx test --project='template-builder'",
+    "test:builder-feature": "nx test --project='builder-feature'",
     "postinstall": "ngcc --properties es2020 browser module main"
   },
   "private": true,

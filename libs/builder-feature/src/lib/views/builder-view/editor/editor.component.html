@@ -1,6 +1,32 @@
+<!--editor-->
 <div
-  petsContext
-  (contextEvent)="context($event)"
+  mouseEvents
+  (contextEvent)="contextEvent($event)"
+  (clickEvent)="contextEvent(null)"
   class="editor">
-
 </div>
+<!--editor-->
+
+<!--contextmenu-->
+<div
+  #contextPanel
+  class="contextmenu"
+  [ngStyle]="contextMenuStyles">
+  <div class="contextmenu__item"
+       (click)="ctxActionHandler('addNode')">
+    Add Node
+  </div>
+</div>
+<!--contextmenu-->
+
+<!--tags modal-->
+<div *ngIf="modal" (keydown.escape)="modal = false" class="tags-modal">
+  <div  (click)="modal = false" class="tags-modal__close">+</div>
+  <input #nodeSearch (input)="nodeSearch$.next(nodeSearch.value)" type="text">
+  <div *ngIf="relevantNodes.length" class="tags-modal__results">
+    <div *ngFor="let node of relevantNodes">
+      {{node}}
+    </div>
+  </div>
+</div>
+<!--tags modal-->
