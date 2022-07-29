@@ -1,4 +1,4 @@
-import { ContextDirective } from './context.directive';
+import { mouseEventsDirective } from './mouseEvents.directive';
 const elRefStub = {
   nativeElement: {
     parentElement: {
@@ -17,10 +17,10 @@ const eventStub = {
 }
 
 describe('ContextDirective', () => {
-  let directive: ContextDirective;
+  let directive: mouseEventsDirective;
 
   beforeEach(() => {
-     directive = new ContextDirective(elRefStub);
+     directive = new mouseEventsDirective(elRefStub);
   })
 
   it('should create an instance', () => {
@@ -28,7 +28,7 @@ describe('ContextDirective', () => {
     expect(directive.localName === elRefStub.nativeElement.parentElement.localName);
   });
 
-  it( 'should call contextEvent', () => {
+  it( 'should call contextEvent with stub', () => {
     const spy = jest.spyOn(directive.contextEvent, 'emit');
     directive.context(eventStub as unknown as PointerEvent);
     expect(spy).toHaveBeenCalledWith(eventStub);
