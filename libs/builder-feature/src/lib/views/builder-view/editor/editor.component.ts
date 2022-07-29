@@ -1,9 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  ViewChild,
+  ElementRef, OnDestroy, OnInit,
+  ViewChild
 } from '@angular/core';
+import { nodeList } from '@libs/builder-feature/src/lib/views/builder-view/editor/nodeList';
+import { filter, first, interval, map, Subject, take, takeUntil, tap } from 'rxjs';
 
 interface MenuStyles {
   left: string,
@@ -21,13 +23,32 @@ enum ContextMenuEnum {
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditorComponent {
+export class EditorComponent implements OnInit, OnDestroy {
+  @ViewChild('nodeSearch') nodeSearchInput: ElementRef | undefined;
   @ViewChild('contextPanel', {static: true})
   contextPanel!: ElementRef;
   contextMenuStyles: MenuStyles = {left: '', top: '', opacity: 0}
-  relevantNodes: string[] = ['div', 'span'];
+  relevantNodes: string[] = [];
+  fullNodeList: string[] = nodeList;
+  nodeSearch$: Subject<string> = new Subject<string>();
+  destroy$: Subject<void> = new Subject<void>();
   modal: boolean = false;
   constructor() {}
+
+  ngOnInit() {
+    this.nodeSearch$.asObservable()
+      .pipe(
+        map((substr: string) =>
+          this.fullNodeList.filter(v => v.includes(substr))
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((result: string[]) => this.relevantNodes = result)
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+  }
 
   contextEvent(event: PointerEvent | null): void {
     this.contextMenuStyles.opacity = 0;
@@ -50,11 +71,23 @@ export class EditorComponent {
 
   ctxActionHandler(action: string): void {
     switch (action) {
-      case ContextMenuEnum.addNode: this.addNode();
+      case ContextMenuEnum.addNode: this.addNodeModal();
+
+      return;
     }
   }
 
-  private  addNode(): void {
+  private  addNodeModal(): void {
     this.modal = true;
+    interval(100)
+      .pipe(
+        take(30),
+        filter(() => this.nodeSearchInput?.nativeElement),
+        first()
+      )
+      .subscribe(() => {
+        this.nodeSearchInput?.nativeElement.select();
+        this.nodeSearchInput?.nativeElement.focus();
+      })
   }
 }

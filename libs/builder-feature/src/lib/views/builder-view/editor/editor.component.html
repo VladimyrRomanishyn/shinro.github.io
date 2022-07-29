@@ -22,8 +22,8 @@
 <!--tags modal-->
 <div *ngIf="modal" (keydown.escape)="modal = false" class="tags-modal">
   <div  (click)="modal = false" class="tags-modal__close">+</div>
-  <input type="text">
-  <div class="tags-modal__results">
+  <input #nodeSearch (input)="nodeSearch$.next(nodeSearch.value)" type="text">
+  <div *ngIf="relevantNodes.length" class="tags-modal__results">
     <div *ngFor="let node of relevantNodes">
       {{node}}
     </div>
