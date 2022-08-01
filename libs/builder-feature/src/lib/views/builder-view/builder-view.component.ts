@@ -7,6 +7,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BuilderViewComponent implements OnInit {
+  editorChanges: string = '';
   constructor() {}
   ngOnInit(): void {}
 }

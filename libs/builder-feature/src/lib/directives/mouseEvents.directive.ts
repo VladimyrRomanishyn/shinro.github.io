@@ -5,22 +5,22 @@ import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angu
 })
 export class mouseEventsDirective {
   localName: string | undefined;
-  @Output() contextEvent: EventEmitter<PointerEvent | null>
-    = new EventEmitter<PointerEvent | null>();
-  @Output() clickEvent: EventEmitter<PointerEvent | null>
-    = new EventEmitter<PointerEvent | null>();
+  @Output() contextEvent: EventEmitter<PointerEvent | undefined>
+    = new EventEmitter<PointerEvent | undefined>();
+  @Output() clickEvent: EventEmitter<PointerEvent | undefined>
+    = new EventEmitter<PointerEvent | undefined>();
 
   constructor(private el: ElementRef ) {
     this.localName = el.nativeElement.parentElement.localName;
   }
 
-  @HostListener('document:click', ['$event'])
+  @HostListener('click', ['$event'])
   click(event: PointerEvent): void  {
-    this.clickEvent.emit(this.insideNode(event) ? event : null);
+    this.clickEvent.emit(this.insideNode(event) ? event : undefined);
   }
-  @HostListener('document:contextmenu', ['$event'])
+  @HostListener('contextmenu', ['$event'])
   context(event: PointerEvent): void {
-    this.contextEvent.emit(this.insideNode(event) ? event : null);
+    this.contextEvent.emit(this.insideNode(event) ? event : undefined);
   }
 
   private insideNode

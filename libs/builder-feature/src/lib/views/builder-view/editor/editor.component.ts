@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef, OnDestroy, OnInit,
+  ElementRef, EventEmitter, OnDestroy, OnInit, Output,
   ViewChild
 } from '@angular/core';
 import { nodeList } from '@libs/builder-feature/src/lib/views/builder-view/editor/nodeList';
@@ -14,26 +14,33 @@ interface MenuStyles {
 }
 
 enum ContextMenuEnum {
-  addNode = 'addNode'
+  addNode = 'addNode',
+  deleteNode = 'deleteNode'
 }
 
 @Component({
   selector: 'pets-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild('nodeSearch') nodeSearchInput: ElementRef | undefined;
-  @ViewChild('contextPanel', {static: true})
+  @ViewChild('editor', { static: true }) editor: ElementRef | undefined;
+  @ViewChild('contextPanel', { static: true })
   contextPanel!: ElementRef;
-  contextMenuStyles: MenuStyles = {left: '', top: '', opacity: 0}
+  contextMenuStyles: MenuStyles = { left: '', top: '', opacity: 0 };
   relevantNodes: string[] = [];
   fullNodeList: string[] = nodeList;
   nodeSearch$: Subject<string> = new Subject<string>();
   destroy$: Subject<void> = new Subject<void>();
   modal: boolean = false;
-  constructor() {}
+  targetElement: EventTarget | undefined | null;
+  @Output() changes: EventEmitter<string> = new EventEmitter<string>();
+  contextMenuEnum = ContextMenuEnum;
+
+  constructor() {
+  }
 
   ngOnInit() {
     this.nodeSearch$.asObservable()
@@ -43,22 +50,22 @@ export class EditorComponent implements OnInit, OnDestroy {
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe((result: string[]) => this.relevantNodes = result)
+      .subscribe((result: string[]) => this.relevantNodes = result);
   }
 
   ngOnDestroy() {
     this.destroy$.next();
   }
 
-  contextEvent(event: PointerEvent | null): void {
+  contextEvent(event?: PointerEvent | undefined): void {
     this.contextMenuStyles.opacity = 0;
     this.contextMenuStyles.left = '';
     this.contextMenuStyles.top = '';
 
     if (event) {
-      const {width: panelWidth, height: panelHeight}
+      const { width: panelWidth, height: panelHeight }
         = this.contextPanel.nativeElement.getBoundingClientRect();
-      const {width: bodyWidth, height: bodyHeight}
+      const { width: bodyWidth, height: bodyHeight }
         = document.body.getBoundingClientRect();
 
       const x = bodyWidth - event.x + 2 >= panelWidth ? event.x + 2 : bodyWidth - panelWidth;
@@ -70,14 +77,27 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   ctxActionHandler(action: string): void {
+    this.contextEvent();
     switch (action) {
-      case ContextMenuEnum.addNode: this.addNodeModal();
+      case ContextMenuEnum.addNode:
+        this.addNodeModal();
+        return;
 
-      return;
+      case ContextMenuEnum.deleteNode:
+        this.deleteNode();
+        return;
     }
   }
 
-  private  addNodeModal(): void {
+  private deleteNode(): void {
+    if ((this.targetElement as HTMLElement)?.parentElement?.localName === 'pets-editor') {
+      return;
+    }
+    (this.targetElement as HTMLElement)?.remove();
+    this.changes.emit(this.editor?.nativeElement.innerHTML);
+  }
+
+  private addNodeModal(): void {
     this.modal = true;
     interval(100)
       .pipe(
@@ -88,6 +108,60 @@ export class EditorComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.nodeSearchInput?.nativeElement.select();
         this.nodeSearchInput?.nativeElement.focus();
-      })
+      });
   }
+
+  createNode(node: string, target: EventTarget | undefined | null) {
+    this.closeNodeModal();
+    if (!target) {
+      return;
+    }
+
+    const newNode: HTMLElement = document.createElement(node);
+    newNode.style.border = '2px solid black';
+    newNode.style.minHeight = '50px';
+    newNode.style.marginBottom = '5px';
+    newNode.style.padding = '5px';
+    newNode.style.resize = 'both';
+    newNode.style.overflow = 'auto';
+    (target as HTMLElement).append(newNode);
+    this.changes.emit(this.editor?.nativeElement.innerHTML);
+  }
+
+  closeNodeModal(): void {
+    this.relevantNodes = [];
+    this.modal = false;
+  }
+
+  hoverNode(event: any, up?: boolean): void {
+    if (!this.relevantNodes.length) {return; }
+
+    const items = [...event.querySelector('.tags-modal__results')?.children];
+    const selected = items?.find(i => i.className.includes('hover'));
+
+    if (selected) {
+      const direction = up ? 'previousElementSibling' : 'nextElementSibling';
+      const defaultIndex = up ? items.length - 1 : 0;
+
+      selected.classList.remove('hover');
+      selected[direction]
+        ? selected[direction].classList.add('hover')
+        : items[defaultIndex].classList.add('hover');
+
+      return;
+    }
+    items[0].classList.add('hover')
+  }
+
+  selectNode(event: any): void {
+    if (!this.relevantNodes.length) {return; }
+
+    const items = [...event.querySelector('.tags-modal__results')?.children];
+    const selected = items?.find(i => i.className.includes('hover'));
+
+    if (selected) {
+      this.createNode(selected.innerText, this.targetElement);
+    }
+  }
+
 }

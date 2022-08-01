@@ -1,11 +1,11 @@
 <div class="bv">
   <div class="bv-section bv-editor">
-    <pets-editor></pets-editor>
+    <pets-editor (changes)="editorChanges = $event"></pets-editor>
   </div>
   <div class="bv-section bv-markup">
-    <pets-html-markup></pets-html-markup>
+    <pets-html-markup [markup]="editorChanges"></pets-html-markup>
   </div>
   <div class="bv-section bv-styles">
-    <pets-style-section></pets-style-section>
+    <pets-style-section [editorStyles]="editorChanges"></pets-style-section>
   </div>
 </div>

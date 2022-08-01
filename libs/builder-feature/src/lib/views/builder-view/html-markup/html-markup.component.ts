@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'pets-html-markup',
@@ -7,6 +7,13 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HtmlMarkupComponent implements OnInit {
+  @Input() set markup(value: string) {
+    this._markup = value;
+  }
+  get markup(): string  {
+    return this._markup;
+  }
+  private _markup!: string;
   constructor() {}
 
   ngOnInit(): void {}
