@@ -1,6 +1,7 @@
 :host {
   display: block;
   width: 100%;
+  max-width: 100%;
   min-height: 100%;
   border: 2px solid lightgrey;
   padding: 10px;
@@ -8,7 +9,7 @@
 
 .editor {
   width: inherit;
-  min-height: inherit;
+  min-height: 100vh;
 }
 
 .contextmenu {

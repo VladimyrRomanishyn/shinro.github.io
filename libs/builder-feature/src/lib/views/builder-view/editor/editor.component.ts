@@ -124,6 +124,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     newNode.style.padding = '5px';
     newNode.style.resize = 'both';
     newNode.style.overflow = 'auto';
+    newNode.style.maxWidth = '100%';
     (target as HTMLElement).append(newNode);
     this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
