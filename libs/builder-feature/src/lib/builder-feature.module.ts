@@ -8,6 +8,7 @@ import { StyleSectionComponent } from './views/builder-view/style-section/style-
 import { mouseEventsDirective } from './directives/mouseEvents.directive';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ToolbarComponent } from './views/builder-view/toolbar/toolbar.component';
+import { DragdropDirective } from './directives/dragdrop.directive';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { ToolbarComponent } from './views/builder-view/toolbar/toolbar.component
     StyleSectionComponent,
     mouseEventsDirective,
     ToolbarComponent,
+    DragdropDirective,
   ],
 })
 export class BuilderFeatureModule {}

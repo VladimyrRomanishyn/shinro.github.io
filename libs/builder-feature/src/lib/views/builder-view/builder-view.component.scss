@@ -1,12 +1,13 @@
 .bv {
   display: grid;
-  grid-template-rows: 70px auto;
+  grid-template-rows: 70px calc(100vh - 80px);
   grid-template-columns: 60% 20% 20%;
   grid-template-areas:
   "toolbar toolbar toolbar"
   "editor markup styles";
-  column-gap: 5px;
-  padding: 10px;
+  gap: 5px;
+  padding: 5px;
+  margin-bottom: 20px;
 }
 
 .bv-editor {

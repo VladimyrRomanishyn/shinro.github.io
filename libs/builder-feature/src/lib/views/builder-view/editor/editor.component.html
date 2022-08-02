@@ -2,8 +2,9 @@
 <div
   #editor
   mouseEvents
+  petsDragdrop
   (contextEvent)="contextEvent($event); targetElement = $event?.target"
-  (clickEvent)="contextEvent();"
+  (clickEvent)="contextEvent()"
   class="editor">
 </div>
 <!--editor-->
@@ -13,6 +14,10 @@
   #contextPanel
   class="contextmenu"
   [ngStyle]="contextMenuStyles">
+  <div class="contextmenu__item"
+       (click)="ctxActionHandler(contextMenuEnum.addDiv)">
+    Add Division tag
+  </div>
   <div class="contextmenu__item"
        (click)="ctxActionHandler(contextMenuEnum.addNode)">
     Add Node
