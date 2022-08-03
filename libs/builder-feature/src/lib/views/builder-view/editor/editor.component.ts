@@ -1,11 +1,16 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef, EventEmitter, OnDestroy, OnInit, Output,
-  ViewChild
+  ElementRef,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation
 } from '@angular/core';
 import { nodeList } from '@libs/builder-feature/src/lib/views/builder-view/editor/nodeList';
-import { filter, first, interval, map, Subject, take, takeUntil, tap } from 'rxjs';
+import { filter, first, interval, map, Subject, take, takeUntil } from 'rxjs';
 
 interface MenuStyles {
   left: string,
@@ -23,7 +28,8 @@ enum ContextMenuEnum {
   selector: 'pets-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild('nodeSearch') nodeSearchInput: ElementRef | undefined;
@@ -123,14 +129,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     const newNode: HTMLElement = document.createElement(node);
-    newNode.style.border = '2px solid black';
-    newNode.style.minHeight = '50px';
-    newNode.style.marginBottom = '5px';
-    newNode.style.padding = '5px';
-    newNode.style.resize = 'both';
-    newNode.style.overflow = 'auto';
-    newNode.style.maxWidth = '100%';
-    newNode.style.width = '30%';
+    newNode.classList.add('editor__child');
     newNode.draggable = true;
     newNode.addEventListener('drop', (event) => {console.log(event)});
     (target as HTMLElement).append(newNode);
@@ -172,12 +171,4 @@ export class EditorComponent implements OnInit, OnDestroy {
       this.createNode(selected.innerText, this.targetElement);
     }
   }
-
-
-  drag(event: any, type: string): void {
-    // console.log(type);
-    // console.log(event);
-    // event.preventDefault();
-  }
-
 }
