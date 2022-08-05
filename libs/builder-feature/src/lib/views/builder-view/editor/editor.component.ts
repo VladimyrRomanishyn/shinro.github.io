@@ -46,15 +46,23 @@ export class EditorComponent implements OnInit, OnDestroy {
   set ctxTargetElement(target: HTMLElement | undefined) {
     if (target && target?.parentElement?.localName !== 'pets-editor') {
       this._ctxTargetElement = target;
+      return;
     }
+    this._ctxTargetElement = undefined;
   }
   get ctxTargetElement(): HTMLElement | undefined {
     return this._ctxTargetElement;
   }
   set clickTargetElement(target: HTMLElement | undefined) {
     if (target && target?.parentElement?.localName !== 'pets-editor') {
+      this._clickTargetElement?.classList?.toggle('editor__click');
       this._clickTargetElement = target;
+      this._clickTargetElement?.classList?.toggle('editor__click');
+      return;
     }
+
+    this._clickTargetElement?.classList?.toggle('editor__click');
+    this._clickTargetElement = undefined;
   }
   get clickTargetElement(): HTMLElement | undefined {
     return this._clickTargetElement;
@@ -64,6 +72,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   public contextMenuEnum = ContextMenuEnum;
   public dragdrop = false;
   @Output() changes: EventEmitter<string> = new EventEmitter<string>();
+  @Output() clickTargetSelect: EventEmitter<HTMLElement> = new EventEmitter<HTMLElement>();
 
 
   constructor() {
@@ -119,23 +128,22 @@ export class EditorComponent implements OnInit, OnDestroy {
         return;
 
       case ContextMenuEnum.cloneNode:
-        this.cloneNode(this.ctxTargetElement as HTMLElement);
+        this.cloneNode(this.ctxTargetElement);
         return;
     }
   }
 
-  private cloneNode(node: HTMLElement): void {
-    if (node.className === 'editor') return;
-
-    const clone = node.cloneNode(true);
-    node.after(clone);
+  private cloneNode(node: HTMLElement | undefined): void {
+    if (node && node.className !== 'editor') {
+      const clone = node?.cloneNode(true) as HTMLElement;
+      clone.classList.remove('editor__click');
+      node.after(clone);
+    }
   }
 
   private deleteNode(): void {
-    if ((this.ctxTargetElement as HTMLElement)?.parentElement?.localName === 'pets-editor') {
-      return;
-    }
-    (this.ctxTargetElement as HTMLElement)?.remove();
+    this.ctxTargetElement?.remove();
+    this.ctxTargetElement = undefined;
     this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
 
@@ -153,17 +161,11 @@ export class EditorComponent implements OnInit, OnDestroy {
       });
   }
 
-  createNode(node: string, target: EventTarget | undefined | null) {
+  createNode(node: string, target = this.editor?.nativeElement) {
     this.closeNodeModal();
-    if (!target) {
-      return;
-    }
-
     const newNode: HTMLElement = document.createElement(node);
     newNode.classList.add('editor__child');
-    newNode.draggable = true;
-    newNode.addEventListener('drop', (event) => {console.log(event)});
-    (target as HTMLElement).append(newNode);
+    target.append(newNode);
     this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
 

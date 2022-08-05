@@ -4,7 +4,7 @@
   mouseEvents
   [petsDragdrop]="dragdrop"
   (contextEvent)="contextEvent($event); ctxTargetElement = $any($event).target"
-  (clickEvent)="contextEvent(); clickTargetElement = $event?.target"
+  (clickEvent)="contextEvent(); clickTargetElement = $any($event).target"
   class="editor">
 </div>
 <!--editor-->
