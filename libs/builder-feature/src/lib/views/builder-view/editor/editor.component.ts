@@ -54,15 +54,16 @@ export class EditorComponent implements OnInit, OnDestroy {
     return this._ctxTargetElement;
   }
   set clickTargetElement(target: HTMLElement | undefined) {
-    if (target && target?.parentElement?.localName !== 'pets-editor') {
-      this._clickTargetElement?.classList?.toggle('editor__click');
-      this._clickTargetElement = target;
-      this._clickTargetElement?.classList?.toggle('editor__click');
-      return;
+    this._clickTargetElement?.classList?.toggle('editor__click');
+    this._clickTargetElement = target;
+    this._clickTargetElement?.classList?.toggle('editor__click');
+
+    if (target && target?.parentElement?.localName === 'pets-editor') {
+      this._clickTargetElement?.classList?.remove('editor__click');
+      this._clickTargetElement = undefined;
     }
 
-    this._clickTargetElement?.classList?.toggle('editor__click');
-    this._clickTargetElement = undefined;
+    this.clickTargetSelect.emit(this._clickTargetElement);
   }
   get clickTargetElement(): HTMLElement | undefined {
     return this._clickTargetElement;

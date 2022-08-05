@@ -1,9 +1,12 @@
 <div class="bv">
   <div class="bv-section bv-toolbar">
-    <pets-toolbar></pets-toolbar>
+    <pets-toolbar [target]="targetElement"></pets-toolbar>
   </div>
   <div class="bv-section bv-editor">
-    <pets-editor (changes)="editorChanges = $event"></pets-editor>
+    <pets-editor
+      (changes)="editorChanges = $event"
+      (clickTargetSelect)="targetElement = $event"
+    ></pets-editor>
   </div>
   <div class="bv-section bv-markup">
     <pets-html-markup [markup]="editorChanges"></pets-html-markup>
