@@ -7,6 +7,8 @@ import { HtmlMarkupComponent } from './views/builder-view/html-markup/html-marku
 import { StyleSectionComponent } from './views/builder-view/style-section/style-section.component';
 import { mouseEventsDirective } from './directives/mouseEvents.directive';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ToolbarComponent } from './views/builder-view/toolbar/toolbar.component';
+import { DragdropDirective } from './directives/dragdrop.directive';
 
 @NgModule({
   imports: [
@@ -14,7 +16,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     RouterModule.forChild([
       { path: '', pathMatch: 'full', component: BuilderViewComponent },
     ]),
-    OverlayPanelModule
+    OverlayPanelModule,
   ],
   declarations: [
     BuilderViewComponent,
@@ -22,6 +24,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     HtmlMarkupComponent,
     StyleSectionComponent,
     mouseEventsDirective,
+    ToolbarComponent,
+    DragdropDirective,
   ],
 })
 export class BuilderFeatureModule {}

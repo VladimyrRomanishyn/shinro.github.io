@@ -1,8 +1,10 @@
 <!--editor-->
 <div
+  #editor
   mouseEvents
-  (contextEvent)="contextEvent($event)"
-  (clickEvent)="contextEvent(null)"
+  [petsDragdrop]="dragdrop"
+  (contextEvent)="contextEvent($event); ctxTargetElement = $any($event).target"
+  (clickEvent)="contextEvent(); clickTargetElement = $any($event).target"
   class="editor">
 </div>
 <!--editor-->
@@ -13,18 +15,36 @@
   class="contextmenu"
   [ngStyle]="contextMenuStyles">
   <div class="contextmenu__item"
-       (click)="ctxActionHandler('addNode')">
+       (click)="ctxActionHandler(contextMenuEnum.addDiv)">
+    Add Division tag
+  </div>
+  <div class="contextmenu__item"
+       (click)="ctxActionHandler(contextMenuEnum.cloneNode)">
+    Clone Node
+  </div>
+  <div class="contextmenu__item"
+       (click)="ctxActionHandler(contextMenuEnum.addNode)">
     Add Node
+  </div>
+  <div class="contextmenu__item"
+       (click)="ctxActionHandler(contextMenuEnum.deleteNode)">
+    Delete Node
   </div>
 </div>
 <!--contextmenu-->
 
 <!--tags modal-->
-<div *ngIf="modal" (keydown.escape)="modal = false" class="tags-modal">
-  <div  (click)="modal = false" class="tags-modal__close">+</div>
+<div *ngIf="modal"
+     #modal
+     (keydown.enter)="selectNode(modal)"
+     (keydown.arrowDown)="hoverNode(modal)"
+     (keydown.arrowUp)="hoverNode(modal, true)"
+     (keydown.escape)="closeNodeModal()" class="tags-modal">
+  <div  (click)="closeNodeModal()" class="tags-modal__close">+</div>
   <input #nodeSearch (input)="nodeSearch$.next(nodeSearch.value)" type="text">
   <div *ngIf="relevantNodes.length" class="tags-modal__results">
-    <div *ngFor="let node of relevantNodes">
+    <div (click)="createNode(node, ctxTargetElement)"
+         *ngFor="let node of relevantNodes">
       {{node}}
     </div>
   </div>

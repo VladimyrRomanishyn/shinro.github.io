@@ -1,7 +1,24 @@
 .bv {
   display: grid;
-  grid-template-rows: 100vh;
-  grid-template-columns: 5fr 2fr 2fr;
-  column-gap: 5px;
-  padding: 10px;
+  grid-template-rows: 70px calc(100vh - 80px);
+  grid-template-columns: 60% 20% 20%;
+  grid-template-areas:
+  "toolbar toolbar toolbar"
+  "editor markup styles";
+  gap: 5px;
+  padding: 5px;
+  margin-bottom: 20px;
+}
+
+.bv-editor {
+  grid-area: editor;
+}
+.bv-toolbar {
+  grid-area: toolbar;
+}
+.bv-styles {
+  grid-area: styles;
+}
+.bv-markup {
+  grid-area: markup;
 }

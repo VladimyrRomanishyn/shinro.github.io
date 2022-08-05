@@ -1,11 +1,16 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef, OnDestroy, OnInit,
-  ViewChild
+  ElementRef,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation
 } from '@angular/core';
 import { nodeList } from '@libs/builder-feature/src/lib/views/builder-view/editor/nodeList';
-import { filter, first, interval, map, Subject, take, takeUntil, tap } from 'rxjs';
+import { filter, first, interval, map, Subject, take, takeUntil } from 'rxjs';
 
 interface MenuStyles {
   left: string,
@@ -14,7 +19,10 @@ interface MenuStyles {
 }
 
 enum ContextMenuEnum {
-  addNode = 'addNode'
+  addNode = 'addNode',
+  deleteNode = 'deleteNode',
+  addDiv = 'addDiv',
+  cloneNode = 'cloneNode'
 }
 
 @Component({
@@ -22,18 +30,53 @@ enum ContextMenuEnum {
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild('nodeSearch') nodeSearchInput: ElementRef | undefined;
-  @ViewChild('contextPanel', {static: true})
-  contextPanel!: ElementRef;
-  contextMenuStyles: MenuStyles = {left: '', top: '', opacity: 0}
-  relevantNodes: string[] = [];
-  fullNodeList: string[] = nodeList;
-  nodeSearch$: Subject<string> = new Subject<string>();
-  destroy$: Subject<void> = new Subject<void>();
-  modal: boolean = false;
-  constructor() {}
+  @ViewChild('editor', { static: true }) editor: ElementRef | undefined;
+  @ViewChild('contextPanel', { static: true })
+  public contextPanel!: ElementRef;
+  public contextMenuStyles: MenuStyles = { left: '', top: '', opacity: 0 };
+  public relevantNodes: string[] = [];
+  private fullNodeList: string[] = nodeList;
+  public nodeSearch$: Subject<string> = new Subject<string>();
+  private destroy$: Subject<void> = new Subject<void>();
+  public modal: boolean = false;
+  set ctxTargetElement(target: HTMLElement | undefined) {
+    if (target && target?.parentElement?.localName !== 'pets-editor') {
+      this._ctxTargetElement = target;
+      return;
+    }
+    this._ctxTargetElement = undefined;
+  }
+  get ctxTargetElement(): HTMLElement | undefined {
+    return this._ctxTargetElement;
+  }
+  set clickTargetElement(target: HTMLElement | undefined) {
+    if (target && target?.parentElement?.localName !== 'pets-editor') {
+      this._clickTargetElement?.classList?.toggle('editor__click');
+      this._clickTargetElement = target;
+      this._clickTargetElement?.classList?.toggle('editor__click');
+      return;
+    }
+
+    this._clickTargetElement?.classList?.toggle('editor__click');
+    this._clickTargetElement = undefined;
+  }
+  get clickTargetElement(): HTMLElement | undefined {
+    return this._clickTargetElement;
+  }
+  public _ctxTargetElement: HTMLElement | undefined;
+  public _clickTargetElement: HTMLElement | undefined;
+  public contextMenuEnum = ContextMenuEnum;
+  public dragdrop = false;
+  @Output() changes: EventEmitter<string> = new EventEmitter<string>();
+  @Output() clickTargetSelect: EventEmitter<HTMLElement> = new EventEmitter<HTMLElement>();
+
+
+  constructor() {
+  }
 
   ngOnInit() {
     this.nodeSearch$.asObservable()
@@ -43,22 +86,22 @@ export class EditorComponent implements OnInit, OnDestroy {
         ),
         takeUntil(this.destroy$)
       )
-      .subscribe((result: string[]) => this.relevantNodes = result)
+      .subscribe((result: string[]) => this.relevantNodes = result);
   }
 
   ngOnDestroy() {
     this.destroy$.next();
   }
 
-  contextEvent(event: PointerEvent | null): void {
+  contextEvent(event?: PointerEvent | undefined): void {
     this.contextMenuStyles.opacity = 0;
     this.contextMenuStyles.left = '';
     this.contextMenuStyles.top = '';
 
     if (event) {
-      const {width: panelWidth, height: panelHeight}
+      const { width: panelWidth, height: panelHeight }
         = this.contextPanel.nativeElement.getBoundingClientRect();
-      const {width: bodyWidth, height: bodyHeight}
+      const { width: bodyWidth, height: bodyHeight }
         = document.body.getBoundingClientRect();
 
       const x = bodyWidth - event.x + 2 >= panelWidth ? event.x + 2 : bodyWidth - panelWidth;
@@ -70,14 +113,41 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   ctxActionHandler(action: string): void {
+    this.contextEvent();
     switch (action) {
-      case ContextMenuEnum.addNode: this.addNodeModal();
+      case ContextMenuEnum.addNode:
+        this.addNodeModal();
+        return;
 
-      return;
+      case ContextMenuEnum.deleteNode:
+        this.deleteNode();
+        return;
+
+      case ContextMenuEnum.addDiv:
+        this.createNode('div', this.ctxTargetElement);
+        return;
+
+      case ContextMenuEnum.cloneNode:
+        this.cloneNode(this.ctxTargetElement);
+        return;
     }
   }
 
-  private  addNodeModal(): void {
+  private cloneNode(node: HTMLElement | undefined): void {
+    if (node && node.className !== 'editor') {
+      const clone = node?.cloneNode(true) as HTMLElement;
+      clone.classList.remove('editor__click');
+      node.after(clone);
+    }
+  }
+
+  private deleteNode(): void {
+    this.ctxTargetElement?.remove();
+    this.ctxTargetElement = undefined;
+    this.changes.emit(this.editor?.nativeElement.innerHTML);
+  }
+
+  private addNodeModal(): void {
     this.modal = true;
     interval(100)
       .pipe(
@@ -88,6 +158,50 @@ export class EditorComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.nodeSearchInput?.nativeElement.select();
         this.nodeSearchInput?.nativeElement.focus();
-      })
+      });
+  }
+
+  createNode(node: string, target = this.editor?.nativeElement) {
+    this.closeNodeModal();
+    const newNode: HTMLElement = document.createElement(node);
+    newNode.classList.add('editor__child');
+    target.append(newNode);
+    this.changes.emit(this.editor?.nativeElement.innerHTML);
+  }
+
+  closeNodeModal(): void {
+    this.relevantNodes = [];
+    this.modal = false;
+  }
+
+  hoverNode(event: any, up?: boolean): void {
+    if (!this.relevantNodes.length) {return; }
+
+    const items = [...event.querySelector('.tags-modal__results')?.children];
+    const selected = items?.find(i => i.className.includes('hover'));
+
+    if (selected) {
+      const direction = up ? 'previousElementSibling' : 'nextElementSibling';
+      const defaultIndex = up ? items.length - 1 : 0;
+
+      selected.classList.remove('hover');
+      selected[direction]
+        ? selected[direction].classList.add('hover')
+        : items[defaultIndex].classList.add('hover');
+
+      return;
+    }
+    items[0].classList.add('hover')
+  }
+
+  selectNode(event: any): void {
+    if (!this.relevantNodes.length) {return; }
+
+    const items = [...event.querySelector('.tags-modal__results')?.children];
+    const selected = items?.find(i => i.className.includes('hover'));
+
+    if (selected) {
+      this.createNode(selected.innerText, this.ctxTargetElement);
+    }
   }
 }
