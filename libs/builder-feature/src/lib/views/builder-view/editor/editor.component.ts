@@ -36,16 +36,35 @@ export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild('nodeSearch') nodeSearchInput: ElementRef | undefined;
   @ViewChild('editor', { static: true }) editor: ElementRef | undefined;
   @ViewChild('contextPanel', { static: true })
-  contextPanel!: ElementRef;
-  contextMenuStyles: MenuStyles = { left: '', top: '', opacity: 0 };
-  relevantNodes: string[] = [];
-  fullNodeList: string[] = nodeList;
-  nodeSearch$: Subject<string> = new Subject<string>();
-  destroy$: Subject<void> = new Subject<void>();
-  modal: boolean = false;
-  targetElement: EventTarget | undefined | null;
+  public contextPanel!: ElementRef;
+  public contextMenuStyles: MenuStyles = { left: '', top: '', opacity: 0 };
+  public relevantNodes: string[] = [];
+  private fullNodeList: string[] = nodeList;
+  public nodeSearch$: Subject<string> = new Subject<string>();
+  private destroy$: Subject<void> = new Subject<void>();
+  public modal: boolean = false;
+  set ctxTargetElement(target: HTMLElement | undefined) {
+    if (target && target?.parentElement?.localName !== 'pets-editor') {
+      this._ctxTargetElement = target;
+    }
+  }
+  get ctxTargetElement(): HTMLElement | undefined {
+    return this._ctxTargetElement;
+  }
+  set clickTargetElement(target: HTMLElement | undefined) {
+    if (target && target?.parentElement?.localName !== 'pets-editor') {
+      this._clickTargetElement = target;
+    }
+  }
+  get clickTargetElement(): HTMLElement | undefined {
+    return this._clickTargetElement;
+  }
+  public _ctxTargetElement: HTMLElement | undefined;
+  public _clickTargetElement: HTMLElement | undefined;
+  public contextMenuEnum = ContextMenuEnum;
+  public dragdrop = false;
   @Output() changes: EventEmitter<string> = new EventEmitter<string>();
-  contextMenuEnum = ContextMenuEnum;
+
 
   constructor() {
   }
@@ -96,11 +115,11 @@ export class EditorComponent implements OnInit, OnDestroy {
         return;
 
       case ContextMenuEnum.addDiv:
-        this.createNode('div', this.targetElement);
+        this.createNode('div', this.ctxTargetElement);
         return;
 
       case ContextMenuEnum.cloneNode:
-        this.cloneNode(this.targetElement as HTMLElement);
+        this.cloneNode(this.ctxTargetElement as HTMLElement);
         return;
     }
   }
@@ -113,10 +132,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   private deleteNode(): void {
-    if ((this.targetElement as HTMLElement)?.parentElement?.localName === 'pets-editor') {
+    if ((this.ctxTargetElement as HTMLElement)?.parentElement?.localName === 'pets-editor') {
       return;
     }
-    (this.targetElement as HTMLElement)?.remove();
+    (this.ctxTargetElement as HTMLElement)?.remove();
     this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
 
@@ -180,7 +199,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     const selected = items?.find(i => i.className.includes('hover'));
 
     if (selected) {
-      this.createNode(selected.innerText, this.targetElement);
+      this.createNode(selected.innerText, this.ctxTargetElement);
     }
   }
 }

@@ -2,9 +2,9 @@
 <div
   #editor
   mouseEvents
-  petsDragdrop
-  (contextEvent)="contextEvent($event); targetElement = $event?.target"
-  (clickEvent)="contextEvent()"
+  [petsDragdrop]="dragdrop"
+  (contextEvent)="contextEvent($event); ctxTargetElement = $any($event).target"
+  (clickEvent)="contextEvent(); clickTargetElement = $event?.target"
   class="editor">
 </div>
 <!--editor-->
@@ -43,7 +43,7 @@
   <div  (click)="closeNodeModal()" class="tags-modal__close">+</div>
   <input #nodeSearch (input)="nodeSearch$.next(nodeSearch.value)" type="text">
   <div *ngIf="relevantNodes.length" class="tags-modal__results">
-    <div (click)="createNode(node, targetElement)"
+    <div (click)="createNode(node, ctxTargetElement)"
          *ngFor="let node of relevantNodes">
       {{node}}
     </div>

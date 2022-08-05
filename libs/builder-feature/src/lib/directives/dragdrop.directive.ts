@@ -1,16 +1,18 @@
-import { Directive, ElementRef, HostListener } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 import { map, Observable, Subscriber } from 'rxjs';
 
 @Directive({
   selector: '[petsDragdrop]'
 })
 export class DragdropDirective {
+  @Input() petsDragdrop = false;
 
   constructor(private elRef: ElementRef) {
   }
 
   @HostListener('pointerdown', ['$event'])
   pointerDown(event: PointerEvent) {
+    if (!this.petsDragdrop) return;
     this.moveNode(event);
   }
 
