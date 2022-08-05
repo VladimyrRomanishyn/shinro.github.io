@@ -25,6 +25,17 @@ export class DragdropDirective {
       const offsetLeft = event.offsetX + bLeft;
       const offsetTop = event.offsetY + bTop;
 
+      if (target.parentElement?.className !== 'editor') {
+        const {width, height} = target.getBoundingClientRect();
+        target.style.width = `${width}px`;
+        target.style.minWidth = `auto`;
+        target.style.height = `${height}px`;
+        this.elRef.nativeElement.append(target);
+        target.style.top = `${event.clientY - offsetTop}px`;
+        target.style.left = `${event.clientX - offsetLeft}px`;
+        target.style.position = 'absolute';
+      }
+
 
       const moveAt = new Observable((subscriber:Subscriber<PointerEvent>) => {
         target.onpointermove = (pointerEvent: PointerEvent) => {
@@ -91,8 +102,6 @@ export class DragdropDirective {
 
     if (droppable) {
       droppable.append(target);
-      target.style.top = '';
-      target.style.left = '';
       droppable.classList.remove('editor__droppable');
       this.removeHighlight();
     }

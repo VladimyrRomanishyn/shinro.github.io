@@ -15,12 +15,13 @@ pets-editor {
   &__child, .drag-active {
     border: 2px solid black;
     min-height: 50px;
+    height: fit-content;
     margin-bottom: 5px;
     padding: 5px;
-    resize: both;
     overflow: auto;
-    max-width: 100%;
-    width: inherit;
+    min-width: 50%;
+    width: fit-content;
+    //width: inherit;
   }
 
   &__droppable {
