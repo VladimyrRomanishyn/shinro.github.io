@@ -21,7 +21,8 @@ interface MenuStyles {
 enum ContextMenuEnum {
   addNode = 'addNode',
   deleteNode = 'deleteNode',
-  addDiv = 'addDiv'
+  addDiv = 'addDiv',
+  cloneNode = 'cloneNode'
 }
 
 @Component({
@@ -97,7 +98,18 @@ export class EditorComponent implements OnInit, OnDestroy {
       case ContextMenuEnum.addDiv:
         this.createNode('div', this.targetElement);
         return;
+
+      case ContextMenuEnum.cloneNode:
+        this.cloneNode(this.targetElement as HTMLElement);
+        return;
     }
+  }
+
+  private cloneNode(node: HTMLElement): void {
+    if (node.className === 'editor') return;
+
+    const clone = node.cloneNode(true);
+    node.after(clone);
   }
 
   private deleteNode(): void {

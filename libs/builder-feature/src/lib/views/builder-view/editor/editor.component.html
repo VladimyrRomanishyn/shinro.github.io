@@ -19,6 +19,10 @@
     Add Division tag
   </div>
   <div class="contextmenu__item"
+       (click)="ctxActionHandler(contextMenuEnum.cloneNode)">
+    Clone Node
+  </div>
+  <div class="contextmenu__item"
        (click)="ctxActionHandler(contextMenuEnum.addNode)">
     Add Node
   </div>
