@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 
+enum SectionsEnum {
+  boxModel = 'box-model',
+}
+
+interface Section {
+  name: string,
+  value: SectionsEnum
+}
 @Component({
   selector: 'pets-style-section',
   templateUrl: './style-section.component.html',
@@ -14,6 +22,11 @@ export class StyleSectionComponent implements OnInit {
     return this._editorStyles;
   }
   private _editorStyles!: string;
+  sectionsEnum = SectionsEnum;
+  section: SectionsEnum | null = null;
+  sections: {name: string, value: SectionsEnum}[] = [
+    {name: 'Box Model, Positioning', value: SectionsEnum.boxModel},
+  ]
   constructor() {}
 
   ngOnInit(): void {}

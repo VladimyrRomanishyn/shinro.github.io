@@ -1,3 +1,27 @@
 <div class="editorStyles">
-  {{editorStyles}}
+  <div class="accordion">
+
+    <ng-container [ngSwitch]="section" class="accordion__panel">
+      <ng-container *ngSwitchCase="sectionsEnum.boxModel">
+        <ng-container *ngTemplateOutlet="boxModel"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <ng-container *ngTemplateOutlet="accordionList"></ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
 </div>
+
+<ng-template #boxModel>
+  <div>box</div>
+</ng-template>
+
+<ng-template #accordionList>
+  <div class="accordion__list">
+    <ng-container *ngFor="let item of sections" >
+      <div (click)="section = item.value" class="accordion__list-item">
+        {{item.name}}
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
