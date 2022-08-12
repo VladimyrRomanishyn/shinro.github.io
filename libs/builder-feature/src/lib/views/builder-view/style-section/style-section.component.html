@@ -1,7 +1,9 @@
 <div class="editorStyles">
   <div class="accordion">
-
-    <ng-container [ngSwitch]="section" class="accordion__panel">
+    <ng-container [ngSwitch]="section?.value" class="accordion__panel">
+      <ng-container *ngIf="section">
+        <ng-container *ngTemplateOutlet="header; context: {$implicit: section}"></ng-container>
+      </ng-container>
       <ng-container *ngSwitchCase="sectionsEnum.boxModel">
         <ng-container *ngTemplateOutlet="boxModel"></ng-container>
       </ng-container>
@@ -19,9 +21,16 @@
 <ng-template #accordionList>
   <div class="accordion__list">
     <ng-container *ngFor="let item of sections" >
-      <div (click)="section = item.value" class="accordion__list-item">
+      <div (click)="section = item" class="accordion__list-item">
         {{item.name}}
       </div>
     </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #header let-sectionItem>
+  <div class="accordion__panel-header">
+    <div class="accordion__back-button" (click)="section = null"> <-- </div>
+    <div>{{sectionItem.name}}</div>
   </div>
 </ng-template>

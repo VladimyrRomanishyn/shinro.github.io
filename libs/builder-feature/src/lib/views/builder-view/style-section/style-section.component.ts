@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 
 enum SectionsEnum {
   boxModel = 'box-model',
+  grid = 'grid',
+  flex = 'flex',
 }
 
 interface Section {
@@ -23,9 +25,11 @@ export class StyleSectionComponent implements OnInit {
   }
   private _editorStyles!: string;
   sectionsEnum = SectionsEnum;
-  section: SectionsEnum | null = null;
-  sections: {name: string, value: SectionsEnum}[] = [
+  section: Section | null = null;
+  sections: Section[] = [
     {name: 'Box Model, Positioning', value: SectionsEnum.boxModel},
+    {name: 'Grid', value: SectionsEnum.grid},
+    {name: 'Flex', value: SectionsEnum.flex},
   ]
   constructor() {}
 
