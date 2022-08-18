@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { builderFeatureKey, BuilderFeatureState } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
 import { Store } from '@ngrx/store';
 import { takeUntil } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 enum SectionsEnum {
   boxModel = 'box-model',
@@ -13,26 +22,26 @@ interface Section {
   name: string,
   value: SectionsEnum
 }
+
+interface StylesForm {
+  width: {
+    pixels: number,
+    percentage: number
+  }
+}
 @Component({
   selector: 'pets-style-section',
   templateUrl: './style-section.component.html',
   styleUrls: ['./style-section.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StyleSectionComponent implements OnInit, OnDestroy {
-  @Input() set editorStyles(value: string) {
-    this._editorStyles = value;
-  }
-  get editorStyles(): string  {
-    return this._editorStyles;
-  }
-  private _editorStyles!: string;
-
   @Input() set target(v:  HTMLElement | undefined) {
     this._target = v;
 
     if (v) {
       this.compStyles = getComputedStyle(v);
+      this.createForm();
     }
   }
   get target(): HTMLElement | undefined {
@@ -47,21 +56,48 @@ export class StyleSectionComponent implements OnInit, OnDestroy {
     {name: 'Grid', value: SectionsEnum.grid},
     {name: 'Flex', value: SectionsEnum.flex},
   ];
-  section: Section | null = this.sections[0];
+  section: Section | null = null;
   display: string | undefined;
-  stylesModel: any = {
-    width: 10,
-    height: 10
-  }
+  stylesForm!: FormGroup;
   destroy$: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private store: Store<{[builderFeatureKey]: BuilderFeatureState}>) {}
+  constructor(
+    private store: Store<{[builderFeatureKey]: BuilderFeatureState}>,
+    private fb: FormBuilder,
+    // private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
+    this.createForm();
     this.store.select(state => state[builderFeatureKey].target)
       .pipe(
         takeUntil(this.destroy$)
       )
-      .subscribe((target: HTMLElement | undefined) => this.target = target)
+      .subscribe((target: HTMLElement | undefined) => {
+        this.target = target;
+      })
+  }
+
+  createForm(): void {
+    const width = this.compStyles?.getPropertyValue('width').slice(0, -2) ?? 0;
+    this.stylesForm = this.fb.group({
+      metricsEditable: [false],
+      width: this.fb.group({
+        pixels: [width],
+        percentage: [100],
+      }),
+      height: this.fb.group({
+        pixels: [width],
+        percentage: [5],
+      })
+    });
+    this.stylesForm.valueChanges.subscribe((formData) => {
+      console.log(formData);
+      if (formData.metricsEditable) {
+        this._target!.style.width = `${formData.width.percentage}%`;
+        this._target!.style.height = `${formData.height.percentage}%`;
+      }
+
+    });
   }
 
   ngOnDestroy() {

@@ -22,18 +22,26 @@
 
 <ng-template #boxModel>
   <div class="box-model">
-    <div class="property">
-      <ng-container *ngIf="target">
-        <div>
-          Width: {{compStyles?.getPropertyValue('width')}}
-          <p-slider [min]="0" [max]="100" [(ngModel)]="stylesModel.width"></p-slider>
+    <ng-container *ngIf="target">
+      <form [formGroup]="stylesForm" class="property">
+        <p-inputSwitch formControlName="metricsEditable"></p-inputSwitch>
+        <div formGroupName="width">
+          <input [attr.disabled]="stylesForm.get('metricsEditable')?.value ? null : false"
+                 formControlName="pixels" type="number">
+
+          <p-slider [disabled]="!stylesForm.get('metricsEditable')?.value"
+                    formControlName="percentage" [min]="0" [max]="100"></p-slider>
         </div>
-        <div>
-          Height: {{compStyles?.getPropertyValue('height')}}
-          <p-slider [min]="0" [max]="100" [(ngModel)]="stylesModel.height"></p-slider>
+
+        <div formGroupName="height">
+          <input [attr.disabled]="stylesForm.get('metricsEditable')?.value ? null : false"
+                 formControlName="pixels" type="number">
+
+          <p-slider [disabled]="!stylesForm.get('metricsEditable')?.value"
+                    formControlName="percentage" [min]="0" [max]="100"></p-slider>
         </div>
-      </ng-container>
-    </div>
+      </form>
+    </ng-container>
   </div>
 </ng-template>
 

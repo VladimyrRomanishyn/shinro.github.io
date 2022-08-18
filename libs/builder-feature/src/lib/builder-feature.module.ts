@@ -12,7 +12,8 @@ import { DragdropDirective } from './directives/dragdrop.directive';
 import { SliderModule } from 'primeng/slider';
 import { StoreModule } from '@ngrx/store';
 import { builderFeatureKey, builderFeatureReducer } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   imports: [
@@ -24,6 +25,8 @@ import { FormsModule } from '@angular/forms';
     OverlayPanelModule,
     FormsModule,
     SliderModule,
+    ReactiveFormsModule,
+    InputSwitchModule
   ],
   declarations: [
     BuilderViewComponent,
