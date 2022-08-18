@@ -7,6 +7,12 @@
       <ng-container *ngSwitchCase="sectionsEnum.boxModel">
         <ng-container *ngTemplateOutlet="boxModel"></ng-container>
       </ng-container>
+      <ng-container *ngSwitchCase="sectionsEnum.grid">
+        <ng-container *ngTemplateOutlet="grid"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="sectionsEnum.flex">
+        <ng-container *ngTemplateOutlet="flex"></ng-container>
+      </ng-container>
       <ng-container *ngSwitchDefault>
         <ng-container *ngTemplateOutlet="accordionList"></ng-container>
       </ng-container>
@@ -15,7 +21,44 @@
 </div>
 
 <ng-template #boxModel>
-  <div>box</div>
+  <div class="box-model">
+    <div class="property">
+      <ng-container *ngIf="target">
+        <div>
+          Width: {{compStyles?.getPropertyValue('width')}}
+          <p-slider [min]="0" [max]="100" [(ngModel)]="stylesModel.width"></p-slider>
+        </div>
+        <div>
+          Height: {{compStyles?.getPropertyValue('height')}}
+          <p-slider [min]="0" [max]="100" [(ngModel)]="stylesModel.height"></p-slider>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #grid>
+  <div class="property">
+    <label>
+      Block
+      <input (change)="displayEvent($event)"
+             [(ngModel)]="display" value="block" type="radio">
+    </label>
+    <label>
+      Flex
+      <input (change)="displayEvent($event)"
+             [(ngModel)]="display" value="flex" type="radio">
+    </label>
+    <label>
+      Grid
+      <input (change)="displayEvent($event)"
+             [(ngModel)]="display" value="grid" type="radio">
+    </label>
+  </div>
+</ng-template>
+
+<ng-template #flex>
+  <div>flex</div>
 </ng-template>
 
 <ng-template #accordionList>
