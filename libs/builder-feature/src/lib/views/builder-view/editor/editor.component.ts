@@ -11,6 +11,9 @@ import {
 } from '@angular/core';
 import { nodeList } from '@libs/builder-feature/src/lib/views/builder-view/editor/nodeList';
 import { filter, first, interval, map, Subject, take, takeUntil } from 'rxjs';
+import { BuilderFeatureState } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
+import { Store } from '@ngrx/store';
+import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
 
 interface MenuStyles {
   left: string,
@@ -54,18 +57,16 @@ export class EditorComponent implements OnInit, OnDestroy {
     return this._ctxTargetElement;
   }
   set clickTargetElement(target: HTMLElement | undefined) {
-    if (target && target?.parentElement?.localName !== 'pets-editor') {
-      this._clickTargetElement?.classList?.toggle('editor__click');
-      this._clickTargetElement = target;
-      this._clickTargetElement?.classList?.toggle('editor__click');
-      return;
+    this._clickTargetElement?.classList?.toggle('editor__click');
+    this._clickTargetElement = target;
+    this._clickTargetElement?.classList?.toggle('editor__click');
+
+    if (target && target?.parentElement?.localName === 'pets-editor') {
+      this._clickTargetElement?.classList?.remove('editor__click');
+      this._clickTargetElement = undefined;
     }
 
-    this._clickTargetElement?.classList?.toggle('editor__click');
-    this._clickTargetElement = undefined;
-  }
-  get clickTargetElement(): HTMLElement | undefined {
-    return this._clickTargetElement;
+    this.store.dispatch(setTarget({target: this._clickTargetElement}))
   }
   public _ctxTargetElement: HTMLElement | undefined;
   public _clickTargetElement: HTMLElement | undefined;
@@ -75,7 +76,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   @Output() clickTargetSelect: EventEmitter<HTMLElement> = new EventEmitter<HTMLElement>();
 
 
-  constructor() {
+  constructor(private store: Store<BuilderFeatureState>) {
   }
 
   ngOnInit() {

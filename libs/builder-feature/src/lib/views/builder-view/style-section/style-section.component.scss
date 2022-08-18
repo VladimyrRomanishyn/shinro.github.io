@@ -5,3 +5,39 @@
   border: 2px solid lightgrey;
   padding: 10px;
 }
+
+.accordion {
+  &__panel {}
+
+  &__panel-header {
+    cursor: pointer;
+    display: flex;
+    height: 30px;
+    align-items: center;
+    border: 1px solid;
+  }
+
+  &__back-button {
+    text-align: center;
+    margin-right: 2px;
+    width: 30px;
+    height: 30px;
+    line-height: 27px;
+    border-width: 0 1px 0 0;
+    border-style: solid;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__list-item {
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid;
+    margin-bottom: 2px;
+    padding: 0 5px;
+  }
+}

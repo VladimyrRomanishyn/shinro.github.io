@@ -9,14 +9,21 @@ import { mouseEventsDirective } from './directives/mouseEvents.directive';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ToolbarComponent } from './views/builder-view/toolbar/toolbar.component';
 import { DragdropDirective } from './directives/dragdrop.directive';
+import { SliderModule } from 'primeng/slider';
+import { StoreModule } from '@ngrx/store';
+import { builderFeatureKey, builderFeatureReducer } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild([
-      { path: '', pathMatch: 'full', component: BuilderViewComponent },
+      { path: '', pathMatch: 'full', component: BuilderViewComponent }
     ]),
+    StoreModule.forFeature(builderFeatureKey, builderFeatureReducer),
     OverlayPanelModule,
+    FormsModule,
+    SliderModule,
   ],
   declarations: [
     BuilderViewComponent,

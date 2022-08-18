@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 })
 export class BuilderViewComponent implements OnInit {
   editorChanges: string = '';
+  targetElement: HTMLElement | undefined;
   constructor() {}
   ngOnInit(): void {}
 }
