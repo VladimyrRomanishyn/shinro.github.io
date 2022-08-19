@@ -79,23 +79,42 @@ export class StyleSectionComponent implements OnInit, OnDestroy {
 
   createForm(): void {
     const width = this.compStyles?.getPropertyValue('width').slice(0, -2) ?? 0;
+    const height = this.compStyles?.getPropertyValue('height').slice(0, -2) ?? 0;
     this.stylesForm = this.fb.group({
-      metricsEditable: [false],
       width: this.fb.group({
-        pixels: [width],
-        percentage: [100],
+        pixels: this.fb.group({
+          editable: [false],
+          value: width,
+        }),
+        percentage: this.fb.group({
+          editable: [false],
+          value: [100],
+        })
       }),
       height: this.fb.group({
-        pixels: [width],
-        percentage: [5],
+        pixels: this.fb.group({
+          editable: [false],
+          value: [height],
+        }),
+        percentage: this.fb.group({
+          editable: [false],
+          value: [10],
+        })
       })
     });
     this.stylesForm.valueChanges.subscribe((formData) => {
-      console.log(formData);
-      if (formData.metricsEditable) {
-        this._target!.style.width = `${formData.width.percentage}%`;
-        this._target!.style.height = `${formData.height.percentage}%`;
-      }
+      Object.entries(formData).map(([prop, payload]: [string, any]) => {
+        const value = payload.pixels.editable
+            ? `${payload.pixels.value}px`
+            : payload.percentage.editable
+            ? `${payload.percentage.value}%`
+            : null;
+
+        if (value) {
+          // @ts-ignore
+          this._target!.style[prop] = value;
+        }
+      })
 
     });
   }
