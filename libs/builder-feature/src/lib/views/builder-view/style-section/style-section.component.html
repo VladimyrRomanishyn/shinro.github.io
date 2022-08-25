@@ -72,6 +72,54 @@
           </div>
         </div>
 
+        <div formGroupName="margin">
+          <div class="property__name">Margin</div>
+          
+          <div formGroupName="pixels" class="property__subprop">
+            <div class="property__wrapper">
+              <p-inputSwitch formControlName="editable"></p-inputSwitch>
+              <input [attr.disabled]="stylesForm.get('margin.pixels.editable')?.value ? null : false"
+                   formControlName="value" type="text">
+              <div class="property__measurement-unit">px</div>  
+            </div> 
+          </div>
+
+          <div formGroupName="percentage" class="property__subprop">
+            <p-inputSwitch formControlName="editable"></p-inputSwitch>
+            <p-slider
+              [disabled]="!stylesForm.get('margin.percentage.editable')?.value"
+              formControlName="value"
+              [min]="0"
+              [max]="100"
+            ></p-slider>
+            <div class="property__measurement-unit">{{stylesForm.get('margin.percentage.value')?.value}}%</div>
+          </div>
+        </div>
+
+        <div formGroupName="padding">
+          <div class="property__name">Padding</div>
+          
+          <div formGroupName="pixels" class="property__subprop">
+            <div class="property__wrapper">
+              <p-inputSwitch formControlName="editable"></p-inputSwitch>
+              <input [attr.disabled]="stylesForm.get('padding.pixels.editable')?.value ? null : false"
+                   formControlName="value" type="text">
+              <div class="property__measurement-unit">px</div>  
+            </div> 
+          </div>
+
+          <div formGroupName="percentage" class="property__subprop">
+            <p-inputSwitch formControlName="editable"></p-inputSwitch>
+            <p-slider
+              [disabled]="!stylesForm.get('padding.percentage.editable')?.value"
+              formControlName="value"
+              [min]="0"
+              [max]="100"
+            ></p-slider>
+            <div class="property__measurement-unit">{{stylesForm.get('padding.percentage.value')?.value}}%</div>
+          </div>
+        </div>
+
       </form>
     </ng-container>
   </div>

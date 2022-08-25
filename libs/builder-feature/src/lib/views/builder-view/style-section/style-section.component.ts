@@ -97,6 +97,26 @@ export class StyleSectionComponent implements OnInit, OnDestroy {
           editable: [false],
           value: [10],
         })
+      }),
+      margin: this.fb.group({
+        pixels: this.fb.group({
+          editable: [false],
+          value: [height],
+        }),
+        percentage: this.fb.group({
+          editable: [false],
+          value: [10],
+        })
+      }),
+      padding: this.fb.group({
+        pixels: this.fb.group({
+          editable: [false],
+          value: [height],
+        }),
+        percentage: this.fb.group({
+          editable: [false],
+          value: [10],
+        })
       })
     });
     this.stylesForm.valueChanges.subscribe((formData) => {
