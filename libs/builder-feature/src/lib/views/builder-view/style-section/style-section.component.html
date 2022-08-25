@@ -25,14 +25,18 @@
     <ng-container *ngIf="target">
       <form [formGroup]="stylesForm" class="property">
         <div formGroupName="width">
-
-          <div formGroupName="pixels">
-            <p-inputSwitch formControlName="editable"></p-inputSwitch>
-            <input [attr.disabled]="stylesForm.get('width.pixels.editable')?.value ? null : false"
+          <div class="property__name">Width</div>
+          
+          <div formGroupName="pixels" class="property__subprop">
+            <div class="property__wrapper">
+              <p-inputSwitch formControlName="editable"></p-inputSwitch>
+              <input [attr.disabled]="stylesForm.get('width.pixels.editable')?.value ? null : false"
                    formControlName="value" type="number">
+              <div class="property__measurement-unit">px</div> 
+            </div>      
           </div>
 
-          <div formGroupName="percentage">
+          <div formGroupName="percentage" class="property__subprop">
             <p-inputSwitch formControlName="editable"></p-inputSwitch>
             <p-slider
               [disabled]="!stylesForm.get('width.percentage.editable')?.value"
@@ -40,18 +44,23 @@
               [min]="0"
               [max]="100"
             ></p-slider>
+            <div class="property__measurement-unit">{{stylesForm.get('width.percentage.value')?.value}}%</div>
           </div>
         </div>
 
         <div formGroupName="height">
-
-          <div formGroupName="pixels">
-            <p-inputSwitch formControlName="editable"></p-inputSwitch>
-            <input [attr.disabled]="stylesForm.get('height.pixels.editable')?.value ? null : false"
+          <div class="property__name">Height</div>
+          
+          <div formGroupName="pixels" class="property__subprop">
+            <div class="property__wrapper">
+              <p-inputSwitch formControlName="editable"></p-inputSwitch>
+              <input [attr.disabled]="stylesForm.get('height.pixels.editable')?.value ? null : false"
                    formControlName="value" type="number">
+              <div class="property__measurement-unit">px</div>  
+            </div> 
           </div>
 
-          <div formGroupName="percentage">
+          <div formGroupName="percentage" class="property__subprop">
             <p-inputSwitch formControlName="editable"></p-inputSwitch>
             <p-slider
               [disabled]="!stylesForm.get('height.percentage.editable')?.value"
@@ -59,6 +68,7 @@
               [min]="0"
               [max]="100"
             ></p-slider>
+            <div class="property__measurement-unit">{{stylesForm.get('height.percentage.value')?.value}}%</div>
           </div>
         </div>
 
@@ -107,3 +117,4 @@
     <div>{{sectionItem.name}}</div>
   </div>
 </ng-template>
+

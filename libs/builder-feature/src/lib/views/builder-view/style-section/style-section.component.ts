@@ -1,6 +1,4 @@
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -32,8 +30,7 @@ interface StylesForm {
 @Component({
   selector: 'pets-style-section',
   templateUrl: './style-section.component.html',
-  styleUrls: ['./style-section.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./style-section.component.scss']
 })
 export class StyleSectionComponent implements OnInit, OnDestroy {
   @Input() set target(v:  HTMLElement | undefined) {
