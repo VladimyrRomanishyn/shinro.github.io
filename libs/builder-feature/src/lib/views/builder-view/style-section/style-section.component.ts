@@ -44,7 +44,7 @@ export class StyleSectionComponent implements OnInit, OnDestroy {
   get target(): HTMLElement | undefined {
     return this._target
   }
-
+ 
   private _target: HTMLElement | undefined;
   compStyles: CSSStyleDeclaration | undefined;
   sectionsEnum = SectionsEnum;
@@ -101,46 +101,69 @@ export class StyleSectionComponent implements OnInit, OnDestroy {
       margin: this.fb.group({
         pixels: this.fb.group({
           editable: [false],
-          value: [height],
+          value: [5],
         }),
         percentage: this.fb.group({
           editable: [false],
-          value: [10],
+          value: [1],
         })
       }),
       padding: this.fb.group({
         pixels: this.fb.group({
           editable: [false],
-          value: [height],
+          value: [5],
         }),
         percentage: this.fb.group({
           editable: [false],
-          value: [10],
+          value: [1],
         })
       })
     });
-    this.stylesForm.valueChanges.subscribe((formData) => {
-      Object.entries(formData).map(([prop, payload]: [string, any]) => {
-        const value = payload.pixels.editable
-            ? `${payload.pixels.value}px`
-            : payload.percentage.editable
-            ? `${payload.percentage.value}%`
-            : null;
 
-        if (value) {
-          // @ts-ignore
-          this._target!.style[prop] = value;
+
+    this.stylesForm.valueChanges.subscribe((formData) => {
+      Object.entries(formData)
+      .filter(([, payload]: [string, any]) => {
+        let result = false;
+        Object.values(payload).map((value: any) => {
+          if (value.editable) {
+            result = true;
+          }
+        })
+        return result;
+      })
+      .map(([prop, payload]: [string, any]) => {
+        console.log(prop, payload);
+        switch(prop) {
+          case 'height' :
+          case 'width'  :  this.defaultPropHandler(prop, payload);
+            return;
+          case 'margin' :  
+          case 'padding': this.defaultPropHandler(prop, payload, false);
+            return;
         }
       })
-
     });
+  }
+
+  private defaultPropHandler(prop: string, payload: any, px = true): void {
+    const value = payload.pixels.editable
+      ? `${payload.pixels.value + (px ? 'px' : '')}`
+      : payload.percentage.editable
+      ? `${payload.percentage.value}%`
+      : null;
+
+    if (value) {
+    // @ts-ignore
+    this._target!.style[prop] = value;
+    }
   }
 
   ngOnDestroy() {
     this.destroy$.emit();
   }
 
-  displayEvent(ev: any): void {
-    console.log(this.display);
+  displayEvent(event: any): void {
+    console.log(this.display, event);
   }
 }
