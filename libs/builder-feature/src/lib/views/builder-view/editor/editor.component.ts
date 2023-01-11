@@ -45,7 +45,8 @@ export class EditorComponent implements OnInit, OnDestroy {
   private fullNodeList: string[] = nodeList;
   public nodeSearch$: Subject<string> = new Subject<string>();
   private destroy$: Subject<void> = new Subject<void>();
-  public modal: boolean = false;
+  public modal = false;
+
   set ctxTargetElement(target: HTMLElement | undefined) {
     if (target && target?.parentElement?.localName !== 'pets-editor') {
       this._ctxTargetElement = target;
@@ -53,9 +54,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
     this._ctxTargetElement = undefined;
   }
+
   get ctxTargetElement(): HTMLElement | undefined {
     return this._ctxTargetElement;
   }
+  
   set clickTargetElement(target: HTMLElement | undefined) {
     this._clickTargetElement?.classList?.toggle('editor__click');
     this._clickTargetElement = target;
@@ -68,6 +71,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(setTarget({target: this._clickTargetElement}))
   }
+  
   public _ctxTargetElement: HTMLElement | undefined;
   public _clickTargetElement: HTMLElement | undefined;
   public contextMenuEnum = ContextMenuEnum;

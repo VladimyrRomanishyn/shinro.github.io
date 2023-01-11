@@ -80,7 +80,7 @@
               <p-inputSwitch formControlName="editable"></p-inputSwitch>
               <input [attr.disabled]="stylesForm.get('margin.pixels.editable')?.value ? null : false"
                    formControlName="value" type="text">
-              <div class="property__measurement-unit">px</div>  
+              <div class="property__measurement-unit"></div>  
             </div> 
           </div>
 
@@ -104,7 +104,7 @@
               <p-inputSwitch formControlName="editable"></p-inputSwitch>
               <input [attr.disabled]="stylesForm.get('padding.pixels.editable')?.value ? null : false"
                    formControlName="value" type="text">
-              <div class="property__measurement-unit">px</div>  
+              <div class="property__measurement-unit"></div>  
             </div> 
           </div>
 
@@ -117,6 +117,41 @@
               [max]="100"
             ></p-slider>
             <div class="property__measurement-unit">{{stylesForm.get('padding.percentage.value')?.value}}%</div>
+          </div>
+        </div>
+
+        <div formGroupName="border">
+          <div class="property__name">Border</div>
+          
+          <div formGroupName="short" class="property__subprop">
+            <div class="property__wrapper">
+              <p-inputSwitch formControlName="editable"></p-inputSwitch>
+              <input #borderShort 
+                [attr.disabled]="stylesForm.get('border.short.editable')?.value ? null : false"
+                formControlName="value" type="text">
+              <input 
+                #shortColor 
+                [attr.disabled]="stylesForm.get('border.short.editable')?.value ? null : false"
+                type="color" 
+                (change)="changeColor(borderShort, shortColor.value)">
+              <!-- <div class="property__measurement-unit"></div>   -->
+            </div> 
+          </div>
+
+          <div formGroupName="full" class="property__subprop">
+            <div class="property__wrapper">
+              <p-inputSwitch formControlName="editable"></p-inputSwitch>
+              <div class="property__fullBorder">
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+                <div>
+                  <input type="text">
+                  <input type="color">
+                </div>
+                <div><input type="text"></div>
+                <div><input type="text"></div>
+              </div> 
+            </div> 
           </div>
         </div>
 
