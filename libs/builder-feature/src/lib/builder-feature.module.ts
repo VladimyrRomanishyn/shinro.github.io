@@ -17,7 +17,8 @@ import {
 } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { ContextMenuComponent } from './views/builder-view/editor/context-menu/context-menu.component';
+import { ContextMenuComponent } from './views/builder-view/editor/components/context-menu/context-menu.component';
+import { TagsModalComponent } from './views/builder-view/editor/components/tags-modal/tags-modal.component';
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { ContextMenuComponent } from './views/builder-view/editor/context-menu/c
     ToolbarComponent,
     DragdropDirective,
     ContextMenuComponent,
+    TagsModalComponent,
   ],
 })
 export class BuilderFeatureModule {}

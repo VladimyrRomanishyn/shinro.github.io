@@ -1,0 +1,15 @@
+<div *ngIf="modal"
+     #modal
+     (keydown.enter)="selectNode(modal)"
+     (keydown.arrowDown)="hoverNode(modal)"
+     (keydown.arrowUp)="hoverNode(modal, true)"
+     (keydown.escape)="closeNodeModal()" class="tags-modal">
+  <div  (click)="closeNodeModal()" class="tags-modal__close">+</div>
+  <input #nodeSearch (input)="nodeSearch$.next(nodeSearch.value)" type="text">
+  <div *ngIf="relevantNodes.length" class="tags-modal__results">
+    <div (click)="emitSelection(node)"
+         *ngFor="let node of relevantNodes">
+      {{node}}
+    </div>
+  </div>
+</div>

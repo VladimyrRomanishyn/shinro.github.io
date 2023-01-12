@@ -15,7 +15,11 @@
 ></context-memu>
 
 <!--tags modal-->
-<div *ngIf="modal"
+<tags-modal
+  #tagsModal
+  (selectedNode)="createNode($event, ctxTargetElement)"
+></tags-modal>
+<!-- <div *ngIf="modal"
      #modal
      (keydown.enter)="selectNode(modal)"
      (keydown.arrowDown)="hoverNode(modal)"
@@ -29,5 +33,5 @@
       {{node}}
     </div>
   </div>
-</div>
+</div> -->
 <!--tags modal-->
