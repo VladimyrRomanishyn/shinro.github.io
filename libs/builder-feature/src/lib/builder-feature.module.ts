@@ -11,22 +11,26 @@ import { ToolbarComponent } from './views/builder-view/toolbar/toolbar.component
 import { DragdropDirective } from './directives/dragdrop.directive';
 import { SliderModule } from 'primeng/slider';
 import { StoreModule } from '@ngrx/store';
-import { builderFeatureKey, builderFeatureReducer } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
+import {
+  builderFeatureKey,
+  builderFeatureReducer,
+} from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ContextMenuComponent } from './views/builder-view/editor/context-menu/context-menu.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild([
-      { path: '', pathMatch: 'full', component: BuilderViewComponent }
+      { path: '', pathMatch: 'full', component: BuilderViewComponent },
     ]),
     StoreModule.forFeature(builderFeatureKey, builderFeatureReducer),
     OverlayPanelModule,
     FormsModule,
     SliderModule,
     ReactiveFormsModule,
-    InputSwitchModule
+    InputSwitchModule,
   ],
   declarations: [
     BuilderViewComponent,
@@ -36,6 +40,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     mouseEventsDirective,
     ToolbarComponent,
     DragdropDirective,
+    ContextMenuComponent,
   ],
 })
 export class BuilderFeatureModule {}

@@ -3,35 +3,16 @@
   #editor
   mouseEvents
   [petsDragdrop]="dragdrop"
-  (contextEvent)="contextEvent($event); ctxTargetElement = $any($event).target"
-  (clickEvent)="contextEvent(); clickTargetElement = $any($event).target"
+  (contextEvent)="contextMenu.toogleContextMenu($any($event)); ctxTargetElement = $any($event).target"
+  (clickEvent)="contextMenu.toogleContextMenu(); clickTargetElement = $any($event).target"
   class="editor">
 </div>
 <!--editor-->
 
-<!--contextmenu-->
-<div
-  #contextPanel
-  class="contextmenu"
-  [ngStyle]="contextMenuStyles">
-  <div class="contextmenu__item"
-       (click)="ctxActionHandler(contextMenuEnum.addDiv)">
-    Add Division tag
-  </div>
-  <div class="contextmenu__item"
-       (click)="ctxActionHandler(contextMenuEnum.cloneNode)">
-    Clone Node
-  </div>
-  <div class="contextmenu__item"
-       (click)="ctxActionHandler(contextMenuEnum.addNode)">
-    Add Node
-  </div>
-  <div class="contextmenu__item"
-       (click)="ctxActionHandler(contextMenuEnum.deleteNode)">
-    Delete Node
-  </div>
-</div>
-<!--contextmenu-->
+<context-memu 
+ #contextMenu
+ (contextAction)="contextMenuActionHandler($event)"
+></context-memu>
 
 <!--tags modal-->
 <div *ngIf="modal"

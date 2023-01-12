@@ -1,0 +1,14 @@
+<div #contextPanel class="contextmenu" [ngStyle]="contextMenuStyles">
+    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.addDiv)">
+        Add Division tag
+    </div>
+    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.cloneNode)">
+        Clone Node
+    </div>
+    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.addNode)">
+        Add Node
+    </div>
+    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.deleteNode)">
+        Delete Node
+    </div>
+</div>

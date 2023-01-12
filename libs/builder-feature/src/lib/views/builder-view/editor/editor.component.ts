@@ -14,19 +14,7 @@ import { filter, first, interval, map, Subject, take, takeUntil } from 'rxjs';
 import { BuilderFeatureState } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
 import { Store } from '@ngrx/store';
 import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
-
-interface MenuStyles {
-  left: string,
-  top: string,
-  opacity: number;
-}
-
-enum ContextMenuEnum {
-  addNode = 'addNode',
-  deleteNode = 'deleteNode',
-  addDiv = 'addDiv',
-  cloneNode = 'cloneNode'
-}
+import { ContextMenuEnum } from './context-menu/context-menu.component';
 
 @Component({
   selector: 'pets-editor',
@@ -38,9 +26,7 @@ enum ContextMenuEnum {
 export class EditorComponent implements OnInit, OnDestroy {
   @ViewChild('nodeSearch') nodeSearchInput: ElementRef | undefined;
   @ViewChild('editor', { static: true }) editor: ElementRef | undefined;
-  @ViewChild('contextPanel', { static: true })
-  public contextPanel!: ElementRef;
-  public contextMenuStyles: MenuStyles = { left: '', top: '', opacity: 0 };
+  
   public relevantNodes: string[] = [];
   private fullNodeList: string[] = nodeList;
   public nodeSearch$: Subject<string> = new Subject<string>();
@@ -74,7 +60,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   
   public _ctxTargetElement: HTMLElement | undefined;
   public _clickTargetElement: HTMLElement | undefined;
-  public contextMenuEnum = ContextMenuEnum;
+  
   public dragdrop = false;
   @Output() changes: EventEmitter<string> = new EventEmitter<string>();
   @Output() clickTargetSelect: EventEmitter<HTMLElement> = new EventEmitter<HTMLElement>();
@@ -98,27 +84,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.destroy$.next();
   }
 
-  contextEvent(event?: PointerEvent | undefined): void {
-    this.contextMenuStyles.opacity = 0;
-    this.contextMenuStyles.left = '';
-    this.contextMenuStyles.top = '';
-
-    if (event) {
-      const { width: panelWidth, height: panelHeight }
-        = this.contextPanel.nativeElement.getBoundingClientRect();
-      const { width: bodyWidth, height: bodyHeight }
-        = document.body.getBoundingClientRect();
-
-      const x = bodyWidth - event.x + 2 >= panelWidth ? event.x + 2 : bodyWidth - panelWidth;
-      const y = bodyHeight - event.y >= panelHeight ? event.y : bodyHeight - panelHeight;
-      this.contextMenuStyles.opacity = 1;
-      this.contextMenuStyles.left = `${x}px`;
-      this.contextMenuStyles.top = `${y}px`;
-    }
-  }
-
-  ctxActionHandler(action: string): void {
-    this.contextEvent();
+  contextMenuActionHandler(action: string): void {
     switch (action) {
       case ContextMenuEnum.addNode:
         this.addNodeModal();
