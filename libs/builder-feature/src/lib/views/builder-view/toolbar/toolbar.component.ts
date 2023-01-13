@@ -5,7 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent {
   @Input() set target(v:  HTMLElement | undefined) {
     this._target = v;
 
@@ -19,7 +19,4 @@ export class ToolbarComponent implements OnInit {
 
   private _target: HTMLElement | undefined;
   compStyles: CSSStyleDeclaration | undefined;
-  constructor() {}
-
-  ngOnInit(): void {}
 }

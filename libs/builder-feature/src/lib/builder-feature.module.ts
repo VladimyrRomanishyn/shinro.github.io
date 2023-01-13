@@ -11,19 +11,27 @@ import { ToolbarComponent } from './views/builder-view/toolbar/toolbar.component
 import { DragdropDirective } from './directives/dragdrop.directive';
 import { SliderModule } from 'primeng/slider';
 import { StoreModule } from '@ngrx/store';
-import { builderFeatureKey, builderFeatureReducer } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
-import { FormsModule } from '@angular/forms';
+import {
+  builderFeatureKey,
+  builderFeatureReducer,
+} from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { ContextMenuComponent } from './views/builder-view/editor/components/context-menu/context-menu.component';
+import { TagsModalComponent } from './views/builder-view/editor/components/tags-modal/tags-modal.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild([
-      { path: '', pathMatch: 'full', component: BuilderViewComponent }
+      { path: '', pathMatch: 'full', component: BuilderViewComponent },
     ]),
     StoreModule.forFeature(builderFeatureKey, builderFeatureReducer),
     OverlayPanelModule,
     FormsModule,
     SliderModule,
+    ReactiveFormsModule,
+    InputSwitchModule,
   ],
   declarations: [
     BuilderViewComponent,
@@ -33,6 +41,8 @@ import { FormsModule } from '@angular/forms';
     mouseEventsDirective,
     ToolbarComponent,
     DragdropDirective,
+    ContextMenuComponent,
+    TagsModalComponent,
   ],
 })
 export class BuilderFeatureModule {}

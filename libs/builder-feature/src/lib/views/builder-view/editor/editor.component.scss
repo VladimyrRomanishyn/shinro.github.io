@@ -3,7 +3,7 @@ pets-editor {
   width: 100%;
   max-width: 100%;
   height: 100%;
-  border: 2px solid lightgrey;
+  border: 2px dashed lightgrey;
   position: relative;
 }
 
@@ -14,14 +14,11 @@ pets-editor {
 
   &__child, .drag-active {
     border: 2px solid black;
-    min-height: 50px;
-    height: fit-content;
+    height: 50px;
     margin-bottom: 5px;
     padding: 5px;
     overflow: auto;
-    min-width:100%;
-    width: fit-content;
-    //width: inherit;
+    width: 100%;
   }
 
   &__droppable {
@@ -30,7 +27,7 @@ pets-editor {
   }
 
   &__click {
-    border: 2px solid deepskyblue;
+    outline: 2px solid deepskyblue;
   }
 }
 

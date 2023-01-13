@@ -1,14 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'pets-builder-view',
   templateUrl: './builder-view.component.html',
-  styleUrls: ['./builder-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./builder-view.component.scss']
 })
-export class BuilderViewComponent implements OnInit {
+export class BuilderViewComponent {
   editorChanges: string = '';
   targetElement: HTMLElement | undefined;
-  constructor() {}
-  ngOnInit(): void {}
 }
