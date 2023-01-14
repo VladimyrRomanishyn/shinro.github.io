@@ -5,7 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './builder-view.component.html',
   styleUrls: ['./builder-view.component.scss']
 })
-export class BuilderViewComponent {
-  editorChanges: string = '';
-  targetElement: HTMLElement | undefined;
-}
+export class BuilderViewComponent {}

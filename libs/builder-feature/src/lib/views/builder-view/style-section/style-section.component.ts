@@ -36,7 +36,7 @@ interface Section {
 })
 
 export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() set target(v:  HTMLElement | undefined) {
+  set target(v:  HTMLElement | undefined) {
     this._target = v;
 
     if (v) {

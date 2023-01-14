@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
 import { ContextMenuEnum } from './components/context-menu/context-menu.component';
 import { TagsModalComponent } from './components/tags-modal/tags-modal.component';
+import { NgElementCreator } from '../../../classes/ng-element';
 
 @Component({
   selector: 'pets-editor',
@@ -57,8 +58,8 @@ export class EditorComponent {
   public _ctxTargetElement: HTMLElement | undefined;
   public _clickTargetElement: HTMLElement | undefined;
   public dragdrop = false;
-  @Output() changes: EventEmitter<string> = new EventEmitter<string>();
-  @Output() clickTargetSelect: EventEmitter<HTMLElement> = new EventEmitter<HTMLElement>();
+  //@Output() changes: EventEmitter<string> = new EventEmitter<string>();
+ // @Output() clickTargetSelect: EventEmitter<HTMLElement> = new EventEmitter<HTMLElement>();
 
 
   constructor(private store: Store<BuilderFeatureState>) {
@@ -95,13 +96,11 @@ export class EditorComponent {
   private deleteNode(): void {
     this.ctxTargetElement?.remove();
     this.ctxTargetElement = undefined;
-    this.changes.emit(this.editor?.nativeElement.innerHTML);
+    //this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
 
-  createNode(node: string, target = this.editor?.nativeElement) {
-    const newNode: HTMLElement = document.createElement(node);
-    newNode.classList.add('editor__child');
-    target.append(newNode);
-    this.changes.emit(this.editor?.nativeElement.innerHTML);
+  createNode(type: string, context: HTMLElement = this.editor?.nativeElement) {
+    NgElementCreator.createElement({type, context});
+    //this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
 }
