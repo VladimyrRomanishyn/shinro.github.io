@@ -30,13 +30,13 @@ interface Section {
 //   }
 // }
 @Component({
-  selector: 'pets-style-section',
+  selector: 'builder-style-section',
   templateUrl: './style-section.component.html',
   styleUrls: ['./style-section.component.scss']
 })
 
 export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() set target(v:  HTMLElement | undefined) {
+  set target(v:  HTMLElement | undefined) {
     this._target = v;
 
     if (v) {
