@@ -11,7 +11,8 @@ import { Store } from '@ngrx/store';
 import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
 import { ContextMenuEnum } from './components/context-menu/context-menu.component';
 import { TagsModalComponent } from './components/tags-modal/tags-modal.component';
-import { NgElementCreator, EDITOR_CLASSNAME, BUILDER_EDITOR_SELECTOR, EDITOR_CLICK_CLASSNAME } from '../../../classes/ng-element';
+import { EDITOR_CLASSNAME, BUILDER_EDITOR_SELECTOR, EDITOR_CLICK_CLASSNAME } from '../../../classes/ng-element';
+import { NgElementsService } from '../../../services/ng-elements.service';
 
 @Component({
   selector: BUILDER_EDITOR_SELECTOR,
@@ -37,7 +38,7 @@ export class EditorComponent {
   }
 
   get ctxTargetElement(): HTMLElement | undefined {
-    return this._ctxTargetElement;
+    return this._ctxTargetElement ?? this.editor?.nativeElement;
   }
   
   set clickTargetElement(target: HTMLElement | undefined) {
@@ -58,7 +59,11 @@ export class EditorComponent {
   public dragdrop = false;
 
 
-  constructor(private store: Store<BuilderFeatureState>) {
+  constructor
+  (
+    private store: Store<BuilderFeatureState>,
+    public elementsSrc: NgElementsService
+  ) {
   }
 
   contextMenuActionHandler(action: string): void {
@@ -68,29 +73,17 @@ export class EditorComponent {
         return;
 
       case ContextMenuEnum.deleteNode:
-        this.deleteNode();
+        this.elementsSrc.deleteNode(this.ctxTargetElement);
+        this.ctxTargetElement = undefined;
         return;
 
       case ContextMenuEnum.addDiv:
-        this.createNode('div', this.ctxTargetElement);
+        this.elementsSrc.createNode('div', this.ctxTargetElement);
         return;
 
       case ContextMenuEnum.cloneNode:
-        this.cloneNode(this.ctxTargetElement);
+        this.elementsSrc.cloneNode(this.ctxTargetElement);
         return;
     }
-  }
-
-  private cloneNode(node: HTMLElement | undefined): void {
-    NgElementCreator.cloneElement(node);
-  }
-
-  private deleteNode(): void {
-    this.ctxTargetElement?.remove();
-    this.ctxTargetElement = undefined;
-  }
-
-  createNode(type: string, context: HTMLElement = this.editor?.nativeElement) {
-    NgElementCreator.createElement({type, context});
   }
 }

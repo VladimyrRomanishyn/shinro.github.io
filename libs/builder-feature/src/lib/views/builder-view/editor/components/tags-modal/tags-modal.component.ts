@@ -72,12 +72,12 @@ export class TagsModalComponent implements OnInit, OnDestroy {
 
   selectNode(event: any): void {
     if (!this.relevantNodes.length) {return; }
-
+    // @ts-ignore
     const items = [...event.querySelector('.tags-modal__results')?.children];
     const selected = items?.find(i => i.className.includes('hover'));
 
     if (selected) {
-      this.emitSelection(selected);
+      this.emitSelection(selected.innerText);
     }
   }
 

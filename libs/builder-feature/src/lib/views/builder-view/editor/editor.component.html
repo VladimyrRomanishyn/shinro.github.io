@@ -14,24 +14,7 @@
  (contextAction)="contextMenuActionHandler($event)"
 ></context-memu>
 
-<!--tags modal-->
 <tags-modal
   #tagsModal
-  (selectedNode)="createNode($event, ctxTargetElement)"
+  (selectedNode)="elementsSrc.createNode($event, ctxTargetElement)"
 ></tags-modal>
-<!-- <div *ngIf="modal"
-     #modal
-     (keydown.enter)="selectNode(modal)"
-     (keydown.arrowDown)="hoverNode(modal)"
-     (keydown.arrowUp)="hoverNode(modal, true)"
-     (keydown.escape)="closeNodeModal()" class="tags-modal">
-  <div  (click)="closeNodeModal()" class="tags-modal__close">+</div>
-  <input #nodeSearch (input)="nodeSearch$.next(nodeSearch.value)" type="text">
-  <div *ngIf="relevantNodes.length" class="tags-modal__results">
-    <div (click)="createNode(node, ctxTargetElement)"
-         *ngFor="let node of relevantNodes">
-      {{node}}
-    </div>
-  </div>
-</div> -->
-<!--tags modal-->
