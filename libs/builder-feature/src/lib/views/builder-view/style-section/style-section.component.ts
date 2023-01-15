@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Input,
   OnDestroy,
   OnInit
 } from '@angular/core';
@@ -36,7 +35,7 @@ interface Section {
 })
 
 export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
-  set target(v:  HTMLElement | undefined) {
+  set target(v: HTMLElement | undefined) {
     this._target = v;
 
     if (v) {
@@ -49,14 +48,14 @@ export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
   get target(): HTMLElement | undefined {
     return this._target
   }
- 
+
   private _target: HTMLElement | undefined;
   compStyles: CSSStyleDeclaration | undefined;
   sectionsEnum = SectionsEnum;
   sections: Section[] = [
-    {name: 'Box Model, Positioning', value: SectionsEnum.boxModel},
-    {name: 'Grid', value: SectionsEnum.grid},
-    {name: 'Flex', value: SectionsEnum.flex},
+    { name: 'Box Model, Positioning', value: SectionsEnum.boxModel },
+    { name: 'Grid', value: SectionsEnum.grid },
+    { name: 'Flex', value: SectionsEnum.flex },
   ];
   section: Section | null = null;
   display: string | undefined;
@@ -64,10 +63,10 @@ export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
   destroy$: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
-    private store: Store<{[builderFeatureKey]: BuilderFeatureState}>,
+    private store: Store<{ [builderFeatureKey]: BuilderFeatureState }>,
     private fb: FormBuilder,
     private cd: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -75,12 +74,12 @@ export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.store.select(state => state[builderFeatureKey].target)
-    .pipe(
-      takeUntil(this.destroy$)
-    )
-    .subscribe((target: HTMLElement | undefined) => {
-      this.target = target;
-    })
+      .pipe(
+        takeUntil(this.destroy$)
+      )
+      .subscribe((target: HTMLElement | undefined) => {
+        this.target = target;
+      })
   }
 
   createForm(): void {
@@ -142,48 +141,48 @@ export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.stylesForm.valueChanges.subscribe((formData) => {
       Object.entries(formData)
-      .filter(([, payload]: [string, any]) => {
-        let result = false;
-        Object.values(payload).map((value: any) => {
-          if (value.editable) {
-            result = true;
+        .filter(([, payload]: [string, any]) => {
+          let result = false;
+          Object.values(payload).map((value: any) => {
+            if (value.editable) {
+              result = true;
+            }
+          })
+          return result;
+        })
+        .map(([prop, payload]: [string, any]) => {
+          switch (prop) {
+            case 'height':
+            case 'width': this.defaultPropHandler(prop, payload);
+              return;
+            case 'margin':
+            case 'padding': this.defaultPropHandler(prop, payload, false);
+              return;
+            case 'border': this.borderHandler(payload);
+              return;
           }
         })
-        return result;
-      })
-      .map(([prop, payload]: [string, any]) => {
-        switch(prop) {
-          case 'height' :
-          case 'width'  :  this.defaultPropHandler(prop, payload);
-            return;
-          case 'margin' :  
-          case 'padding': this.defaultPropHandler(prop, payload, false);
-            return;
-          case 'border': this.borderHandler(payload);
-            return;  
-        }
-      })
     });
   }
 
   private borderHandler(payload: any): void {
     if (payload.short.editable) {
-       //@ts-ignore
-    this._target.style['border'] = payload.short.value;
+      //@ts-ignore
+      this._target.style['border'] = payload.short.value;
     }
-   
+
   }
 
   private defaultPropHandler(prop: string, payload: any, px = true): void {
     const value = payload.pixels.editable
       ? `${payload.pixels.value + (px ? 'px' : '')}`
       : payload.percentage.editable
-      ? `${payload.percentage.value}%`
-      : null;
+        ? `${payload.percentage.value}%`
+        : null;
 
     if (value) {
-    // @ts-ignore
-    this._target.style[prop] = value;
+      // @ts-ignore
+      this._target.style[prop] = value;
     }
   }
 
@@ -196,8 +195,8 @@ export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   changeColor(target: any, value: any, pattern = ''): void {
-    const result = target.value.split(' ').slice(0,-1).concat([value]).join(' '); 
+    const result = target.value.split(' ').slice(0, -1).concat([value]).join(' ');
     target.value = result;
-    this.borderHandler({short: {editable: true, value: result}});
+    this.borderHandler({ short: { editable: true, value: result } });
   }
 }

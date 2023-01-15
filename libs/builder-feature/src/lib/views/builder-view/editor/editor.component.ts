@@ -27,7 +27,6 @@ export class EditorComponent {
   
   public relevantNodes: string[] = [];
   public nodeSearch$: Subject<string> = new Subject<string>();
-  public modal = false;
 
   set ctxTargetElement(target: HTMLElement | undefined) {
     if (target && target?.parentElement?.localName !== BUILDER_EDITOR_SELECTOR) {
