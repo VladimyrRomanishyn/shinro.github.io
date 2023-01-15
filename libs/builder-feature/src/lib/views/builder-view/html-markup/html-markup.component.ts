@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'pets-html-markup',
+  selector: 'builder-html-markup',
   templateUrl: './html-markup.component.html',
   styleUrls: ['./html-markup.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

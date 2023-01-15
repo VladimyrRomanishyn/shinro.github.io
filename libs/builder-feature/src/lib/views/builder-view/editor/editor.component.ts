@@ -2,8 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
-  Output,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
@@ -13,17 +11,17 @@ import { Store } from '@ngrx/store';
 import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
 import { ContextMenuEnum } from './components/context-menu/context-menu.component';
 import { TagsModalComponent } from './components/tags-modal/tags-modal.component';
-import { NgElementCreator } from '../../../classes/ng-element';
+import { NgElementCreator, EDITOR_CLASSNAME, BUILDER_EDITOR_SELECTOR, EDITOR_CLICK_CLASSNAME } from '../../../classes/ng-element';
 
 @Component({
-  selector: 'pets-editor',
+  selector: BUILDER_EDITOR_SELECTOR,
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent {
-  @ViewChild('editor', { static: true }) editor: ElementRef | undefined;
+  @ViewChild(EDITOR_CLASSNAME, { static: true }) editor: ElementRef | undefined;
   @ViewChild(TagsModalComponent) tagsModal: TagsModalComponent | undefined;
   
   public relevantNodes: string[] = [];
@@ -31,7 +29,7 @@ export class EditorComponent {
   public modal = false;
 
   set ctxTargetElement(target: HTMLElement | undefined) {
-    if (target && target?.parentElement?.localName !== 'pets-editor') {
+    if (target && target?.parentElement?.localName !== BUILDER_EDITOR_SELECTOR) {
       this._ctxTargetElement = target;
       return;
     }
@@ -43,12 +41,12 @@ export class EditorComponent {
   }
   
   set clickTargetElement(target: HTMLElement | undefined) {
-    this._clickTargetElement?.classList?.toggle('editor__click');
+    this._clickTargetElement?.classList?.toggle(EDITOR_CLICK_CLASSNAME);
     this._clickTargetElement = target;
-    this._clickTargetElement?.classList?.toggle('editor__click');
+    this._clickTargetElement?.classList?.toggle(EDITOR_CLICK_CLASSNAME);
 
-    if (target && target?.parentElement?.localName === 'pets-editor') {
-      this._clickTargetElement?.classList?.remove('editor__click');
+    if (target && target?.parentElement?.localName === BUILDER_EDITOR_SELECTOR) {
+      this._clickTargetElement?.classList?.remove(EDITOR_CLICK_CLASSNAME);
       this._clickTargetElement = undefined;
     }
 
@@ -58,8 +56,6 @@ export class EditorComponent {
   public _ctxTargetElement: HTMLElement | undefined;
   public _clickTargetElement: HTMLElement | undefined;
   public dragdrop = false;
-  //@Output() changes: EventEmitter<string> = new EventEmitter<string>();
- // @Output() clickTargetSelect: EventEmitter<HTMLElement> = new EventEmitter<HTMLElement>();
 
 
   constructor(private store: Store<BuilderFeatureState>) {
@@ -86,21 +82,15 @@ export class EditorComponent {
   }
 
   private cloneNode(node: HTMLElement | undefined): void {
-    if (node && node.className !== 'editor') {
-      const clone = node?.cloneNode(true) as HTMLElement;
-      clone.classList.remove('editor__click');
-      node.after(clone);
-    }
+    NgElementCreator.cloneElement(node);
   }
 
   private deleteNode(): void {
     this.ctxTargetElement?.remove();
     this.ctxTargetElement = undefined;
-    //this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
 
   createNode(type: string, context: HTMLElement = this.editor?.nativeElement) {
     NgElementCreator.createElement({type, context});
-    //this.changes.emit(this.editor?.nativeElement.innerHTML);
   }
 }

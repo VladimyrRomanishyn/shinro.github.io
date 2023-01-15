@@ -30,7 +30,7 @@ interface Section {
 //   }
 // }
 @Component({
-  selector: 'pets-style-section',
+  selector: 'builder-style-section',
   templateUrl: './style-section.component.html',
   styleUrls: ['./style-section.component.scss']
 })

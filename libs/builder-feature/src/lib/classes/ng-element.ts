@@ -1,7 +1,10 @@
+export const EDITOR_CLASSNAME = 'editor';
 export const EDITOR_CHILD_CLASSNAME = 'editor__child';
+export const EDITOR_CLICK_CLASSNAME = 'editor__click';
+export const BUILDER_EDITOR_SELECTOR = 'builder-editor';
 
 export interface NgElement extends HTMLElement{
-    test?: any;
+    ngId?: string;
 }
 
 export interface NodeParams {
@@ -12,6 +15,14 @@ export interface NodeParams {
 export abstract class Creator {
     public static createElement(payload: NodeParams): void {
         document.createElement(payload.type);
+    }
+
+    public static cloneElement(source: HTMLElement | undefined): void {
+        if (source && source.className !== EDITOR_CLASSNAME) {
+            const clone = source?.cloneNode(true) as HTMLElement;
+            clone.classList.remove(EDITOR_CLICK_CLASSNAME);
+            source.after(clone);
+          }
     }
 }
 
