@@ -9,7 +9,7 @@ export interface NgElement extends HTMLElement{
 
 export interface NodeParams {
     type: string;
-    context: HTMLElement;
+    context: HTMLElement | undefined;
 }
 
 export abstract class Creator {
@@ -24,17 +24,25 @@ export abstract class Creator {
             source.after(clone);
           }
     }
+
+    public static deleteElement(source: HTMLElement | undefined): void {
+        if (source) {
+            source.remove();
+        }
+    }
 }
 
 export class NgElementCreator extends Creator  {
     constructor(
         private type: string,
-        private context: HTMLElement
+        private context: HTMLElement | undefined
     ) { 
         super();
-        const nodeElement = document.createElement(type);
-        nodeElement.classList.add(EDITOR_CHILD_CLASSNAME);
-        context.append(nodeElement);
+        if (context) {
+            const nodeElement = document.createElement(type);
+            nodeElement.classList.add(EDITOR_CHILD_CLASSNAME);
+            context.append(nodeElement);
+        }
     }
     
     public static override createElement (payload: NodeParams) {
