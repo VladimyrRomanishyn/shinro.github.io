@@ -1,3 +1,4 @@
+import { FormBuilder } from '@angular/forms';
 export type CSSProperty =  
 | 'width' | 'height' | 'margin' | 'padding' | 'border' ;  
 
@@ -11,3 +12,15 @@ export type StylesForm =  {
         }
     };
 };
+
+export class StylesFormBuilder extends FormBuilder {
+    constructor(private node: HTMLElement) {
+        super();
+    }
+    public  createStylesForm( pattern?: StylesForm) {
+        console.log(this.node, pattern);
+        return this.group({
+            width: 100 })
+              
+    }
+}
