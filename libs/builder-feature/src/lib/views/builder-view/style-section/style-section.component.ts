@@ -10,6 +10,7 @@ import { builderFeatureKey, BuilderFeatureState } from './../../../state/builder
 import { Store } from '@ngrx/store';
 import { takeUntil } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { StylesFormBuilder } from '../../../classes/styles-form-builder';
 
 enum SectionsEnum {
   boxModel = 'box-model',
@@ -22,12 +23,6 @@ interface Section {
   value: SectionsEnum
 }
 
-// interface StylesForm {
-//   width: {
-//     pixels: number,
-//     percentage: number
-//   }
-// }
 @Component({
   selector: 'builder-style-section',
   templateUrl: './style-section.component.html',
@@ -35,22 +30,24 @@ interface Section {
 })
 
 export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
-  set target(v: HTMLElement | undefined) {
-    this._target = v;
+  set target(node: HTMLElement | undefined) {
 
-    if (v) {
-      this.compStyles = getComputedStyle(v);
+    if (node) {
+      this._target = new StylesFormBuilder(node)
       this.createForm();
+    } else {
+      this._target = undefined;
     }
 
     this.cd.detectChanges();
   }
-  get target(): HTMLElement | undefined {
+
+  // @ts-ignore
+  get target(): StylesFormBuilder  | undefined {
     return this._target
   }
 
-  private _target: HTMLElement | undefined;
-  compStyles: CSSStyleDeclaration | undefined;
+  private _target: StylesFormBuilder | undefined;
   sectionsEnum = SectionsEnum;
   sections: Section[] = [
     { name: 'Box Model, Positioning', value: SectionsEnum.boxModel },
@@ -83,13 +80,12 @@ export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   createForm(): void {
-    const width = this.compStyles?.getPropertyValue('width').slice(0, -2) ?? 0;
-    const height = this.compStyles?.getPropertyValue('height').slice(0, -2) ?? 0;
+   
     this.stylesForm = this.fb.group({
       width: this.fb.group({
         pixels: this.fb.group({
           editable: [false],
-          value: width,
+          value: 100,
         }),
         percentage: this.fb.group({
           editable: [false],
@@ -99,7 +95,7 @@ export class StyleSectionComponent implements OnInit, OnDestroy, AfterViewInit {
       height: this.fb.group({
         pixels: this.fb.group({
           editable: [false],
-          value: [height],
+          value: [100],
         }),
         percentage: this.fb.group({
           editable: [false],

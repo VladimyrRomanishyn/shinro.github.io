@@ -5,7 +5,6 @@ import { NgElementCreator } from '../classes/ng-element';
   providedIn: 'root'
 })
 export class NgElementsService {
-
   public cloneNode(node: HTMLElement | undefined): void {
     NgElementCreator.cloneElement(node);
   }
