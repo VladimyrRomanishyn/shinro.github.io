@@ -64,6 +64,7 @@ export class StyleSectionComponent implements OnDestroy, AfterViewInit {
 
   createForm(target: StylesFormBuilder ,section: Section): void {
     target.createStylesForm(section.stylesFormCofig);
+    console.log(target.stylesFormArray);
     // this.stylesForm = this.fb.group({
     //   width: this.fb.group({
     //     pixels: this.fb.group({

@@ -10,7 +10,7 @@ export enum SectionsEnum {
 export interface Section {
     name: string,
     value: SectionsEnum,
-    stylesFormCofig: Array<StylesFormGroup>
+    stylesFormCofig: Array<StylesFormConfig>
 }
 
 const controlsBlueprint: FormControlsShape = {editable: false, value: null };

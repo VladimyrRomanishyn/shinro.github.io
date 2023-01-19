@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { FormArray, FormBuilder } from '@angular/forms';
 
 export type CSSProperty =  
@@ -16,52 +17,57 @@ export type StylesFormConfig = {
 };
 
 export class StylesFormBuilder extends FormBuilder {
+    private _stylesFormArray!: FormArray;
+
+    get stylesFormArray(): FormArray {
+        return this._stylesFormArray;
+    }
     constructor(private node: HTMLElement) {
         super();
     }
 
-    public  createStylesForm(config: Array<StylesFormConfig>): FormArray {
-        return this.array(config.map((propConfig) => {
-            return this.array(propConfig.valueTypes.map(
-                ([type, control]) => {
-                    switch(type) {
-                        case 'percentage': 
-                            return this.setPercentage(propConfig.property, type, control);
-                        case 'pixels':
-                            return this.setPixels(propConfig.property, type, control);
-                        case 'short':
-                            return this.setShort(propConfig.property, type, control);
-                        case 'full': 
-                            return this.setFull(propConfig.property, type, control);            
-                    }
-                })
-            )
+    public  createStylesForm(config: Array<StylesFormConfig>) {
+        this._stylesFormArray =  this.array(config.map((propConfig) => {
+            return this.group({
+                property: this.array(propConfig.valueTypes.map(
+                    ([type, control]) => {
+                        switch(type) {
+                            case 'percentage': 
+                                return this.setPercentage(propConfig.property, type, control);
+                            case 'pixels':
+                                return this.setPixels(propConfig.property, type, control);
+                            case 'short':
+                                return this.setShort(propConfig.property, type, control);
+                            case 'full': 
+                                return this.setFull(propConfig.property, type, control);            
+                        }
+                    })
+                )
+            })
+             
         }));
     }
 
     private setPercentage(property: CSSProperty,type: ValueType, control: FormControlsShape) {
         const parent = this.node.parentElement as HTMLElement;
-        const parentWidth = getComputedStyle(parent).getPropertyValue(property).slice(0, -2)
-        const width = getComputedStyle(this.node).getPropertyValue(property).slice(0, -2)
-        control.value = +width / +parentWidth * 100;
+        const parentValue = getComputedStyle(parent).getPropertyValue(property).slice(0, -2)
+        const targetValue = getComputedStyle(this.node).getPropertyValue(property).slice(0, -2)
+        control.value = +targetValue / +parentValue * 100;
         return this.group(control);
     }
 
     private setPixels(property: CSSProperty,type: ValueType, control: FormControlsShape) {
-        const width = getComputedStyle(this.node).getPropertyValue(property);
-        control.value = width;
+        control.value = getComputedStyle(this.node).getPropertyValue(property);
         return this.group(control);
     }
 
     private setShort(property: CSSProperty,type: ValueType, control: FormControlsShape) {
-        debugger;
-        return this.group(
-            {}
-        )
+        control.value = getComputedStyle(this.node).getPropertyValue(property);
+        return this.group(control);
     }
 
     private setFull(property: CSSProperty,type: ValueType, control: FormControlsShape) {
-        debugger;
+        control.value = getComputedStyle(this.node).getPropertyValue(property);
         return this.group(
             {}
         )

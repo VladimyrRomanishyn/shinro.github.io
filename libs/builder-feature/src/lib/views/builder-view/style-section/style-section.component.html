@@ -22,8 +22,13 @@
 
 <ng-template #boxModel>
   <div class="box-model">
-    <ng-container *ngIf="target && stylesForm">
-      <form [formGroup]="stylesForm" class="property">
+    <ng-container *ngIf="target?.stylesFormArray">
+      <ng-container *ngFor="let property of target!.stylesFormArray.controls">
+        <ng-container *ngFor="let valueType of $any(property).controls">
+          {{valueType}}
+        </ng-container>
+      </ng-container>
+      <!-- <form [formGroup]="stylesForm" class="property">
         <div formGroupName="width">
           <div class="property__name">Width</div>
           
@@ -134,7 +139,7 @@
                 [attr.disabled]="stylesForm.get('border.short.editable')?.value ? null : false"
                 type="color" 
                 (change)="changeColor(borderShort, shortColor.value)">
-              <!-- <div class="property__measurement-unit"></div>   -->
+               <div class="property__measurement-unit"></div>
             </div> 
           </div>
 
@@ -155,7 +160,7 @@
           </div>
         </div>
 
-      </form>
+      </form> -->
     </ng-container>
   </div>
 </ng-template>
