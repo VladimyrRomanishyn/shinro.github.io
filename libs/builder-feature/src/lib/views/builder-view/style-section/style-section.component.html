@@ -38,6 +38,9 @@
                     <ng-container *ngSwitchCase="'percentage'">
                       <ng-container *ngTemplateOutlet="percentage; context: {$implicit: valueType}"></ng-container>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'short'">
+                      <ng-container *ngTemplateOutlet="short; context: {$implicit: valueType}"></ng-container>
+                    </ng-container>
                   </ng-container>
                 </ng-container>
               </ng-container>
@@ -197,6 +200,20 @@
   </ng-container>
 </ng-template>
 
+<ng-template #short let-form>
+  <ng-container>
+    <div [formGroup]="form" class="property__subprop">
+      <ng-container formGroupName="short"></ng-container>
+      <div class="property__wrapper">
+        <p-inputSwitch [formControl]="form.get('short.editable')"></p-inputSwitch>
+        <input [attr.disabled]="form.get('short.editable').value ? null : false"
+          [formControl]="form.get('short.value')">
+        <div class="property__measurement-unit"></div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
 <ng-template #percentage let-form>
   <ng-container>
     <div [formGroup]="form" class="property__subprop">
@@ -204,11 +221,14 @@
       <div class="property__wrapper">
         <p-inputSwitch [formControl]="form.get('percentage.editable')"></p-inputSwitch>
         <p-slider 
-          [disabled]="form.get('percentage.editable')?.value" 
+          [disabled]="!form.get('percentage.editable')?.value" 
           [formControl]="form.get('percentage.value')"
           [min]="0"
           [max]="100"
         ></p-slider>
+        <div class="property__measurement-unit">
+          {{form.get('percentage.value').value}}%
+        </div>
       </div>
     </div>
   </ng-container>

@@ -62,9 +62,11 @@ export class StylesFormBuilder extends FormBuilder {
 
     private setPercentage(property: CSSProperty, type: ValueType, control: FormControlsShape): FormGroup {
         const parent = this.node.parentElement as HTMLElement;
-        const parentValue = getComputedStyle(parent).getPropertyValue(property).slice(0, -2)
-        const targetValue = getComputedStyle(this.node).getPropertyValue(property).slice(0, -2)
-        control.value = targetValue ?  [Math.ceil(+targetValue / +parentValue * 100).toFixed()] : [0];
+        const parentValue = +getComputedStyle(parent).getPropertyValue(property).slice(0, -2);
+        const targetValue = +getComputedStyle(this.node).getPropertyValue(property).slice(0, -2);
+        control.value = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
+         ? [Math.ceil(targetValue / parentValue * 100).toFixed()]
+         : [0];
         return this.group({...control});
     }
 

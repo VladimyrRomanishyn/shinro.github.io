@@ -33,24 +33,24 @@ const boxModelPage: Array<StylesFormConfig> = [
     {
         property: 'margin',
         valueTypes: [
-            ['pixels', {...controlsBlueprint}],
+            ['short', {...controlsBlueprint}],
             ['percentage', {...controlsBlueprint}],
         ]
     },
     {
         property: 'padding',
         valueTypes: [
-            ['pixels', {...controlsBlueprint}],
+            ['short', {...controlsBlueprint}],
             ['percentage', {...controlsBlueprint}],
         ]
     },
-    // {
-    //     property: 'border',
-    //     valueTypes: [
-    //         ['short', {...controlsBlueprint}],
-    //         ['full', {...controlsBlueprint}],
-    //     ]
-    // },
+    {
+        property: 'border',
+        valueTypes: [
+            ['short', {...controlsBlueprint}],
+            // ['full', {...controlsBlueprint}],
+        ]
+    },
 ]
 
 export const sectionsCofig: Section[] = [
