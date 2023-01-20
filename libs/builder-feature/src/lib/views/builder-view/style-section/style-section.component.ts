@@ -48,7 +48,6 @@ export class StyleSectionComponent implements OnDestroy, AfterViewInit {
 
   constructor(
     private store: Store<{ [builderFeatureKey]: BuilderFeatureState }>,
-    private fb: FormBuilder,
     private cd: ChangeDetectorRef
   ) { }
 
@@ -64,7 +63,7 @@ export class StyleSectionComponent implements OnDestroy, AfterViewInit {
 
   createForm(target: StylesFormBuilder ,section: Section): void {
     target.createStylesForm(section.stylesFormCofig);
-    console.log(target.stylesFormArray);
+    console.log(target.stylesFormGroup);
     // this.stylesForm = this.fb.group({
     //   width: this.fb.group({
     //     pixels: this.fb.group({

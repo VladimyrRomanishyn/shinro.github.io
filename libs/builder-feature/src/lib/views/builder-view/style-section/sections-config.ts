@@ -13,44 +13,44 @@ export interface Section {
     stylesFormCofig: Array<StylesFormConfig>
 }
 
-const controlsBlueprint: FormControlsShape = {editable: false, value: null };
+const controlsBlueprint: FormControlsShape = {editable: [false], value: [] };
 
 const boxModelPage: Array<StylesFormConfig> = [
     {
         property: 'width',
         valueTypes: [
             ['pixels', {...controlsBlueprint}],
-            ['percentage', {...controlsBlueprint}],
+            // ['percentage', {...controlsBlueprint}],
         ]
     },
-    {
-        property: 'height',
-        valueTypes: [
-            ['pixels', {...controlsBlueprint}],
-            ['percentage', {...controlsBlueprint}],
-        ]
-    },
-    {
-        property: 'margin',
-        valueTypes: [
-            ['pixels', {...controlsBlueprint}],
-            ['percentage', {...controlsBlueprint}],
-        ]
-    },
-    {
-        property: 'padding',
-        valueTypes: [
-            ['pixels', {...controlsBlueprint}],
-            ['percentage', {...controlsBlueprint}],
-        ]
-    },
-    {
-        property: 'border',
-        valueTypes: [
-            ['short', {...controlsBlueprint}],
-            ['full', {...controlsBlueprint}],
-        ]
-    },
+    // {
+    //     property: 'height',
+    //     valueTypes: [
+    //         ['pixels', {...controlsBlueprint}],
+    //         ['percentage', {...controlsBlueprint}],
+    //     ]
+    // },
+    // {
+    //     property: 'margin',
+    //     valueTypes: [
+    //         ['pixels', {...controlsBlueprint}],
+    //         ['percentage', {...controlsBlueprint}],
+    //     ]
+    // },
+    // {
+    //     property: 'padding',
+    //     valueTypes: [
+    //         ['pixels', {...controlsBlueprint}],
+    //         ['percentage', {...controlsBlueprint}],
+    //     ]
+    // },
+    // {
+    //     property: 'border',
+    //     valueTypes: [
+    //         ['short', {...controlsBlueprint}],
+    //         ['full', {...controlsBlueprint}],
+    //     ]
+    // },
 ]
 
 export const sectionsCofig: Section[] = [
