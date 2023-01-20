@@ -64,12 +64,12 @@ export class StylesFormBuilder extends FormBuilder {
         const parent = this.node.parentElement as HTMLElement;
         const parentValue = getComputedStyle(parent).getPropertyValue(property).slice(0, -2)
         const targetValue = getComputedStyle(this.node).getPropertyValue(property).slice(0, -2)
-        control.value = [+targetValue / +parentValue * 100];
+        control.value = targetValue ?  [Math.ceil(+targetValue / +parentValue * 100).toFixed()] : [0];
         return this.group({...control});
     }
 
     private setPixels(property: CSSProperty, type: ValueType, control: FormControlsShape): FormGroup {
-        control.value = [getComputedStyle(this.node).getPropertyValue(property)];
+        control.value = [getComputedStyle(this.node).getPropertyValue(property).slice(0, -2) || 0];
         return this.group({...control});
     }
 
