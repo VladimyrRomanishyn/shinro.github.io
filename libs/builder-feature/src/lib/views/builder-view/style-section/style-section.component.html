@@ -22,8 +22,30 @@
 
 <ng-template #boxModel>
   <div class="box-model">
-    <ng-container *ngIf="target">
-      <form [formGroup]="stylesForm" class="property">
+    <ng-container *ngIf="target?.stylesFormGroup as formGroup">
+      <form [formGroup]="target!.stylesFormGroup" class="property">
+        <ng-container formArrayName="nodeStyles">
+          <ng-container *ngFor="let property of $any(formGroup.get('nodeStyles')).controls; let i = index">
+            <ng-container [formGroup]="property">
+              <ng-container formArrayName="{{target?.getPropertyName(i)}}">
+                <div class="property__name">{{target?.getPropertyName(i)}}</div>
+
+                <ng-container
+                  *ngFor="let valueType of $any(property).controls[$any(target?.getPropertyName(i))].controls; let j = index">
+                  <div>{{target?.getValueTypeName(i,j)}}</div>
+                  <ng-container [ngSwitch]="target?.getValueTypeName(i,j)">
+                    <ng-container *ngSwitchCase="'pixels'">
+                      <ng-container *ngTemplateOutlet="pixels; context: {$implicit: valueType}"></ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </form>
+
+      <!-- <form [formGroup]="stylesForm" class="property">
         <div formGroupName="width">
           <div class="property__name">Width</div>
           
@@ -134,7 +156,7 @@
                 [attr.disabled]="stylesForm.get('border.short.editable')?.value ? null : false"
                 type="color" 
                 (change)="changeColor(borderShort, shortColor.value)">
-              <!-- <div class="property__measurement-unit"></div>   -->
+               <div class="property__measurement-unit"></div>
             </div> 
           </div>
 
@@ -155,27 +177,50 @@
           </div>
         </div>
 
-      </form>
+      </form> -->
     </ng-container>
   </div>
 </ng-template>
+
+<ng-template #pixels let-form>
+  <ng-container >
+    <div [formGroup]="form" class="property__subprop">
+      <ng-container formGroupName="pixels"></ng-container>
+      <div class="property__wrapper">
+         <p-inputSwitch [formControl]="form.get('pixels.editable')"></p-inputSwitch>
+        <input [attr.disabled]="form.get('pixels.editable').value ? null : false" [formControl]="form.get('pixels.value')" type="number">
+        <div class="property__measurement-unit">px</div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+
+
+<!-- <div formGroupName="percentage" class="property__subprop">
+  <p-inputSwitch formControlName="editable"></p-inputSwitch>
+  <p-slider
+    [disabled]="!stylesForm.get('width.percentage.editable')?.value"
+    formControlName="value"
+    [min]="0"
+    [max]="100"
+  ></p-slider>
+  <div class="property__measurement-unit">{{stylesForm.get('width.percentage.value')?.value}}%</div>
+</div> -->
 
 <ng-template #grid>
   <div class="property">
     <label>
       Block
-      <input (change)="displayEvent($event)"
-             [(ngModel)]="display" value="block" type="radio">
+      <input (change)="displayEvent($event)" [(ngModel)]="display" value="block" type="radio">
     </label>
     <label>
       Flex
-      <input (change)="displayEvent($event)"
-             [(ngModel)]="display" value="flex" type="radio">
+      <input (change)="displayEvent($event)" [(ngModel)]="display" value="flex" type="radio">
     </label>
     <label>
       Grid
-      <input (change)="displayEvent($event)"
-             [(ngModel)]="display" value="grid" type="radio">
+      <input (change)="displayEvent($event)" [(ngModel)]="display" value="grid" type="radio">
     </label>
   </div>
 </ng-template>
@@ -186,8 +231,8 @@
 
 <ng-template #accordionList>
   <div class="accordion__list">
-    <ng-container *ngFor="let item of sections" >
-      <div (click)="section = item" class="accordion__list-item">
+    <ng-container *ngFor="let item of sections">
+      <div (click)="toggleSection(item)" class="accordion__list-item">
         {{item.name}}
       </div>
     </ng-container>
@@ -197,7 +242,6 @@
 <ng-template #header let-sectionItem>
   <div class="accordion__panel-header">
     <div class="accordion__back-button" (click)="section = null"> <-- </div>
-    <div>{{sectionItem.name}}</div>
-  </div>
+        <div>{{sectionItem.name}}</div>
+    </div>
 </ng-template>
-
