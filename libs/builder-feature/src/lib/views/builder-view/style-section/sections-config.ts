@@ -47,7 +47,7 @@ const boxModelPage: Array<StylesFormConfig> = [
     {
         property: 'border',
         valueTypes: [
-            ['short', {...controlsBlueprint}],
+            ['shortWithColorPicker', {...controlsBlueprint}],
             // ['full', {...controlsBlueprint}],
         ]
     },

@@ -41,6 +41,10 @@
                     <ng-container *ngSwitchCase="'short'">
                       <ng-container *ngTemplateOutlet="short; context: {$implicit: valueType}"></ng-container>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'shortWithColorPicker'">
+                      <ng-container
+                        *ngTemplateOutlet="short; context: {$implicit: valueType, colorPicker: true}"></ng-container>
+                    </ng-container>
                   </ng-container>
                 </ng-container>
               </ng-container>
@@ -200,7 +204,7 @@
   </ng-container>
 </ng-template>
 
-<ng-template #short let-form>
+<ng-template #short let-form let-colorPicker="colorPicker">
   <ng-container>
     <div [formGroup]="form" class="property__subprop">
       <ng-container formGroupName="short"></ng-container>
@@ -208,6 +212,11 @@
         <p-inputSwitch [formControl]="form.get('short.editable')"></p-inputSwitch>
         <input [attr.disabled]="form.get('short.editable').value ? null : false"
           [formControl]="form.get('short.value')">
+          <input 
+            *ngIf="colorPicker"
+            #shortColor 
+            [attr.disabled]="form.get('short.editable').value ? null : false" type="color">
+        <!-- (change)="changeColor(borderShort, shortColor.value)">   -->  
         <div class="property__measurement-unit"></div>
       </div>
     </div>
@@ -220,12 +229,8 @@
       <ng-container formGroupName="percentage"></ng-container>
       <div class="property__wrapper">
         <p-inputSwitch [formControl]="form.get('percentage.editable')"></p-inputSwitch>
-        <p-slider 
-          [disabled]="!form.get('percentage.editable')?.value" 
-          [formControl]="form.get('percentage.value')"
-          [min]="0"
-          [max]="100"
-        ></p-slider>
+        <p-slider [disabled]="!form.get('percentage.editable')?.value" [formControl]="form.get('percentage.value')"
+          [min]="0" [max]="100"></p-slider>
         <div class="property__measurement-unit">
           {{form.get('percentage.value').value}}%
         </div>

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border';
 
-export type ValueType = 'percentage' | 'pixels' | 'short' | 'full';
+export type ValueType = 'percentage' | 'pixels' | 'short' | 'full' | 'shortWithColorPicker';
 
 export type FormControlsShape = {
     editable: boolean[];
@@ -48,6 +48,7 @@ export class StylesFormBuilder extends FormBuilder {
                                 case 'pixels':
                                     return this.group({ pixels: this.setPixels(propConfig.property, type, control) });
                                 case 'short':
+                                case 'shortWithColorPicker':    
                                     return this.group({ short: this.setShort(propConfig.property, type, control) });
                                 case 'full':
                                     return this.group({ full: this.setFull(propConfig.property, type, control) });
