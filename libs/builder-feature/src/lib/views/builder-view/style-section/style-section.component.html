@@ -29,13 +29,21 @@
             <ng-container [formGroup]="property">
               <ng-container formArrayName="{{target?.getPropertyName(i)}}">
                 <div class="property__name">{{target?.getPropertyName(i)}}</div>
-
                 <ng-container
                   *ngFor="let valueType of $any(property).controls[$any(target?.getPropertyName(i))].controls; let j = index">
-                  <div>{{target?.getValueTypeName(i,j)}}</div>
                   <ng-container [ngSwitch]="target?.getValueTypeName(i,j)">
                     <ng-container *ngSwitchCase="'pixels'">
                       <ng-container *ngTemplateOutlet="pixels; context: {$implicit: valueType}"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'percentage'">
+                      <ng-container *ngTemplateOutlet="percentage; context: {$implicit: valueType}"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'short'">
+                      <ng-container *ngTemplateOutlet="short; context: {$implicit: valueType}"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'shortWithColorPicker'">
+                      <ng-container
+                        *ngTemplateOutlet="short; context: {$implicit: valueType, colorPicker: true}"></ng-container>
                     </ng-container>
                   </ng-container>
                 </ng-container>
@@ -183,30 +191,53 @@
 </ng-template>
 
 <ng-template #pixels let-form>
-  <ng-container >
+  <ng-container>
     <div [formGroup]="form" class="property__subprop">
       <ng-container formGroupName="pixels"></ng-container>
       <div class="property__wrapper">
-         <p-inputSwitch [formControl]="form.get('pixels.editable')"></p-inputSwitch>
-        <input [attr.disabled]="form.get('pixels.editable').value ? null : false" [formControl]="form.get('pixels.value')" type="number">
+        <p-inputSwitch [formControl]="form.get('pixels.editable')"></p-inputSwitch>
+        <input [attr.disabled]="form.get('pixels.editable').value ? null : false"
+          [formControl]="form.get('pixels.value')" type="number">
         <div class="property__measurement-unit">px</div>
       </div>
     </div>
   </ng-container>
 </ng-template>
 
+<ng-template #short let-form let-colorPicker="colorPicker">
+  <ng-container>
+    <div [formGroup]="form" class="property__subprop">
+      <ng-container formGroupName="short"></ng-container>
+      <div class="property__wrapper">
+        <p-inputSwitch [formControl]="form.get('short.editable')"></p-inputSwitch>
+        <input [attr.disabled]="form.get('short.editable').value ? null : false"
+          [formControl]="form.get('short.value')">
+          <input 
+            *ngIf="colorPicker"
+            #shortColor 
+            [attr.disabled]="form.get('short.editable').value ? null : false" type="color">
+        <!-- (change)="changeColor(borderShort, shortColor.value)">   -->  
+        <div class="property__measurement-unit"></div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
 
-
-<!-- <div formGroupName="percentage" class="property__subprop">
-  <p-inputSwitch formControlName="editable"></p-inputSwitch>
-  <p-slider
-    [disabled]="!stylesForm.get('width.percentage.editable')?.value"
-    formControlName="value"
-    [min]="0"
-    [max]="100"
-  ></p-slider>
-  <div class="property__measurement-unit">{{stylesForm.get('width.percentage.value')?.value}}%</div>
-</div> -->
+<ng-template #percentage let-form>
+  <ng-container>
+    <div [formGroup]="form" class="property__subprop">
+      <ng-container formGroupName="percentage"></ng-container>
+      <div class="property__wrapper">
+        <p-inputSwitch [formControl]="form.get('percentage.editable')"></p-inputSwitch>
+        <p-slider [disabled]="!form.get('percentage.editable')?.value" [formControl]="form.get('percentage.value')"
+          [min]="0" [max]="100"></p-slider>
+        <div class="property__measurement-unit">
+          {{form.get('percentage.value').value}}%
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
 
 <ng-template #grid>
   <div class="property">

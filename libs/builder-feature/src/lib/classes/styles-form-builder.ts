@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border';
 
-export type ValueType = 'percentage' | 'pixels' | 'short' | 'full';
+export type ValueType = 'percentage' | 'pixels' | 'short' | 'full' | 'shortWithColorPicker';
 
 export type FormControlsShape = {
     editable: boolean[];
@@ -48,6 +48,7 @@ export class StylesFormBuilder extends FormBuilder {
                                 case 'pixels':
                                     return this.group({ pixels: this.setPixels(propConfig.property, type, control) });
                                 case 'short':
+                                case 'shortWithColorPicker':    
                                     return this.group({ short: this.setShort(propConfig.property, type, control) });
                                 case 'full':
                                     return this.group({ full: this.setFull(propConfig.property, type, control) });
@@ -62,14 +63,16 @@ export class StylesFormBuilder extends FormBuilder {
 
     private setPercentage(property: CSSProperty, type: ValueType, control: FormControlsShape): FormGroup {
         const parent = this.node.parentElement as HTMLElement;
-        const parentValue = getComputedStyle(parent).getPropertyValue(property).slice(0, -2)
-        const targetValue = getComputedStyle(this.node).getPropertyValue(property).slice(0, -2)
-        control.value = [+targetValue / +parentValue * 100];
+        const parentValue = +getComputedStyle(parent).getPropertyValue(property).slice(0, -2);
+        const targetValue = +getComputedStyle(this.node).getPropertyValue(property).slice(0, -2);
+        control.value = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
+         ? [Math.ceil(targetValue / parentValue * 100).toFixed()]
+         : [0];
         return this.group({...control});
     }
 
     private setPixels(property: CSSProperty, type: ValueType, control: FormControlsShape): FormGroup {
-        control.value = [getComputedStyle(this.node).getPropertyValue(property)];
+        control.value = [getComputedStyle(this.node).getPropertyValue(property).slice(0, -2) || 0];
         return this.group({...control});
     }
 
