@@ -8,6 +8,18 @@ export interface NodeParams {
     context: HTMLElement | undefined;
 }
 
+export class CustomDiv extends HTMLDivElement {
+    public test = 'test';
+
+    constructor() {
+        super();
+    }
+
+    getTest() {
+        return this.test;
+    }
+}
+
 export class NgElementCreator {
     public static cloneElement(source: HTMLElement | undefined): void {
         if (source && source.className !== EDITOR_CLASSNAME) {
@@ -27,6 +39,16 @@ export class NgElementCreator {
         if (context) {
             const nodeElement = document.createElement(type);
             nodeElement.classList.add(EDITOR_CHILD_CLASSNAME);
+            context.append(nodeElement);
+        }
+    }
+
+    public static createCustom({context, type}: NodeParams) {
+        if (context) {
+            customElements.define('custom-div', CustomDiv, {extends: 'div'});
+            const nodeElement = document.createElement('div', {is: 'custom-div'});
+            nodeElement.classList.add(EDITOR_CHILD_CLASSNAME);
+            // nodeElement.setAttribute('is', 'custom-div');
             context.append(nodeElement);
         }
     }
