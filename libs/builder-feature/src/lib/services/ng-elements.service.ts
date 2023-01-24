@@ -14,6 +14,6 @@ export class NgElementsService {
   }
 
   public createNode(type: string, context: HTMLElement | undefined) {
-    NgElementCreator.createCustom({type, context});
+    NgElementCreator.createElement({type, context});
   }
 }

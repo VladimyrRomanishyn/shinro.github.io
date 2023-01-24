@@ -1,6 +1,6 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { debounceTime, filter, map } from 'rxjs/operators';
 
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border';
@@ -52,7 +52,7 @@ export class StylesFormBuilder extends FormBuilder {
     public createStylesForm(config: Array<StylesFormConfig>) {
         StylesFormBuilder.clearSubscriptions();
         this.config = config;
-        debugger;
+        
         this._stylesFormGroup = this.group({
             nodeStyles: this.array(config.map((propConfig) => {
                 return this.group({
@@ -84,13 +84,27 @@ export class StylesFormBuilder extends FormBuilder {
             .pipe(
                 map((value: StyleFormValue) => {
                     return value.nodeStyles.filter((property: StyleFormPropertyValue, i: number) => {
-                        const newState = property[this.getPropertyName(i)];
+                        let changed = false;
                         const prevState = this.previousState.nodeStyles[i][this.getPropertyName(i)];
+                        property[this.getPropertyName(i)].map((control, j) => {
+                            const controlValue = Object.entries(control)[0][1];
+                            const prevControlValue = Object.entries(prevState[j])[0][1];
+
+                            if(controlValue?.editable && controlValue.value !== prevControlValue.value) {
+                                changed = true;
+                            }
+                        });
+
+                        return changed;
                     })
                 }),
-                // filter()
+                filter(changes => !!changes.length),
+                debounceTime(250)
             )
-            .subscribe(console.log);
+            .subscribe((v) => {
+                this.previousState = {...this._stylesFormGroup.value};
+                console.log(v);
+            });
 
         StylesFormBuilder.subscriptions.push(subscription);
     }
