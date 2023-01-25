@@ -5,7 +5,7 @@ import { debounceTime, filter, map } from 'rxjs/operators';
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border';
 
-export type ValueType = 'percentage' | 'pixels' | 'short' | 'full' | 'shortWithColorPicker';
+export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
 
 export type FormControlsShape = {
     editable: boolean[];
@@ -23,7 +23,7 @@ export type StyleFormValue = {
 
 export type StyleFormPropertyValue = {
     [key in CSSProperty]: Array<{
-        [key in ValueType] : FormControlsShape
+        [key in ValueType]: FormControlsShape
     }>
 }
 
@@ -52,7 +52,7 @@ export class StylesFormBuilder extends FormBuilder {
     public createStylesForm(config: Array<StylesFormConfig>) {
         StylesFormBuilder.clearSubscriptions();
         this.config = config;
-        
+
         this._stylesFormGroup = this.group({
             nodeStyles: this.array(config.map((propConfig) => {
                 return this.group({
@@ -60,14 +60,12 @@ export class StylesFormBuilder extends FormBuilder {
                         ([type, control]) => {
                             switch (type) {
                                 case 'percentage':
-                                    return this.group({ percentage: this.setPercentage(propConfig.property, control) });
+                                    return this.group({ percentage: this.group(this.setPercentage(propConfig.property, control)) });
                                 case 'pixels':
-                                    return this.group({ pixels: this.setPixels(propConfig.property, control) });
+                                    return this.group({ pixels: this.group(this.setPixels(propConfig.property, control)) });
                                 case 'short':
                                 case 'shortWithColorPicker':
-                                    return this.group({ short: this.setShort(propConfig.property, control) });
-                                case 'full':
-                                    return this.group({ full: this.setFull(propConfig.property, control) });
+                                    return this.group({ short: this.group(this.setShort(propConfig.property, control)) });
                             }
                         })
                     )
@@ -75,7 +73,7 @@ export class StylesFormBuilder extends FormBuilder {
 
             }))
         });
-        this.previousState = {...this._stylesFormGroup.value};
+        this.previousState = { ...this._stylesFormGroup.value };
         this.createFormObserver();
     }
 
@@ -83,55 +81,85 @@ export class StylesFormBuilder extends FormBuilder {
         const subscription = this._stylesFormGroup.valueChanges
             .pipe(
                 map((value: StyleFormValue) => {
-                    return value.nodeStyles.filter((property: StyleFormPropertyValue, i: number) => {
-                        let changed = false;
+                    return value.nodeStyles.reduce((acc, property: StyleFormPropertyValue, i) => {
                         const prevState = this.previousState.nodeStyles[i][this.getPropertyName(i)];
                         property[this.getPropertyName(i)].map((control, j) => {
                             const controlValue = Object.entries(control)[0][1];
                             const prevControlValue = Object.entries(prevState[j])[0][1];
 
-                            if(controlValue?.editable && controlValue.value !== prevControlValue.value) {
-                                changed = true;
+                            if (controlValue?.editable && controlValue.value !== prevControlValue.value) {
+                                acc = { changes: property, index: i }
                             }
                         });
-
-                        return changed;
-                    })
+                        return acc;
+                    }, {} as  {changes: StyleFormPropertyValue, index: number})
                 }),
-                filter(changes => !!changes.length),
-                debounceTime(250)
+                filter(({changes}) => !!changes ),
+                debounceTime(500)
             )
-            .subscribe((v) => {
-                this.previousState = {...this._stylesFormGroup.value};
-                console.log(v);
+            .subscribe(({changes, index}) => {
+                this.previousState = { ...this._stylesFormGroup.value };
+                const [propertyName, valueTypes] = Object.entries(changes)[0];
+
+                valueTypes.map(vType => {
+                    const [valueType, control] = Object.entries(vType)[0];
+
+                    if (control.editable) {
+                        let metricType = '';
+
+                        switch (valueType) {
+                            case 'pixels': metricType = 'px';
+                                break;
+                            case 'percentage': metricType = '%';
+                        }
+                        // @ts-ignore
+                        this.node.style[propertyName] = `${control.value + metricType}`;
+                    }
+                })
+
+                const newControl = {
+                    [propertyName]: valueTypes.map(vType => {
+                        const [valueType, control] = Object.entries(vType)[0];
+
+                        switch (valueType) {
+                            case 'percentage':
+                                return { percentage: this.setPercentage(propertyName as CSSProperty, control) };
+                            case 'pixels':
+                                return { pixels: this.setPixels(propertyName as CSSProperty, control) };
+                            case 'short':
+                            case 'shortWithColorPicker':
+                                return { short: this.setShort(propertyName as CSSProperty, control) };
+                        }
+
+                        return;
+                    })
+                }
+                // @ts-ignore
+                this._stylesFormGroup.controls.nodeStyles.controls[index].patchValue(newControl);
             });
 
         StylesFormBuilder.subscriptions.push(subscription);
     }
 
-    private setPercentage(property: CSSProperty, control: FormControlsShape): FormGroup {
+    private setPercentage(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         const parent = this.node.parentElement as HTMLElement;
         const parentValue = +getComputedStyle(parent).getPropertyValue(property).slice(0, -2);
         const targetValue = +getComputedStyle(this.node).getPropertyValue(property).slice(0, -2);
         control.value = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
-            ? [Math.ceil(targetValue / parentValue * 100).toFixed()]
+            ? [+Math.ceil(targetValue / parentValue * 100).toFixed()]
             : [0];
-        return this.group({ ...control });
+        return { ...control };
     }
 
-    private setPixels(property: CSSProperty, control: FormControlsShape): FormGroup {
+    private setPixels(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         control.value = [getComputedStyle(this.node).getPropertyValue(property).slice(0, -2) || 0];
-        return this.group({ ...control });
+        control.value = [Math.floor(+control.value)];
+        return { ...control };
     }
 
-    private setShort(property: CSSProperty, control: FormControlsShape): FormGroup {
+    private setShort(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         control.value = [getComputedStyle(this.node).getPropertyValue(property)];
-        return this.group({ ...control });
-    }
-
-    private setFull(property: CSSProperty, control: FormControlsShape): FormGroup {
-        control.value = [getComputedStyle(this.node).getPropertyValue(property)];
-        return this.group({ ...control });
+        return { ...control };
     }
 
     public static clearSubscriptions(): void {

@@ -45,9 +45,6 @@
                       <ng-container
                         *ngTemplateOutlet="short; context: {$implicit: valueType, colorPicker: true}"></ng-container>
                     </ng-container>
-                    <ng-container *ngSwitchCase="'full'">
-                      <ng-container *ngTemplateOutlet="full; context: {$implicit: valueType}"></ng-container>
-                    </ng-container>
                   </ng-container>
                 </ng-container>
               </ng-container>
@@ -86,28 +83,6 @@
             #shortColor 
             [attr.disabled]="form.get('short.editable').value ? null : false" type="color">
         <!-- (change)="changeColor(borderShort, shortColor.value)">   -->  
-        <div class="property__measurement-unit"></div>
-      </div>
-    </div>
-  </ng-container>
-</ng-template>
-
-<ng-template #full let-form>
-  <ng-container>
-    <div [formGroup]="form" class="property__subprop">
-      <ng-container formGroupName="full"></ng-container>
-      <div class="property__wrapper">
-        <p-inputSwitch [formControl]="form.get('full.editable')"></p-inputSwitch>
-        <div class="property__fullBorder">
-          <div><input type="text"></div>
-          <div><input type="text"></div>
-          <div>
-            <input type="text">
-            <input type="color">
-          </div>
-          <div><input type="text"></div>
-          <div><input type="text"></div>
-        </div> 
         <div class="property__measurement-unit"></div>
       </div>
     </div>

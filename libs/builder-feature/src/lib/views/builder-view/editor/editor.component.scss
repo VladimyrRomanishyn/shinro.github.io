@@ -13,10 +13,9 @@ builder-editor {
   position: absolute;
 
   &__child, .drag-active {
-    border: 2px solid black;
+    border: 1px solid black;
     height: 50px;
     margin-bottom: 5px;
-    padding: 5px;
     overflow: auto;
     width: 100%;
   }
