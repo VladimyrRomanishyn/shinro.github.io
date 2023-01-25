@@ -8,7 +8,7 @@ import {
 import { builderFeatureKey, BuilderFeatureState } from './../../../state/builder-feature.reducer';
 import { Store } from '@ngrx/store';
 import { takeUntil } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { StylesFormBuilder } from '../../../classes/styles-form-builder';
 import { Section, sectionsCofig, SectionsEnum } from './sections-config';
 @Component({
@@ -63,85 +63,6 @@ export class StyleSectionComponent implements OnDestroy, AfterViewInit {
 
   createForm(target: StylesFormBuilder ,section: Section): void {
     target.createStylesForm(section.stylesFormCofig);
-    console.log(target.stylesFormGroup);
-    // this.stylesForm = this.fb.group({
-    //   width: this.fb.group({
-    //     pixels: this.fb.group({
-    //       editable: [false],
-    //       value: 100,
-    //     }),
-    //     percentage: this.fb.group({
-    //       editable: [false],
-    //       value: [100],
-    //     })
-    //   }),
-    //   height: this.fb.group({
-    //     pixels: this.fb.group({
-    //       editable: [false],
-    //       value: [100],
-    //     }),
-    //     percentage: this.fb.group({
-    //       editable: [false],
-    //       value: [10],
-    //     })
-    //   }),
-    //   margin: this.fb.group({
-    //     pixels: this.fb.group({
-    //       editable: [false],
-    //       value: ['2px 0'],
-    //     }),
-    //     percentage: this.fb.group({
-    //       editable: [false],
-    //       value: [0],
-    //     })
-    //   }),
-    //   padding: this.fb.group({
-    //     pixels: this.fb.group({
-    //       editable: [false],
-    //       value: ['2px 0'],
-    //     }),
-    //     percentage: this.fb.group({
-    //       editable: [false],
-    //       value: [0],
-    //     })
-    //   }),
-    //   border: this.fb.group({
-    //     short: this.fb.group({
-    //       editable: [false],
-    //       value: ['1px solid black'],
-    //     }),
-    //     full: this.fb.group({
-    //       editable: [false],
-    //       value: [0],
-    //     })
-    //   })
-    // });
-
-
-    // this.stylesForm.valueChanges.subscribe((formData) => {
-    //   Object.entries(formData)
-    //     .filter(([, payload]: [string, any]) => {
-    //       let result = false;
-    //       Object.values(payload).map((value: any) => {
-    //         if (value.editable) {
-    //           result = true;
-    //         }
-    //       })
-    //       return result;
-    //     })
-    //     .map(([prop, payload]: [string, any]) => {
-    //       switch (prop) {
-    //         case 'height':
-    //         case 'width': this.defaultPropHandler(prop, payload);
-    //           return;
-    //         case 'margin':
-    //         case 'padding': this.defaultPropHandler(prop, payload, false);
-    //           return;
-    //         case 'border': this.borderHandler(payload);
-    //           return;
-    //       }
-    //     })
-    // });
   }
 
   private borderHandler(payload: any): void {
