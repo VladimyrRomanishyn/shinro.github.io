@@ -50,6 +50,12 @@ const boxModelPage: Array<StylesFormConfig> = [
             ['shortWithColorPicker', {...controlsBlueprint}],
         ]
     },
+    {
+        property: 'background',
+        valueTypes: [
+            ['shortWithColorPicker', {...controlsBlueprint}],
+        ]
+    },
 ]
 
 export const sectionsCofig: Section[] = [

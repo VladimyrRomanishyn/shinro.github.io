@@ -65,29 +65,10 @@ export class StyleSectionComponent implements OnDestroy, AfterViewInit {
     target.createStylesForm(section.stylesFormCofig);
   }
 
-  private borderHandler(payload: any): void {
-    if (payload.short.editable) {
-      //@ts-ignore
-      this._target.style['border'] = payload.short.value;
-    }
-
-  }
-
-  private defaultPropHandler(prop: string, payload: any, px = true): void {
-    const value = payload.pixels.editable
-      ? `${payload.pixels.value + (px ? 'px' : '')}`
-      : payload.percentage.editable
-        ? `${payload.percentage.value}%`
-        : null;
-
-    if (value) {
-      // @ts-ignore
-      this._target.style[prop] = value;
-    }
-  }
 
   ngOnDestroy() {
     this.destroy$.emit();
+
   }
 
   displayEvent(event: any): void {
@@ -97,7 +78,7 @@ export class StyleSectionComponent implements OnDestroy, AfterViewInit {
   changeColor(target: any, value: any, pattern = ''): void {
     const result = target.value.split(' ').slice(0, -1).concat([value]).join(' ');
     target.value = result;
-    this.borderHandler({ short: { editable: true, value: result } });
+    // this.borderHandler({ short: { editable: true, value: result } });
   }
 
   toggleSection(item: Section): void {

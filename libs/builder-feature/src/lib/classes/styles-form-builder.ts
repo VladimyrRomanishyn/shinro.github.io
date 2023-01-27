@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
 
 export type CSSProperty =
-    | 'width' | 'height' | 'margin' | 'padding' | 'border';
+    | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background';
 
 export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
 
@@ -94,8 +94,7 @@ export class StylesFormBuilder extends FormBuilder {
                         return acc;
                     }, {} as  {changes: StyleFormPropertyValue, index: number})
                 }),
-                filter(({changes}) => !!changes ),
-                debounceTime(500)
+                filter(({changes}) => !!changes )
             )
             .subscribe(({changes, index}) => {
                 this.previousState = { ...this._stylesFormGroup.value };
@@ -120,7 +119,7 @@ export class StylesFormBuilder extends FormBuilder {
                 const newControl = {
                     [propertyName]: valueTypes.map(vType => {
                         const [valueType, control] = Object.entries(vType)[0];
-
+                        if (control.editable) return;
                         switch (valueType) {
                             case 'percentage':
                                 return { percentage: this.setPercentage(propertyName as CSSProperty, control) };
@@ -158,7 +157,9 @@ export class StylesFormBuilder extends FormBuilder {
     }
 
     private setShort(property: CSSProperty, control: FormControlsShape): FormControlsShape {
-        control.value = [getComputedStyle(this.node).getPropertyValue(property)];
+        const textValue = this.node?.style?.cssText?.match(/background:(.+?);/);
+        control.value = textValue ? [textValue[1]] : [getComputedStyle(this.node).getPropertyValue(property)];
+        
         return { ...control };
     }
 
