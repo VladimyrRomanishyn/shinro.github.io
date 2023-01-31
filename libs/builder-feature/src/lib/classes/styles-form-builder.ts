@@ -1,6 +1,6 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { debounceTime, filter, map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background';
@@ -10,6 +10,7 @@ export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicke
 export type FormControlsShape = {
     editable: boolean[];
     value: (string | boolean | number)[];
+    color?: string;
 };
 
 export type StylesFormConfig = {
@@ -65,7 +66,7 @@ export class StylesFormBuilder extends FormBuilder {
                                     return this.group({ pixels: this.group(this.setPixels(propConfig.property, control)) });
                                 case 'short':
                                 case 'shortWithColorPicker':
-                                    return this.group({ short: this.group(this.setShort(propConfig.property, control)) });
+                                    return this.group({ short: this.group(this.setShortWithColor(propConfig.property, control)) });
                             }
                         })
                     )
@@ -87,16 +88,25 @@ export class StylesFormBuilder extends FormBuilder {
                             const controlValue = Object.entries(control)[0][1];
                             const prevControlValue = Object.entries(prevState[j])[0][1];
 
-                            if (controlValue?.editable && controlValue.value !== prevControlValue.value) {
-                                acc = { changes: property, index: i }
+                            if (controlValue?.editable) {
+                                if (controlValue.value !== prevControlValue.value) {
+                                    acc = { changes: property, index: i };
+                                }
+
+                                if (controlValue.color !== prevControlValue.color) {
+                                    console.log(controlValue.color);
+                                    controlValue.value = [controlValue.color] as string[];
+                                    acc = { changes: property, index: i };
+                                }
+
                             }
                         });
                         return acc;
-                    }, {} as  {changes: StyleFormPropertyValue, index: number})
+                    }, {} as { changes: StyleFormPropertyValue, index: number })
                 }),
-                filter(({changes}) => !!changes )
+                filter(({ changes }) => !!changes)
             )
-            .subscribe(({changes, index}) => {
+            .subscribe(({ changes, index }) => {
                 this.previousState = { ...this._stylesFormGroup.value };
                 const [propertyName, valueTypes] = Object.entries(changes)[0];
 
@@ -111,8 +121,8 @@ export class StylesFormBuilder extends FormBuilder {
                                 break;
                             case 'percentage': metricType = '%';
                         }
-                        // @ts-ignore
-                        this.node.style[propertyName] = `${control.value + metricType}`;
+
+                        this.node.style[propertyName as CSSProperty] = `${control.value + metricType}`;
                     }
                 })
 
@@ -120,21 +130,23 @@ export class StylesFormBuilder extends FormBuilder {
                     [propertyName]: valueTypes.map(vType => {
                         const [valueType, control] = Object.entries(vType)[0];
                         if (control.editable) return;
+
                         switch (valueType) {
                             case 'percentage':
                                 return { percentage: this.setPercentage(propertyName as CSSProperty, control) };
                             case 'pixels':
                                 return { pixels: this.setPixels(propertyName as CSSProperty, control) };
                             case 'short':
-                            case 'shortWithColorPicker':
                                 return { short: this.setShort(propertyName as CSSProperty, control) };
+                            case 'shortWithColorPicker':
+                                return { short: this.setShortWithColor(propertyName as CSSProperty, control) };
                         }
 
                         return;
                     })
                 }
                 // @ts-ignore
-                this._stylesFormGroup.controls.nodeStyles.controls[index].patchValue(newControl);
+                this._stylesFormGroup.controls['nodeStyles'].controls[index].patchValue(newControl);
             });
 
         StylesFormBuilder.subscriptions.push(subscription);
@@ -157,10 +169,23 @@ export class StylesFormBuilder extends FormBuilder {
     }
 
     private setShort(property: CSSProperty, control: FormControlsShape): FormControlsShape {
-        const textValue = this.node?.style?.cssText?.match(/background:(.+?);/);
-        control.value = textValue ? [textValue[1]] : [getComputedStyle(this.node).getPropertyValue(property)];
-        
+        const regex = new RegExp(`${property}:(.+?);`);
+        const textValue = this.node?.style?.cssText?.match(regex);
+        control.value = textValue ? [textValue[1].trim()] : [getComputedStyle(this.node).getPropertyValue(property)];
+
         return { ...control };
+    }
+
+    private setShortWithColor(property: CSSProperty, control: FormControlsShape): FormControlsShape {
+        const newControl = this.setShort(property, control);
+        const rgb = getComputedStyle(this.node).getPropertyValue(`${property}-color`);
+        const match = rgb.match(/rgb\((.+)\)/);
+        const color = match?.length && match.length > 1
+            ? match[1].split(',').reduce((acc, e) => {acc = acc.concat((+e).toString(16)); return acc;}, '#')
+            : rgb;
+        
+        return { ...newControl, color }
+
     }
 
     public static clearSubscriptions(): void {
