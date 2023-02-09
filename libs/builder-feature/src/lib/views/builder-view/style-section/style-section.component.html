@@ -78,11 +78,12 @@
         <p-inputSwitch [formControl]="form.get('short.editable')"></p-inputSwitch>
         <input [attr.disabled]="form.get('short.editable').value ? null : false"
           [formControl]="form.get('short.value')">
-          <input 
-            *ngIf="colorPicker"
-            #shortColor 
-            [attr.disabled]="form.get('short.editable').value ? null : false" type="color">
-        <!-- (change)="changeColor(borderShort, shortColor.value)">   -->  
+        <input 
+          *ngIf="colorPicker"
+          #shortColor 
+          [formControl]="form.get('short.color')"
+          [attr.disabled]="form.get('short.editable').value ? null : false"
+          type="color">
         <div class="property__measurement-unit"></div>
       </div>
     </div>
