@@ -94,7 +94,6 @@ export class StylesFormBuilder extends FormBuilder {
                                 }
 
                                 if (controlValue.color !== prevControlValue.color) {
-                                    console.log(controlValue.color);
                                     controlValue.value = [controlValue.color] as string[];
                                     acc = { changes: property, index: i };
                                 }
@@ -145,6 +144,7 @@ export class StylesFormBuilder extends FormBuilder {
                         return;
                     })
                 }
+                
                 // @ts-ignore
                 this._stylesFormGroup.controls['nodeStyles'].controls[index].patchValue(newControl);
             });
@@ -179,14 +179,28 @@ export class StylesFormBuilder extends FormBuilder {
     private setShortWithColor(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         const newControl = this.setShort(property, control);
         const rgb = getComputedStyle(this.node).getPropertyValue(`${property}-color`);
-        const match = rgb.match(/rgb\((.+)\)/);
-        const color = match?.length && match.length > 1
-            ? match[1].split(',').reduce((acc, e) => {acc = acc.concat((+e).toString(16)); return acc;}, '#')
-            : rgb;
-        
+        const color = this.rgba2hex(rgb);
+        console.log(color);
         return { ...newControl, color }
 
     }
+
+    private rgba2hex(rgbaString: string): string {
+        const regex = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d|\.\d+|\d\.\d+)\s*)?\)/;
+        const [, r, g, b, a] = rgbaString.match(regex)?.map(Number) || [];
+        
+        const rgb =  (r != null || g != null|| b != null)
+            ? `${[r,g,b].reduce((acc, e) => {
+                const color = (+e).toString(16);
+                acc = color.length > 1 ? acc + color : acc + color + color; 
+                return acc;
+                }, '#')}`
+            : null; 
+        
+        return rgb
+            ? ( a != null && !isNaN(a)) ? `${rgb + (Math.round(a * 255))}` : rgb
+            : rgbaString;   
+    } 
 
     public static clearSubscriptions(): void {
         StylesFormBuilder.subscriptions.map(subscription => subscription.unsubscribe());
