@@ -11,6 +11,7 @@ export type FormControlsShape = {
     editable: boolean[];
     value: (string | boolean | number)[];
     color?: string;
+    replacemantCb?: (params: any[]) => any;
 };
 
 export type StylesFormConfig = {
@@ -88,15 +89,16 @@ export class StylesFormBuilder extends FormBuilder {
                             const controlValue = Object.entries(control)[0][1];
                             const prevControlValue = Object.entries(prevState[j])[0][1];
 
-                            if (controlValue?.editable) {
-                                if (controlValue.value !== prevControlValue.value) {
-                                    acc = { changes: property, index: i };
+                            if
+                            (
+                                controlValue?.editable &&
+                                (controlValue.value !== prevControlValue.value || controlValue.color !== prevControlValue.color)
+                            ) {
+                                if (controlValue.replacemantCb) {
+                                    controlValue.value = controlValue.replacemantCb([controlValue.value, controlValue.color]);
                                 }
 
-                                if (controlValue.color !== prevControlValue.color) {
-                                    controlValue.value = [controlValue.color] as string[];
-                                    acc = { changes: property, index: i };
-                                }
+                                acc = { changes: property, index: i };
 
                             }
                         });
@@ -110,25 +112,16 @@ export class StylesFormBuilder extends FormBuilder {
                 const [propertyName, valueTypes] = Object.entries(changes)[0];
 
                 valueTypes.map(vType => {
-                    const [valueType, control] = Object.entries(vType)[0];
+                    const [, control] = Object.entries(vType)[0];
 
                     if (control.editable) {
-                        let metricType = '';
-
-                        switch (valueType) {
-                            case 'pixels': metricType = 'px';
-                                break;
-                            case 'percentage': metricType = '%';
-                        }
-
-                        this.node.style[propertyName as CSSProperty] = `${control.value + metricType}`;
+                        this.node.style[propertyName as CSSProperty] = `${control.value}`;
                     }
                 })
 
                 const newControl = {
                     [propertyName]: valueTypes.map(vType => {
                         const [valueType, control] = Object.entries(vType)[0];
-                        if (control.editable) return;
 
                         switch (valueType) {
                             case 'percentage':
@@ -144,7 +137,7 @@ export class StylesFormBuilder extends FormBuilder {
                         return;
                     })
                 }
-                
+                console.log('newControl:  ', newControl);
                 // @ts-ignore
                 this._stylesFormGroup.controls['nodeStyles'].controls[index].patchValue(newControl);
             });
@@ -173,34 +166,39 @@ export class StylesFormBuilder extends FormBuilder {
         const textValue = this.node?.style?.cssText?.match(regex);
         control.value = textValue ? [textValue[1].trim()] : [getComputedStyle(this.node).getPropertyValue(property)];
 
-        return { ...control };
+        return control;
     }
 
     private setShortWithColor(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         const newControl = this.setShort(property, control);
         const rgb = getComputedStyle(this.node).getPropertyValue(`${property}-color`);
-        const color = this.rgba2hex(rgb);
-        console.log(color);
-        return { ...newControl, color }
+        newControl.color = this.rgba2hex(rgb);
+        
+        return newControl;
 
     }
 
     private rgba2hex(rgbaString: string): string {
         const regex = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d|\.\d+|\d\.\d+)\s*)?\)/;
         const [, r, g, b, a] = rgbaString.match(regex)?.map(Number) || [];
-        
-        const rgb =  (r != null || g != null|| b != null)
-            ? `${[r,g,b].reduce((acc, e) => {
-                const color = (+e).toString(16);
-                acc = color.length > 1 ? acc + color : acc + color + color; 
-                return acc;
-                }, '#')}`
-            : null; 
-        
+
+        const rgb = (r != null && g != null && b != null)
+            ? `${([r, g, b]).reduce((acc, e) => {
+                let color = e.toString(16);
+                
+                if (color.length == 1) {
+                    color = e < 10 ? 0 + color: color + color;
+                }
+
+                return acc + color;
+            }, '#')}`
+            : null;
+        const alpha = (a != null && !isNaN(a)) ? (Math.round(a * 255)).toString(16) : null;
+
         return rgb
-            ? ( a != null && !isNaN(a)) ? `${rgb + (Math.round(a * 255))}` : rgb
-            : rgbaString;   
-    } 
+            ? alpha ? `${rgb + alpha}` : rgb
+            : rgbaString;
+    }
 
     public static clearSubscriptions(): void {
         StylesFormBuilder.subscriptions.map(subscription => subscription.unsubscribe());
