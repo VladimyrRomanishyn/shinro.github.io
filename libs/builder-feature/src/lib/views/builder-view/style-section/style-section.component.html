@@ -61,9 +61,11 @@
     <div [formGroup]="form" class="property__subprop">
       <ng-container formGroupName="pixels"></ng-container>
       <div class="property__wrapper">
-        <p-inputSwitch [formControl]="form.get('pixels.editable')"></p-inputSwitch>
-        <input [attr.disabled]="form.get('pixels.editable').value ? null : false"
-          [formControl]="form.get('pixels.value')" type="number">
+        <input 
+          [formControl]="form.get('pixels.value')"
+          type="number" 
+          (focus)="form.controls.pixels.controls.editable.patchValue(true)"
+          (blur)="form.controls.pixels.controls.editable.patchValue(false)">
         <div class="property__measurement-unit">px</div>
       </div>
     </div>
@@ -75,14 +77,14 @@
     <div [formGroup]="form" class="property__subprop">
       <ng-container formGroupName="short"></ng-container>
       <div class="property__wrapper">
-        <p-inputSwitch [formControl]="form.get('short.editable')"></p-inputSwitch>
-        <input [attr.disabled]="form.get('short.editable').value ? null : false"
-          [formControl]="form.get('short.value')">
+        <input 
+          [formControl]="form.get('short.value')"
+          (focus)="form.controls.short.controls.editable.patchValue(true)"
+          (blur)="form.controls.short.controls.editable.patchValue(false)">
         <input 
           *ngIf="colorPicker"
           #shortColor 
           [formControl]="form.get('short.color')"
-          [attr.disabled]="form.get('short.editable').value ? null : false"
           type="color">
         <div class="property__measurement-unit"></div>
       </div>
@@ -95,8 +97,8 @@
     <div [formGroup]="form" class="property__subprop">
       <ng-container formGroupName="percentage"></ng-container>
       <div class="property__wrapper">
-        <p-inputSwitch [formControl]="form.get('percentage.editable')"></p-inputSwitch>
-        <p-slider [disabled]="!form.get('percentage.editable')?.value" [formControl]="form.get('percentage.value')"
+        <p-slider  
+          [formControl]="form.get('percentage.value')"
           [min]="0" [max]="100"></p-slider>
         <div class="property__measurement-unit">
           {{form.get('percentage.value').value}}%

@@ -8,8 +8,8 @@ export type CSSProperty =
 export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
 
 export type FormControlsShape = {
-    editable: boolean[];
-    value: (string | boolean | number)[];
+    editable: boolean;
+    value: string | boolean | number;
     color?: string;
     replacemantCb?: (params: any[]) => any;
 };
@@ -88,11 +88,11 @@ export class StylesFormBuilder extends FormBuilder {
                         property[this.getPropertyName(i)].map((control, j) => {
                             const controlValue = Object.entries(control)[0][1];
                             const prevControlValue = Object.entries(prevState[j])[0][1];
-
+                           
                             if
                             (
-                                controlValue?.editable &&
-                                (controlValue.value !== prevControlValue.value || controlValue.color !== prevControlValue.color)
+                                controlValue.value !== prevControlValue.value 
+                                || controlValue.color !== prevControlValue.color
                             ) {
                                 if (controlValue.replacemantCb) {
                                     controlValue.value = controlValue.replacemantCb([controlValue.value, controlValue.color]);
@@ -108,20 +108,20 @@ export class StylesFormBuilder extends FormBuilder {
                 filter(({ changes }) => !!changes)
             )
             .subscribe(({ changes, index }) => {
+                console.log('Changes:  ',changes);
                 this.previousState = { ...this._stylesFormGroup.value };
                 const [propertyName, valueTypes] = Object.entries(changes)[0];
 
                 valueTypes.map(vType => {
                     const [, control] = Object.entries(vType)[0];
-
-                    if (control.editable) {
-                        this.node.style[propertyName as CSSProperty] = `${control.value}`;
-                    }
+                    this.node.style[propertyName as CSSProperty] = `${control.value}`;
                 })
 
                 const newControl = {
                     [propertyName]: valueTypes.map(vType => {
                         const [valueType, control] = Object.entries(vType)[0];
+                        
+                        if (control.editable) return;
 
                         switch (valueType) {
                             case 'percentage':
@@ -150,21 +150,21 @@ export class StylesFormBuilder extends FormBuilder {
         const parentValue = +getComputedStyle(parent).getPropertyValue(property).slice(0, -2);
         const targetValue = +getComputedStyle(this.node).getPropertyValue(property).slice(0, -2);
         control.value = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
-            ? [+Math.ceil(targetValue / parentValue * 100).toFixed()]
-            : [0];
+            ? +Math.ceil(targetValue / parentValue * 100).toFixed()
+            : 0;
         return { ...control };
     }
 
     private setPixels(property: CSSProperty, control: FormControlsShape): FormControlsShape {
-        control.value = [getComputedStyle(this.node).getPropertyValue(property).slice(0, -2) || 0];
-        control.value = [Math.floor(+control.value)];
+        control.value = getComputedStyle(this.node).getPropertyValue(property).slice(0, -2) || 0;
+        control.value = Math.floor(+control.value);
         return { ...control };
     }
 
     private setShort(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         const regex = new RegExp(`${property}:(.+?);`);
         const textValue = this.node?.style?.cssText?.match(regex);
-        control.value = textValue ? [textValue[1].trim()] : [getComputedStyle(this.node).getPropertyValue(property)];
+        control.value = textValue ? textValue[1].trim() : getComputedStyle(this.node).getPropertyValue(property);
 
         return control;
     }

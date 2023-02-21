@@ -13,7 +13,7 @@ export interface Section {
     stylesFormCofig: Array<StylesFormConfig>
 }
 
-const controlsBlueprint: FormControlsShape = {editable: [false], value: [] };
+const controlsBlueprint: FormControlsShape = {editable: false, value: '' };
 
 const borderRepCb = ([value, color]: string[]) => {
     const [,bWidth, bStyle] = Array.from(value.match(/(\S+)\s+(\S+)/) || []);
