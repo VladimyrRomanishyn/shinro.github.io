@@ -13,17 +13,20 @@ export interface Section {
     stylesFormCofig: Array<StylesFormConfig>
 }
 
-const controlsBlueprint: FormControlsShape = {editable: false, value: '' };
+const controlsBlueprint: FormControlsShape = {editable: false, value: '', update: true };
 
-const borderRepCb = ([value, color]: string[]) => {
-    const [,bWidth, bStyle] = Array.from(value.match(/(\S+)\s+(\S+)/) || []);
-
-    return `${bWidth} ${bStyle} ${color}`;
+const borderRepCb = (control: FormControlsShape) => {
+    const [,bWidth, bStyle] = Array.from((control.value as string).match(/(\S+)\s+(\S+)/) || []);
+    control.update = false;
+    return `${bWidth} ${bStyle} ${control.color}`;
 }
 
-const bgRepCb = ([,color]: string[]) => color;
-const percentageRepCb = ([value]: string[]) => (value + '%');
-const pixelsRepCb = ([value]: string[]) => (value + 'px');
+const bgRepCb = (control: FormControlsShape) => {
+    control.update = false;
+    return control.color || '';
+};
+const percentageRepCb = (control: FormControlsShape) => (control.value + '%') || '';
+const pixelsRepCb = (control: FormControlsShape) => (control.value + 'px') || '';
 
 const boxModelPage: Array<StylesFormConfig> = [
     {
@@ -62,6 +65,18 @@ const boxModelPage: Array<StylesFormConfig> = [
     },
     {
         property: 'background',
+        valueTypes: [
+            ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
+        ]
+    },
+    {
+        property: 'border-radius',
+        valueTypes: [
+            ['short', {...controlsBlueprint}],
+        ]
+    },
+    {
+        property: 'box-shadow',
         valueTypes: [
             ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
         ]
