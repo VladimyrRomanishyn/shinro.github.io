@@ -1,4 +1,4 @@
-import { FormControlsShape, StylesFormConfig } from '../../../classes/styles-form-builder';
+import { FormControlsShape, StylesFormConfig, ValueType } from '../../../classes/styles-form-builder';
 
 export enum SectionsEnum {
     boxModel = 'box-model',
@@ -13,44 +13,65 @@ export interface Section {
     stylesFormCofig: Array<StylesFormConfig>
 }
 
-const controlsBlueprint: FormControlsShape = {editable: false, value: '', update: true };
+const controlsBlueprint = {changed: false, value: '', update: true, styleValue: '' };
 
-const borderRepCb = (control: FormControlsShape) => {
+const borderChecker = (control: FormControlsShape, prevControl: any) => {
     const [,bWidth, bStyle] = Array.from((control.value as string).match(/(\S+)\s+(\S+)/) || []);
     control.update = false;
-    return `${bWidth} ${bStyle} ${control.color}`;
+    `${bWidth} ${bStyle} ${control.color}`;
 }
 
-const bgRepCb = (control: FormControlsShape) => {
+const bgChecker = (control: FormControlsShape, prevControl: any) => {
     control.update = false;
-    return control.color || '';
+    control.color || '';
 };
-const percentageRepCb = (control: FormControlsShape) => (control.value + '%') || '';
-const pixelsRepCb = (control: FormControlsShape) => (control.value + 'px') || '';
+const percChecker = (control: FormControlsShape, prevControl: any) => {
+    control.changed = control.value !== prevControl.value;
+    control.update = !control.changed;
+    control.styleValue = control.changed ? `${control.value}%` : control.styleValue;
+};
+
+const pixChecker = (control: FormControlsShape, prevControl: any) => {
+    control.changed = control.value !== prevControl.value;
+    control.update = !control.changed;
+    control.styleValue = control.changed ? `${control.value}px` : control.styleValue;
+};
+
+const shortChecker = (control: FormControlsShape, prevControl: any) => {
+    const regex = /^((\d+(px|pc|em|rm|%)|0) ?){1,4}$/;
+    // const regex = /^\d+(px|pc|em|rm|%)($|( \d+(px|pc|em|rm|%)){1,3}$)/;
+    if (!regex.test(control.value as string)) { 
+        control.update = true;
+        return;
+    }
+    control.changed = control.value !== prevControl.value;
+    control.update = false;
+    control.styleValue = `${control.value}`;
+};
 
 const boxModelPage: Array<StylesFormConfig> = [
     {
         property: 'width',
         valueTypes: [
-            ['pixels', {...controlsBlueprint, replacemantCb: pixelsRepCb}],
-            ['percentage', {...controlsBlueprint, replacemantCb: percentageRepCb}],
+            ['pixels', {...controlsBlueprint, controlChecker: pixChecker}],
+            ['percentage', {...controlsBlueprint, controlChecker: percChecker}],
         ]
     },
     {
         property: 'height',
         valueTypes: [
-            ['pixels', {...controlsBlueprint, replacemantCb: pixelsRepCb}],
-            ['percentage', {...controlsBlueprint, replacemantCb: percentageRepCb}],
+            ['pixels', {...controlsBlueprint, controlChecker: pixChecker}],
+            ['percentage', {...controlsBlueprint, controlChecker: percChecker}],
         ]
     },
     {
         property: 'margin',
         valueTypes: [
-            ['short', {...controlsBlueprint}],
-            ['percentage', {...controlsBlueprint, replacemantCb: percentageRepCb}],
+            ['short', {...controlsBlueprint, controlChecker: shortChecker}],
+            ['percentage', {...controlsBlueprint, controlChecker: percChecker}],
         ]
     },
-    {
+    /*{
         property: 'padding',
         valueTypes: [
             ['short', {...controlsBlueprint}],
@@ -80,7 +101,7 @@ const boxModelPage: Array<StylesFormConfig> = [
         valueTypes: [
             ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
         ]
-    },
+    },*/
 ]
 
 export const sectionsCofig: Section[] = [

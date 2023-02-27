@@ -9,11 +9,12 @@ export type CSSProperty =
 export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
 
 export type FormControlsShape = {
-    editable: boolean;
+    changed: boolean;
     update: boolean;
     value: string | boolean | number;
     color?: string;
-    replacemantCb?: (control: FormControlsShape) => string | number;
+    styleValue: string;
+    controlChecker: (control: FormControlsShape, prevControl: any) => void;
 };
 
 export type StylesFormConfig = {
@@ -92,17 +93,10 @@ export class StylesFormBuilder extends FormBuilder {
                             
                             const controlValue = Object.entries(control)[0][1];
                             const prevControlValue = Object.entries(prevState[j])[0][1];
-                            const changed = JSON.stringify(controlValue) !== JSON.stringify(prevControlValue)
-                            controlValue.editable = changed;
+                            controlValue.controlChecker(controlValue, prevControlValue);
 
-                            if (changed) {
-
-                                if (controlValue.replacemantCb) {
-                                    controlValue.value = controlValue.replacemantCb(controlValue);
-                                }
-
+                            if (controlValue.changed) {
                                 acc = { changes: property, index: i };
-
                             }
                         });
                         return acc;
@@ -118,8 +112,8 @@ export class StylesFormBuilder extends FormBuilder {
                 valueTypes.map(vType => {
                     const [, control] = Object.entries(vType)[0];
                    
-                    if (control.editable) {
-                        this.node.style[propertyName as any] = `${control.value}`;
+                    if (control.changed) {
+                        this.node.style[propertyName as any] = control.styleValue;
                     }  
                 })
 
