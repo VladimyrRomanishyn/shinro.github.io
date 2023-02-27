@@ -3,15 +3,18 @@ import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 export type CSSProperty =
-    | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background';
+    | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background' 
+    | 'border-radius' | 'box-shadow';
 
 export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
 
 export type FormControlsShape = {
-    editable: boolean;
+    changed: boolean;
+    update: boolean;
     value: string | boolean | number;
     color?: string;
-    replacemantCb?: (params: any[]) => any;
+    styleValue: string;
+    controlChecker: (control: FormControlsShape, prevControl: any) => void;
 };
 
 export type StylesFormConfig = {
@@ -85,21 +88,15 @@ export class StylesFormBuilder extends FormBuilder {
                 map((value: StyleFormValue) => {
                     return value.nodeStyles.reduce((acc, property: StyleFormPropertyValue, i) => {
                         const prevState = this.previousState.nodeStyles[i][this.getPropertyName(i)];
+                        
                         property[this.getPropertyName(i)].map((control, j) => {
+                            
                             const controlValue = Object.entries(control)[0][1];
                             const prevControlValue = Object.entries(prevState[j])[0][1];
-                           
-                            if
-                            (
-                                controlValue.value !== prevControlValue.value 
-                                || controlValue.color !== prevControlValue.color
-                            ) {
-                                if (controlValue.replacemantCb) {
-                                    controlValue.value = controlValue.replacemantCb([controlValue.value, controlValue.color]);
-                                }
+                            controlValue.controlChecker(controlValue, prevControlValue);
 
+                            if (controlValue.changed) {
                                 acc = { changes: property, index: i };
-
                             }
                         });
                         return acc;
@@ -114,14 +111,19 @@ export class StylesFormBuilder extends FormBuilder {
 
                 valueTypes.map(vType => {
                     const [, control] = Object.entries(vType)[0];
-                    this.node.style[propertyName as CSSProperty] = `${control.value}`;
+                   
+                    if (control.changed) {
+                        this.node.style[propertyName as any] = control.styleValue;
+                    }  
                 })
 
                 const newControl = {
                     [propertyName]: valueTypes.map(vType => {
                         const [valueType, control] = Object.entries(vType)[0];
                         
-                        if (control.editable) return;
+                        if (!control.update) {
+                            return {valueType: control};
+                        };
 
                         switch (valueType) {
                             case 'percentage':
