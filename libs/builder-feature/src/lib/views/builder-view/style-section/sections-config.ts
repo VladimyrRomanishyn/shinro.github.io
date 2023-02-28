@@ -13,7 +13,12 @@ export interface Section {
     stylesFormCofig: Array<StylesFormConfig>
 }
 
-const controlsBlueprint = {changed: false, value: '', update: true, styleValue: '' };
+const controlsBlueprint = {
+    changed: false, value: '',
+    update: true, styleValue: '',
+    minValue: 0,
+    maxValue: 100
+};
 
 const borderChecker = (control: FormControlsShape, prevControl: any) => {
     const [,bWidth, bStyle] = Array.from((control.value as string).match(/(\S+)\s+(\S+)/) || []);
@@ -39,7 +44,7 @@ const pixChecker = (control: FormControlsShape, prevControl: any) => {
 
 const shortChecker = (control: FormControlsShape, prevControl: any) => {
     const regex = /^((\d+(px|pc|em|rm|%)|0) ?){1,4}$/;
-    // const regex = /^\d+(px|pc|em|rm|%)($|( \d+(px|pc|em|rm|%)){1,3}$)/;
+    
     if (!regex.test(control.value as string)) { 
         control.update = true;
         return;
@@ -68,40 +73,62 @@ const boxModelPage: Array<StylesFormConfig> = [
         property: 'margin',
         valueTypes: [
             ['short', {...controlsBlueprint, controlChecker: shortChecker}],
-            ['percentage', {...controlsBlueprint, controlChecker: percChecker}],
         ]
     },
-    /*{
+    {
+        property: 'margin-left',
+        valueTypes: [
+            ['percentage', {...controlsBlueprint, minValue: -100, maxValue: 100, controlChecker: percChecker}],
+        ]
+    },
+    {
+        property: 'margin-top',
+        valueTypes: [
+            ['percentage', {...controlsBlueprint, minValue: -100, maxValue: 100, controlChecker: percChecker}],
+        ]
+    },
+    {
         property: 'padding',
         valueTypes: [
-            ['short', {...controlsBlueprint}],
-            ['percentage', {...controlsBlueprint, replacemantCb: percentageRepCb}],
+            ['short', {...controlsBlueprint, controlChecker: shortChecker}],
+        ]
+    },
+    {
+        property: 'padding-left',
+        valueTypes: [
+            ['percentage', {...controlsBlueprint, minValue: -100, maxValue: 100, controlChecker: percChecker}],
+        ]
+    },
+    {
+        property: 'padding-top',
+        valueTypes: [
+            ['percentage', {...controlsBlueprint, minValue: -100, maxValue: 100, controlChecker: percChecker}],
         ]
     },
     {
         property: 'border',
         valueTypes: [
-            ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: borderRepCb}],
+            ['shortWithColorPicker', {...controlsBlueprint, controlChecker: borderChecker}],
         ]
     },
-    {
-        property: 'background',
-        valueTypes: [
-            ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
-        ]
-    },
+    // {
+    //     property: 'background',
+    //     valueTypes: [
+    //         ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
+    //     ]
+    // },
     {
         property: 'border-radius',
         valueTypes: [
-            ['short', {...controlsBlueprint}],
+            ['short', {...controlsBlueprint, controlChecker: shortChecker}],
         ]
     },
-    {
-        property: 'box-shadow',
-        valueTypes: [
-            ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
-        ]
-    },*/
+    // {
+    //     property: 'box-shadow',
+    //     valueTypes: [
+    //         ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
+    //     ]
+    // },
 ]
 
 export const sectionsCofig: Section[] = [

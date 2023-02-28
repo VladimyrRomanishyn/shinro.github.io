@@ -94,7 +94,9 @@
       <div class="property__wrapper">
         <p-slider  
           [formControl]="form.get('percentage.value')"
-          [min]="0" [max]="100"></p-slider>
+          [min]="form.get('percentage.minValue').value || 0"
+          [max]="form.get('percentage.maxValue').value || 100"
+          ></p-slider>
         <div class="property__measurement-unit">
           {{form.get('percentage.value').value}}%
         </div>

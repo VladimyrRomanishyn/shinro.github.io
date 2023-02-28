@@ -4,7 +4,7 @@ import { filter, map } from 'rxjs/operators';
 
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background' 
-    | 'border-radius' | 'box-shadow';
+    | 'border-radius' | 'box-shadow' | 'margin-left' | 'margin-top' | 'padding-left' | 'padding-top';
 
 export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
 
@@ -13,6 +13,8 @@ export type FormControlsShape = {
     update: boolean;
     value: string | boolean | number;
     color?: string;
+    maxValue?: number;
+    minValue?: number;
     styleValue: string;
     controlChecker: (control: FormControlsShape, prevControl: any) => void;
 };
@@ -154,6 +156,7 @@ export class StylesFormBuilder extends FormBuilder {
         control.value = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
             ? +Math.ceil(targetValue / parentValue * 100).toFixed()
             : 0;
+
         return { ...control };
     }
 
