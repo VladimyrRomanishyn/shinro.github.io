@@ -1,6 +1,7 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { rgba2hex } from '../views/builder-view/style-section/sections-config';
 
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background' 
@@ -177,32 +178,10 @@ export class StylesFormBuilder extends FormBuilder {
     private setShortWithColor(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         const newControl = this.setShort(property, control);
         const rgb = getComputedStyle(this.node).getPropertyValue(`${property}-color`);
-        newControl.color = this.rgba2hex(rgb);
+        newControl.color = rgba2hex(rgb);
         
         return newControl;
 
-    }
-
-    private rgba2hex(rgbaString: string): string {
-        const regex = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d|\.\d+|\d\.\d+)\s*)?\)/;
-        const [, r, g, b, a] = rgbaString.match(regex)?.map(Number) || [];
-
-        const rgb = (r != null && g != null && b != null)
-            ? `${([r, g, b]).reduce((acc, e) => {
-                let color = e.toString(16);
-                
-                if (color.length == 1) {
-                    color = e < 10 ? 0 + color: color + color;
-                }
-
-                return acc + color;
-            }, '#')}`
-            : null;
-        const alpha = (a != null && !isNaN(a)) ? (Math.round(a * 255)).toString(16) : null;
-
-        return rgb
-            ? alpha ? `${rgb + alpha}` : rgb
-            : rgbaString;
     }
 
     public static clearSubscriptions(): void {
