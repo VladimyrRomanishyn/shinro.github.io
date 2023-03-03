@@ -10,7 +10,9 @@ import { Store } from '@ngrx/store';
 import { takeUntil } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { StylesFormBuilder } from '../../../classes/styles-form-builder';
-import { Section, sectionsCofig, SectionsEnum } from './sections-config';
+import { SectionsEnum, Section } from '../../../types/form-types';
+import { sectionsCofig } from './sections-config';
+
 @Component({
   selector: 'builder-style-section',
   templateUrl: './style-section.component.html',
@@ -75,11 +77,6 @@ export class StyleSectionComponent implements OnDestroy, AfterViewInit {
     console.log(this.display, event);
   }
 
-  changeColor(target: any, value: any, pattern = ''): void {
-    const result = target.value.split(' ').slice(0, -1).concat([value]).join(' ');
-    target.value = result;
-    // this.borderHandler({ short: { editable: true, value: result } });
-  }
 
   toggleSection(item: Section): void {
     this.section = item; 
