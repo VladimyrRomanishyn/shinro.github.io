@@ -1,39 +1,10 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { rgba2hex } from '../views/builder-view/style-section/sections-config';
+import { StylesFormConfig, StyleFormValue, CSSProperty, ValueType, StyleFormPropertyValue, FormControlsShape } from '../types/form-types';
+import { rgba2hex } from '../utils/rgba2hex';
 
-export type CSSProperty =
-    | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background' 
-    | 'border-radius' | 'box-shadow' | 'margin-left' | 'margin-top' | 'padding-left' | 'padding-top';
 
-export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
-
-export type FormControlsShape = {
-    changed: boolean;
-    update: boolean;
-    value: string | boolean | number;
-    color?: string;
-    maxValue?: number;
-    minValue?: number;
-    styleValue: string;
-    controlChecker: (control: FormControlsShape, prevControl: any) => void;
-};
-
-export type StylesFormConfig = {
-    property: CSSProperty,
-    valueTypes: Array<[ValueType, FormControlsShape]>
-};
-
-export type StyleFormValue = {
-    nodeStyles: Array<StyleFormPropertyValue>
-};
-
-export type StyleFormPropertyValue = {
-    [key in CSSProperty]: Array<{
-        [key in ValueType]: FormControlsShape
-    }>
-}
 
 export class StylesFormBuilder extends FormBuilder {
     private _stylesFormGroup!: FormGroup;
@@ -154,10 +125,12 @@ export class StylesFormBuilder extends FormBuilder {
         const parent = this.node.parentElement as HTMLElement;
         const parentValue = +getComputedStyle(parent).getPropertyValue(property).slice(0, -2);
         const targetValue = +getComputedStyle(this.node).getPropertyValue(property).slice(0, -2);
-        control.value = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
+        // @ts-ignore
+        const styleTextValue = this.node.style[property as string] ? this.node.style[property as string].replace(/(?!-)\D/, '') : null
+        const calcValue = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
             ? +Math.ceil(targetValue / parentValue * 100).toFixed()
             : 0;
-
+        control.value = styleTextValue ?? calcValue;
         return { ...control };
     }
 

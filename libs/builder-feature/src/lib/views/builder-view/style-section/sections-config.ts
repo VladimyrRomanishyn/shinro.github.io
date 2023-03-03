@@ -1,17 +1,4 @@
-import { FormControlsShape, StylesFormConfig } from '../../../classes/styles-form-builder';
-
-export enum SectionsEnum {
-    boxModel = 'box-model',
-    grid = 'grid',
-    flex = 'flex',
-}
-
-
-export interface Section {
-    name: string,
-    value: SectionsEnum,
-    stylesFormCofig: Array<StylesFormConfig>
-}
+import { FormControlsShape, Section, SectionsEnum, StylesFormConfig } from '../../../types/form-types';
 
 const controlsBlueprint = {
     changed: false, value: '',
@@ -19,28 +6,6 @@ const controlsBlueprint = {
     minValue: 0,
     maxValue: 100
 };
-
-export const rgba2hex: (rgba: string) => string = (rgbaString: string) => {
-    const regex = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d|\.\d+|\d\.\d+)\s*)?\)/;
-    const [, r, g, b, a] = rgbaString.match(regex)?.map(Number) || [];
-
-    const rgb = (r != null && g != null && b != null)
-        ? `${([r, g, b]).reduce((acc, e) => {
-            let color = e.toString(16);
-            
-            if (color.length == 1) {
-                color = e < 10 ? 0 + color: color + color;
-            }
-
-            return acc + color;
-        }, '#')}`
-        : null;
-    const alpha = (a != null && !isNaN(a)) ? (Math.round(a * 255)).toString(16) : null;
-
-    return rgb
-        ? alpha ? `${rgb + alpha}` : rgb
-        : rgbaString;
-}
 
 const borderChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
     const inputRegex = /^(\d+(px|pc|em|rm|%))|0 ?(\b\S+\b)+$/;
@@ -81,7 +46,7 @@ const pixChecker = (control: FormControlsShape, prevControl: FormControlsShape) 
 };
 
 const shortChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
-    const regex = /^((\d+(px|pc|em|rm|%)|0) ?){1,4}$/;
+    const regex = /^((-?\d+(.\d+)?(px|pc|em|rm|%)|0) ?){1,4}$/;
     
     if (!regex.test(control.value as string)) { 
         control.update = true;
@@ -90,6 +55,23 @@ const shortChecker = (control: FormControlsShape, prevControl: FormControlsShape
     control.changed = control.value !== prevControl.value;
     control.update = false;
     control.styleValue = `${control.value}`;
+};
+
+const shadowChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
+    const inputRegex = /(^(inherit|none|initial|revert(-layer)?|unset)$)|(^\d+px|inset)((\s-?\d+(px|rm|em|pc|%|)){1,3})\s(?<color>(rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+(\.\d+)?\))|(\b\w+\b))/;
+    const colorReplaceRegex = /rgba?\(\s*?\d+\s*,\s*?\d+\s*,\s*?\d+\s*(,\s*?\d+\.\d+)?\)|\b(?!inset)[a-z-]+(?!px|em|rm|pc|%)\b/;
+    const inputValid = inputRegex.test(control.value as string);
+    const colorChanged = control.color !== prevControl.color;
+    const valueChanged = control.value !== prevControl.value;
+    const colorValue = colorReplaceRegex.test(control.value as string);
+    control.changed = colorChanged || (valueChanged && inputValid);
+    control.update = colorChanged; 
+    control.styleValue = 
+        valueChanged && inputValid ? `${control.value}`:
+        colorChanged && colorValue ? `${control.value}`.replace(colorReplaceRegex, `${control.color}`):
+        colorChanged               ? `${control.value} ${control.color}`
+                                   : `${control.value}`;
+
 };
 
 const boxModelPage: Array<StylesFormConfig> = [
@@ -161,12 +143,12 @@ const boxModelPage: Array<StylesFormConfig> = [
             ['short', {...controlsBlueprint, controlChecker: shortChecker}],
         ]
     },
-    // {
-    //     property: 'box-shadow',
-    //     valueTypes: [
-    //         ['shortWithColorPicker', {...controlsBlueprint, replacemantCb: bgRepCb}],
-    //     ]
-    // },
+    {
+        property: 'box-shadow',
+        valueTypes: [
+            ['shortWithColorPicker', {...controlsBlueprint, controlChecker: shadowChecker}],
+        ]
+    },
 ]
 
 export const sectionsCofig: Section[] = [
