@@ -14,7 +14,8 @@ export interface Section {
 
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background' 
-    | 'border-radius' | 'box-shadow' | 'margin-left' | 'margin-top' | 'padding-left' | 'padding-top';
+    | 'border-radius' | 'box-shadow' | 'margin-left' | 'margin-top' 
+    | 'padding-left' | 'padding-top' | 'opacity' | 'zoom';
 
 export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
 
