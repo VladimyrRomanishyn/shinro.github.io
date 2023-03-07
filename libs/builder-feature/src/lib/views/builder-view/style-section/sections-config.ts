@@ -39,6 +39,12 @@ const percChecker = (control: FormControlsShape, prevControl: FormControlsShape)
     control.styleValue = control.changed ? `${control.value}%` : control.styleValue;
 };
 
+const opacityChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
+    control.changed = control.value !== prevControl.value;
+    control.update = !control.changed;
+    control.styleValue = control.changed ? `${+control.value / 100}` : control.styleValue;
+};
+
 const pixChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
     control.changed = control.value !== prevControl.value;
     control.update = !control.changed;
@@ -89,7 +95,7 @@ const zoomChecker = (control: FormControlsShape, prevControl: FormControlsShape)
   }
 };
 
-const boxModelPage: Array<StylesFormConfig> = [
+const COMMON_STYLES: Array<StylesFormConfig> = [
     {
         property: 'width',
         valueTypes: [
@@ -167,7 +173,7 @@ const boxModelPage: Array<StylesFormConfig> = [
     {
         property: 'opacity',
         valueTypes: [
-            ['percentage', {...controlsBlueprint, controlChecker: percChecker, value: 1}],
+            ['percentage', {...controlsBlueprint, controlChecker: opacityChecker, minValue: 0, maxValue: 100}],
         ]
     },
     {
@@ -176,22 +182,21 @@ const boxModelPage: Array<StylesFormConfig> = [
             ['short', {...controlsBlueprint, controlChecker: zoomChecker}],
         ]
     },
+];
+
+const STRUCTURE_STYLES: Array<StylesFormConfig> = [
+
 ]
 
 export const sectionsCofig: Section[] = [
     {
-        name: 'Box Model, Positioning',
-        value: SectionsEnum.boxModel,
-        stylesFormCofig: boxModelPage
+        name: 'Common',
+        value: SectionsEnum.common,
+        stylesFormCofig: COMMON_STYLES
     },
     {
-        name: 'Grid',
-        value: SectionsEnum.grid,
-        stylesFormCofig: boxModelPage
-    },
-    {
-        name: 'Flex',
-        value: SectionsEnum.flex,
-        stylesFormCofig: boxModelPage
+        name: 'Structure',
+        value: SectionsEnum.structure,
+        stylesFormCofig: STRUCTURE_STYLES
     },
 ]

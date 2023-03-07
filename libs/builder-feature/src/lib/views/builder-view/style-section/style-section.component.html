@@ -1,26 +1,15 @@
 <div class="editorStyles">
   <div class="accordion">
-    <ng-container [ngSwitch]="section?.value" class="accordion__panel">
-      <ng-container *ngIf="section">
-        <ng-container *ngTemplateOutlet="header; context: {$implicit: section}"></ng-container>
-      </ng-container>
-      <ng-container *ngSwitchCase="sectionsEnum.boxModel">
-        <ng-container *ngTemplateOutlet="boxModel"></ng-container>
-      </ng-container>
-      <ng-container *ngSwitchCase="sectionsEnum.grid">
-        <ng-container *ngTemplateOutlet="grid"></ng-container>
-      </ng-container>
-      <ng-container *ngSwitchCase="sectionsEnum.flex">
-        <ng-container *ngTemplateOutlet="flex"></ng-container>
-      </ng-container>
-      <ng-container *ngSwitchDefault>
-        <ng-container *ngTemplateOutlet="accordionList"></ng-container>
+    <ng-container class="accordion__panel">
+      <ng-container *ngIf="section; else accordionList">
+          <ng-container *ngTemplateOutlet="propertiesList"></ng-container>
       </ng-container>
     </ng-container>
   </div>
 </div>
 
-<ng-template #boxModel>
+<ng-template #propertiesList>
+  <ng-container *ngTemplateOutlet="header; context: {$implicit: section}"></ng-container>
   <div class="box-model">
     <ng-container *ngIf="target?.stylesFormGroup as formGroup">
       <form [formGroup]="target!.stylesFormGroup" class="property">
