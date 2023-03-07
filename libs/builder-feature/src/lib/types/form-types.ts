@@ -1,8 +1,7 @@
 
 export enum SectionsEnum {
-    boxModel = 'box-model',
-    grid = 'grid',
-    flex = 'flex',
+    common = 'Common',
+    structure = 'Structure',
 }
 
 
