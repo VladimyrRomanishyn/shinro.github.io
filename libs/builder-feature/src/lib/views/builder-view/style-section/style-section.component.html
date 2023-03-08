@@ -30,6 +30,9 @@
                     <ng-container *ngSwitchCase="'short'">
                       <ng-container *ngTemplateOutlet="short; context: {$implicit: valueType}"></ng-container>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'dropdown'">
+                      <ng-container *ngTemplateOutlet="dropdown; context: {$implicit: valueType}"></ng-container>
+                    </ng-container>
                     <ng-container *ngSwitchCase="'shortWithColorPicker'">
                       <ng-container
                         *ngTemplateOutlet="short; context: {$implicit: valueType, colorPicker: true}"></ng-container>
@@ -54,6 +57,20 @@
           [formControl]="form.get('pixels.value')"
           type="number">
         <div class="property__measurement-unit">px</div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #dropdown let-form>
+  <ng-container>
+    <div [formGroup]="form" class="property__subprop">
+      <ng-container formGroupName="dropdown"></ng-container>
+      <div class="property__wrapper">
+        <p-dropdown 
+          [options]="form.controls.dropdown.value.options" 
+          [formControl]="form.get('dropdown.value')"
+        ></p-dropdown>
       </div>
     </div>
   </ng-container>

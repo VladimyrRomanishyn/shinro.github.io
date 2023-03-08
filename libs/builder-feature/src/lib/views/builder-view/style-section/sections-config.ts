@@ -95,6 +95,85 @@ const zoomChecker = (control: FormControlsShape, prevControl: FormControlsShape)
   }
 };
 
+const ddChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
+    control.changed = control.value !== prevControl.value;
+    control.styleValue = `${control.value}`;
+    control.update = false;
+};
+
+const gapChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
+    const testRegex = /(?:(?:\d+(?:\.\d+)?(?:px|em|rm|%|vmin|cm|vmax|vh|vw|mm)\s?){1,2})/;
+
+    control.changed = testRegex.test(control.value as string) && control.value !== prevControl.value;
+    control.styleValue = control.changed ?  `${control.value}` : control.styleValue;
+    control.update = !control.changed;
+};
+
+const displayOpt: string[] = [
+    'block',
+    'grid',
+    'flex',
+    'none',
+    'inline-block',
+    'inline-flex',
+    'inline-grid'
+];
+
+const fxDirectionOpt: string[] = [
+    'row',
+    'row-reverse',
+    'column',
+    'column-reverse',
+];
+
+const fxWrapOpt: string[] = [
+    'wrap',
+    'wrap-reverse',
+    'nowrap'
+];
+
+const fxJusContOpt: string[] = [
+    'space-between',
+    'space-around',
+    'space-evenly',
+    'stretch',
+    'normal',
+    'center',
+    'start',
+    'end',
+    'flex-start',
+    'flex-end',
+    'left',
+    'right'
+];
+
+const fxAlItemsOpt: string[] = [
+    'center',
+    'start',
+    'end',
+    'flex-start',
+    'flex-end',
+    'self-start',
+    'self-end',
+    'stretch',
+    'normal',
+    'baseline'
+];
+
+const fxAlContentOpt: string[] = [
+    'space-between',
+    'space-around',
+    'space-evenly',
+    'stretch',
+    'normal',
+    'center',
+    'start',
+    'end',
+    'flex-start',
+    'flex-end',
+];
+
+
 const COMMON_STYLES: Array<StylesFormConfig> = [
     {
         property: 'width',
@@ -185,7 +264,48 @@ const COMMON_STYLES: Array<StylesFormConfig> = [
 ];
 
 const STRUCTURE_STYLES: Array<StylesFormConfig> = [
-
+    {
+        property: 'display',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [displayOpt]}],
+        ]
+    },
+    {
+        property: 'flex-direction',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxDirectionOpt]}],
+        ]
+    },
+    {
+        property: 'flex-wrap',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxWrapOpt]}],
+        ]
+    },
+    {
+        property: 'justify-content',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxJusContOpt]}],
+        ]
+    },
+    {
+        property: 'align-items',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxAlItemsOpt]}],
+        ]
+    },
+    {
+        property: 'align-content',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxAlContentOpt]}],
+        ]
+    },
+    {
+        property: 'gap',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: gapChecker}],
+        ]
+    },
 ]
 
 export const sectionsCofig: Section[] = [

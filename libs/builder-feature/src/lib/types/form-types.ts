@@ -14,15 +14,19 @@ export interface Section {
 export type CSSProperty =
     | 'width' | 'height' | 'margin' | 'padding' | 'border' | 'background' 
     | 'border-radius' | 'box-shadow' | 'margin-left' | 'margin-top' 
-    | 'padding-left' | 'padding-top' | 'opacity' | 'zoom';
+    | 'padding-left' | 'padding-top' | 'opacity' | 'zoom' | 'display'
+    | 'flex-direction' | 'flex-wrap' | 'flex-flow' | 'justify-content'
+    | 'gap' | 'order' | 'flex-grow' | 'flex-shrink' | 'flex-basis'| 'flex'
+    | 'align-self' | 'align-items' | 'align-content' ;
 
-export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker';
+export type ValueType = 'percentage' | 'pixels' | 'short' | 'shortWithColorPicker' | 'dropdown';
 
 export type FormControlsShape = {
     changed: boolean;
     update: boolean;
     value: string | boolean | number;
     color?: string;
+    options?: Array<string[]>;
     maxValue?: number;
     minValue?: number;
     styleValue: string;
