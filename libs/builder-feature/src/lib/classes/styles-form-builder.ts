@@ -37,14 +37,18 @@ export class StylesFormBuilder extends FormBuilder {
                 return this.group({
                     [propConfig.property]: this.array(propConfig.valueTypes.map(
                         ([type, control]) => {
+                    
                             switch (type) {
                                 case 'percentage':
                                     return this.group({ percentage: this.group(this.setPercentage(propConfig.property, control)) });
                                 case 'pixels':
                                     return this.group({ pixels: this.group(this.setPixels(propConfig.property, control)) });
                                 case 'short':
+                                    return this.group({ short: this.group(this.setShort(propConfig.property, control)) });
                                 case 'shortWithColorPicker':
                                     return this.group({ short: this.group(this.setShortWithColor(propConfig.property, control)) });
+                                case 'dropdown':
+                                    return this.group({ dropdown: this.group(this.setDropdown(propConfig.property, control)) });
                             }
                         })
                     )
@@ -52,6 +56,7 @@ export class StylesFormBuilder extends FormBuilder {
 
             }))
         });
+
         this.previousState = { ...this._stylesFormGroup.value };
         this.createFormObserver();
     }
@@ -108,6 +113,8 @@ export class StylesFormBuilder extends FormBuilder {
                                 return { short: this.setShort(propertyName as CSSProperty, control) };
                             case 'shortWithColorPicker':
                                 return { short: this.setShortWithColor(propertyName as CSSProperty, control) };
+                            case 'dropdown':
+                                return { short: this.setDropdown(propertyName as CSSProperty, control) };    
                         }
 
                         return;
@@ -139,6 +146,11 @@ export class StylesFormBuilder extends FormBuilder {
         control.value = Math.floor(+control.value);
         return { ...control };
     }
+
+    private setDropdown(property: CSSProperty, control: FormControlsShape): FormControlsShape {
+        control.value = getComputedStyle(this.node).getPropertyValue(property);
+        return { ...control };
+    }    
 
     private setShort(property: CSSProperty, control: FormControlsShape): FormControlsShape {
         const regex = new RegExp(`${property}:(.+?);`);
