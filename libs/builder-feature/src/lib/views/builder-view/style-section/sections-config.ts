@@ -109,6 +109,22 @@ const gapChecker = (control: FormControlsShape, prevControl: FormControlsShape) 
     control.update = !control.changed;
 };
 
+const orderChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
+    const testRegex = /\d+/;
+
+    control.changed = testRegex.test(control.value as string) && control.value !== prevControl.value;
+    control.styleValue = control.changed ?  `${control.value}` : control.styleValue;
+    control.update = !control.changed;
+};
+
+const fxBasisChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
+    const testRegex = /\d+(px|em|rm|%|vh|vw|pc)|auto|(max|min|fit)?-?content/;
+
+    control.changed = testRegex.test(control.value as string) && control.value !== prevControl.value;
+    control.styleValue = control.changed ?  `${control.value}` : control.styleValue;
+    control.update = !control.changed;
+};
+
 const displayOpt: string[] = [
     'block',
     'grid',
@@ -171,6 +187,24 @@ const fxAlContentOpt: string[] = [
     'end',
     'flex-start',
     'flex-end',
+];
+
+const fxASOpt: string[] = [
+ 'auto',
+ 'normal',
+ 'center',
+ 'start',
+ 'end',
+ 'self-start',
+ 'self-end',
+ 'flex-start',
+ 'flex-end',
+ 'baseline',
+ 'first baseline',
+ 'last baseline',
+ 'stretch',
+ 'safe center',
+ 'unsafe center'
 ];
 
 
@@ -301,9 +335,39 @@ const STRUCTURE_STYLES: Array<StylesFormConfig> = [
         ]
     },
     {
+        property: 'align-self',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxASOpt]}],
+        ]
+    },
+    {
         property: 'gap',
         valueTypes: [
             ['short', {...controlsBlueprint, controlChecker: gapChecker}],
+        ]
+    },
+    {
+        property: 'order',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: orderChecker}],
+        ]
+    },
+    {
+        property: 'flex-grow',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: orderChecker}],
+        ]
+    },
+    {
+        property: 'flex-shrink',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: orderChecker}],
+        ]
+    },
+    {
+        property: 'flex-basis',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: fxBasisChecker}],
         ]
     },
 ]
