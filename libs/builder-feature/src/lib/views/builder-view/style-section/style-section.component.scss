@@ -6,6 +6,11 @@
   padding: 10px;
 }
 
+.properties-wrapper {
+  display: grid;
+  grid-template: repeat(auto-fill, 60px) / 1fr 1fr;
+}
+
 .accordion {
   &__panel {}
 
@@ -47,7 +52,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 45%;
+    width: 90%;
+    padding-left: 4%;
+
+    ::ng-deep .p-inputtext {
+      padding: 3px;
+    }
+  }
+
+  &__name {
+    margin: 2% 0 2% 4%;
   }
 
   &__subprop {
@@ -60,56 +74,56 @@
     }
   }
 
-  &__fullBorder {
-    div {
-      width: 50px;
-      height: 20px;
-      input {
-        width: inherit;
-      }
-      input[type='color'] {
-        border: none;
-        width: 105%;
-        height: 22px;
-        background: none;
-        height: 132%;
-        outline: none;
-        margin-top: -3px;
-        margin-left: -1px;
-      }
-    }
-    div:first-of-type {
-      grid-area: top;
-    }
+  // &__fullBorder {
+  //   div {
+  //     width: 50px;
+  //     height: 20px;
+  //     input {
+  //       width: inherit;
+  //     }
+  //     input[type='color'] {
+  //       border: none;
+  //       width: 105%;
+  //       height: 22px;
+  //       background: none;
+  //       height: 132%;
+  //       outline: none;
+  //       margin-top: -3px;
+  //       margin-left: -1px;
+  //     }
+  //   }
+  //   div:first-of-type {
+  //     grid-area: top;
+  //   }
 
-    div:nth-of-type(2) {
-      grid-area: left;
-      display: flex;
-      height: 100%;
-      align-items: center;
-    }
+  //   div:nth-of-type(2) {
+  //     grid-area: left;
+  //     display: flex;
+  //     height: 100%;
+  //     align-items: center;
+  //   }
 
-    div:nth-of-type(3) {
-      grid-area: center;
-    }
+  //   div:nth-of-type(3) {
+  //     grid-area: center;
+  //   }
 
-    div:nth-of-type(4) {
-      grid-area: right;
-      display: flex;
-      height: 100%;
-      align-items: center;
-    }
+  //   div:nth-of-type(4) {
+  //     grid-area: right;
+  //     display: flex;
+  //     height: 100%;
+  //     align-items: center;
+  //   }
 
-    div:last-of-type {
-      grid-area: bottom;
-    }
-    width: 150px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr 2fr 1fr;
-    grid-template-areas:
-    ".  top ."
-    "left center right"
-    ". bottom .";
-  }
+  //   div:last-of-type {
+  //     grid-area: bottom;
+  //   }
+  //   width: 150px;
+  //   display: grid;
+  //   grid-template-columns: repeat(3, 1fr);
+  //   grid-template-rows: 1fr 2fr 1fr;
+  //   grid-template-areas:
+  //   ".  top ."
+  //   "left center right"
+  //   ". bottom .";
+  // }
 }
