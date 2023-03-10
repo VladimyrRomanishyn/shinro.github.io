@@ -10,12 +10,12 @@
 
 <ng-template #propertiesList>
   <ng-container *ngTemplateOutlet="header; context: {$implicit: section}"></ng-container>
-  <div class="box-model">
+  <div>
     <ng-container *ngIf="target?.stylesFormGroup as formGroup">
-      <form [formGroup]="target!.stylesFormGroup" class="property">
+      <form [formGroup]="target!.stylesFormGroup" class="property properties-wrapper">
         <ng-container formArrayName="nodeStyles">
           <ng-container *ngFor="let property of $any(formGroup.get('nodeStyles')).controls; let i = index">
-            <ng-container [formGroup]="property">
+            <div [formGroup]="property">
               <ng-container formArrayName="{{target?.getPropertyName(i)}}">
                 <div class="property__name">{{target?.getPropertyName(i)}}</div>
                 <ng-container
@@ -40,7 +40,7 @@
                   </ng-container>
                 </ng-container>
               </ng-container>
-            </ng-container>
+            </div>
           </ng-container>
         </ng-container>
       </form>
