@@ -24,6 +24,10 @@ export class StylesFormBuilder extends FormBuilder {
         return this.config[index].property;
     }
 
+    getPropertyStyles(index: number): {[key: string]: string} | null {
+        return this.config[index].ngStyle ?? null;
+    }
+
     getValueTypeName(propIndex: number, valueTypeIndex: number): ValueType {
         return this.config[propIndex].valueTypes[valueTypeIndex][0];
     }
@@ -49,6 +53,8 @@ export class StylesFormBuilder extends FormBuilder {
                                     return this.group({ short: this.group(this.setShortWithColor(propConfig.property, control)) });
                                 case 'dropdown':
                                     return this.group({ dropdown: this.group(this.setDropdown(propConfig.property, control)) });
+                                case 'textarea':
+                                    return this.group({ textarea: this.group(this.setDropdown(propConfig.property, control)) });    
                             }
                         })
                     )
@@ -56,7 +62,7 @@ export class StylesFormBuilder extends FormBuilder {
 
             }))
         });
-
+        
         this.previousState = { ...this._stylesFormGroup.value };
         this.createFormObserver();
     }
@@ -114,7 +120,9 @@ export class StylesFormBuilder extends FormBuilder {
                             case 'shortWithColorPicker':
                                 return { short: this.setShortWithColor(propertyName as CSSProperty, control) };
                             case 'dropdown':
-                                return { short: this.setDropdown(propertyName as CSSProperty, control) };    
+                                return { dropdown: this.setDropdown(propertyName as CSSProperty, control) };
+                            case 'textarea':
+                                return { textarea: this.setDropdown(propertyName as CSSProperty, control) };        
                         }
 
                         return;
@@ -148,7 +156,10 @@ export class StylesFormBuilder extends FormBuilder {
     }
 
     private setDropdown(property: CSSProperty, control: FormControlsShape): FormControlsShape {
-        control.value = getComputedStyle(this.node).getPropertyValue(property);
+        const computed = getComputedStyle(this.node).getPropertyValue(property);
+        // @ts-ignore
+        const styleTextValue = this.node.style[property as string] ? this.node.style[property as string] : null;
+        control.value = styleTextValue ?? computed;
         return { ...control };
     }    
 

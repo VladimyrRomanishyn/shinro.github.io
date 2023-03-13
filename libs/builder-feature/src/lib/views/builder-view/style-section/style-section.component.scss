@@ -58,6 +58,11 @@
     ::ng-deep .p-inputtext {
       padding: 3px;
     }
+
+    textarea {
+      resize: none;
+      width: 100%;
+    }
   }
 
   &__name {

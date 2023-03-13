@@ -95,10 +95,10 @@ const zoomChecker = (control: FormControlsShape, prevControl: FormControlsShape)
   }
 };
 
-const ddChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
+const defaultChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
     control.changed = control.value !== prevControl.value;
     control.styleValue = `${control.value}`;
-    control.update = false;
+    control.update = !control.changed;
 };
 
 const gapChecker = (control: FormControlsShape, prevControl: FormControlsShape) => {
@@ -297,47 +297,47 @@ const COMMON_STYLES: Array<StylesFormConfig> = [
     },
 ];
 
-const STRUCTURE_STYLES: Array<StylesFormConfig> = [
+const FLEXBOX_STYLES: Array<StylesFormConfig> = [
     {
         property: 'display',
         valueTypes: [
-            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [displayOpt]}],
+            ['dropdown', { ...controlsBlueprint, controlChecker: defaultChecker, options: [displayOpt]}],
         ]
     },
     {
         property: 'flex-direction',
         valueTypes: [
-            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxDirectionOpt]}],
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxDirectionOpt]}],
         ]
     },
     {
         property: 'flex-wrap',
         valueTypes: [
-            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxWrapOpt]}],
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxWrapOpt]}],
         ]
     },
     {
         property: 'justify-content',
         valueTypes: [
-            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxJusContOpt]}],
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxJusContOpt]}],
         ]
     },
     {
         property: 'align-items',
         valueTypes: [
-            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxAlItemsOpt]}],
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxAlItemsOpt]}],
         ]
     },
     {
         property: 'align-content',
         valueTypes: [
-            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxAlContentOpt]}],
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxAlContentOpt]}],
         ]
     },
     {
         property: 'align-self',
         valueTypes: [
-            ['dropdown', {...controlsBlueprint, controlChecker: ddChecker, options: [fxASOpt]}],
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxASOpt]}],
         ]
     },
     {
@@ -370,7 +370,71 @@ const STRUCTURE_STYLES: Array<StylesFormConfig> = [
             ['short', {...controlsBlueprint, controlChecker: fxBasisChecker}],
         ]
     },
-]
+];
+
+const GRID_STYLES: Array<StylesFormConfig> = [
+    {
+        property: 'display',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [displayOpt]}],
+        ]
+    },
+    {
+        property: 'grid-template',
+        ngStyle: {'grid-row-end': 'span 2'},
+        valueTypes: [
+            ['textarea', {...controlsBlueprint, controlChecker: defaultChecker}],
+        ]
+    },
+    {
+        property: 'grid-area',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: defaultChecker}],
+        ]
+    },
+    {
+        property: 'justify-content',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxJusContOpt]}],
+        ]
+    },
+    {
+        property: 'align-items',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxAlItemsOpt]}],
+        ]
+    },
+    {
+        property: 'align-content',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxAlContentOpt]}],
+        ]
+    },
+    {
+        property: 'align-self',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxASOpt]}],
+        ]
+    },
+    {
+        property: 'justify-self',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxASOpt]}],
+        ]
+    },
+    {
+        property: 'gap',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: gapChecker}],
+        ]
+    },
+    {
+        property: 'justify-items',
+        valueTypes: [
+            ['dropdown', {...controlsBlueprint, controlChecker: defaultChecker, options: [fxJusContOpt]}],
+        ]
+    },
+];
 
 export const sectionsCofig: Section[] = [
     {
@@ -379,8 +443,13 @@ export const sectionsCofig: Section[] = [
         stylesFormCofig: COMMON_STYLES
     },
     {
-        name: 'Structure',
-        value: SectionsEnum.structure,
-        stylesFormCofig: STRUCTURE_STYLES
+        name: 'Flexbox',
+        value: SectionsEnum.flexbox,
+        stylesFormCofig: FLEXBOX_STYLES
+    },
+    {
+        name: 'Grid',
+        value: SectionsEnum.grid,
+        stylesFormCofig: GRID_STYLES
     },
 ]
