@@ -15,7 +15,7 @@
       <form [formGroup]="target!.stylesFormGroup" class="property properties-wrapper">
         <ng-container formArrayName="nodeStyles">
           <ng-container *ngFor="let property of $any(formGroup.get('nodeStyles')).controls; let i = index">
-            <div [formGroup]="property">
+            <div [formGroup]="property" [ngStyle]="target!.getPropertyStyles(i)">
               <ng-container formArrayName="{{target?.getPropertyName(i)}}">
                 <div class="property__name">{{target?.getPropertyName(i)}}</div>
                 <ng-container
@@ -29,6 +29,9 @@
                     </ng-container>
                     <ng-container *ngSwitchCase="'short'">
                       <ng-container *ngTemplateOutlet="short; context: {$implicit: valueType}"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'textarea'">
+                      <ng-container *ngTemplateOutlet="textarea; context: {$implicit: valueType}"></ng-container>
                     </ng-container>
                     <ng-container *ngSwitchCase="'dropdown'">
                       <ng-container *ngTemplateOutlet="dropdown; context: {$implicit: valueType}"></ng-container>
@@ -93,6 +96,17 @@
   </ng-container>
 </ng-template>
 
+<ng-template #textarea let-form>
+  <ng-container>
+    <div [formGroup]="form" class="property__subprop">
+      <ng-container formGroupName="textarea"></ng-container>
+      <div class="property__wrapper">
+        <textarea [formControl]="form.get('textarea.value')" rows="5"></textarea>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
 <ng-template #percentage let-form>
   <ng-container>
     <div [formGroup]="form" class="property__subprop">
@@ -109,27 +123,6 @@
       </div>
     </div>
   </ng-container>
-</ng-template>
-
-<ng-template #grid>
-  <div class="property">
-    <label>
-      Block
-      <input (change)="displayEvent($event)" [(ngModel)]="display" value="block" type="radio">
-    </label>
-    <label>
-      Flex
-      <input (change)="displayEvent($event)" [(ngModel)]="display" value="flex" type="radio">
-    </label>
-    <label>
-      Grid
-      <input (change)="displayEvent($event)" [(ngModel)]="display" value="grid" type="radio">
-    </label>
-  </div>
-</ng-template>
-
-<ng-template #flex>
-  <div>flex</div>
 </ng-template>
 
 <ng-template #accordionList>
