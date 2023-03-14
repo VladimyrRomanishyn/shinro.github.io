@@ -6,3 +6,32 @@
   border: 2px solid lightgrey;
   padding: 10px;
 }
+
+.toolbar {
+  &__export-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 140px;
+    border-radius: 5px; 
+    box-shadow: rgba(44, 41, 214, .5) 5px 5px 10px;
+    border: 1px solid rgb(44, 41, 214); 
+    background: rgb(66, 84, 174);
+    color: #fff;
+    font-size: 16px;
+    user-select: none;
+    transition: all .3s ease;
+
+    &:hover:enabled {
+      color: rgb(66, 84, 174);
+      background: #fff;
+      cursor: pointer;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+  }
+}
