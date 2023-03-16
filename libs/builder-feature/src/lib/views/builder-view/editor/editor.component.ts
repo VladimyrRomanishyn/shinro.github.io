@@ -11,8 +11,8 @@ import { Store } from '@ngrx/store';
 import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
 import { ContextMenuEnum } from './components/context-menu/context-menu.component';
 import { TagsModalComponent } from './components/tags-modal/tags-modal.component';
-import { EDITOR_CLASSNAME, BUILDER_EDITOR_SELECTOR, EDITOR_CLICK_CLASSNAME } from '../../../classes/ng-element';
 import { NgElementsService } from '../../../services/ng-elements.service';
+import { BUILDER_EDITOR_SELECTOR, EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../../../constants/class-names';
 
 @Component({
   selector: BUILDER_EDITOR_SELECTOR,

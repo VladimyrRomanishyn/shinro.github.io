@@ -1,49 +1,57 @@
-import { EDITOR_CLASSNAME } from './ng-element';
+import { EDITOR_CLASSNAME } from '../constants/class-names';
+import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME } from '../constants/export-blueprints';
+
 export class ExportGenerator {
     public static generate(element: HTMLElement): void {
         if (!element.innerHTML) {  
             throw new Error('There is nothing to export!');
         }
+        
         const cloned = element.cloneNode(true) as HTMLElement; 
         // add classes
         this.addClassNames(cloned);
         // generate files
-        const files = [this.generateHTML(cloned), this.generateCSS(cloned)];
+        const files = [this.generateCSS(cloned), this.generateHTML(cloned)];
         // download files
         this.downloadFiles(files);
         cloned.remove();
     }
 
     private static generateHTML(element: HTMLElement): File {
-        const content = 
-`<!DOCTYPE HTML>
-<html>
-<head>
-    <meta charset="utf-8">
-    <base href="/">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    ${element.innerHTML}
-</body>
-</html>`
+        const content = this.reformatHTML(element);
+        const template = HTML_BLUEPRINT.replace(/{{innerHTML}}/, content);
 
-        return new File([content], 'index.html', {type: 'text/html'});
+        return new File([template], HTML_FILE_NAME, {type: 'text/html'});
     }
 
     private static generateCSS(element: HTMLElement): File {
-        const baseRules = 
-`* {
-    margin: 0;
-    padding:0
-}
-
-body {
-    width: 100vw;
-    height: 100vh;
-}\n`;
         const rules = this.createRulesList(element);   
-        return new File([baseRules,rules], 'styles.css', {type: 'text/css'});
+        return new File([CSS_BASE,rules], CSS_FILE_NAME, {type: 'text/css'});
+    }
+
+    private static reformatHTML(element: HTMLElement, depth = 0): string {
+        const childOffset = Array(depth).fill(0).map(() => '\t').join('');
+        const parentOffset = childOffset.slice(0,-1);
+
+        if (!element.childNodes.length) {
+            return `${element.outerHTML}`
+        }
+
+        const newInner = (Array.from(element.childNodes) as HTMLElement[])
+            .reduce((acc, el, i) => {
+                acc += i 
+                    ? `\n${childOffset}${this.reformatHTML(el, ++depth)}`
+                    : `${childOffset}${this.reformatHTML(el, ++depth)}`;
+                return acc;
+        }, '')
+        
+        element.innerHTML = element.className === EDITOR_CLASSNAME 
+            ? newInner 
+            :`\n${newInner}\n${parentOffset}`;
+        
+        return element.className === EDITOR_CLASSNAME
+            ? `${element.innerHTML}` 
+            : `${element.outerHTML}`;
     }
 
     private static createRulesList(element: HTMLElement): string {
@@ -66,6 +74,8 @@ body {
     private static createRule(el: HTMLElement): string {
         const selector = this.createSelector(el);
         const styles = el.style.cssText.split(';').map(el => el.trim()).join(';\n\t').slice(0, -1);
+        el.removeAttribute('style');
+
         return `${selector} {\n\t${styles}}\n`;
     };
 
