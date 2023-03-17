@@ -5,8 +5,8 @@ import { NgElementCreator } from '../classes/ng-element';
   providedIn: 'root'
 })
 export class NgElementsService {
-  public cloneNode(node: HTMLElement | undefined): void {
-    NgElementCreator.cloneElement(node);
+  public cloneNode(node: HTMLElement | undefined, qty: number): void {
+    NgElementCreator.cloneElement(node, qty);
   }
 
   public deleteNode(context: HTMLElement | undefined): void {
@@ -15,5 +15,9 @@ export class NgElementsService {
 
   public createNode(type: string, context: HTMLElement | undefined) {
     NgElementCreator.createElement({type, context});
+  }
+
+  public clearNode(context: HTMLElement | undefined) {
+    NgElementCreator.clearNode(context);
   }
 }

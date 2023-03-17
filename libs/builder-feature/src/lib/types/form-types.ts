@@ -51,3 +51,17 @@ export type StyleFormPropertyValue = {
         [key in ValueType]: FormControlsShape
     }>
 }
+
+export interface MenuStyles {
+    left: string,
+    top: string,
+    opacity: number;
+}
+  
+export enum ContextMenuEnum {
+    addNode = 'addNode',
+    deleteNode = 'deleteNode',
+    addDiv = 'addDiv',
+    cloneNode = 'cloneNode',
+    clearNode = 'clearNode'
+}

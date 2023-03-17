@@ -1,18 +1,5 @@
 import { Component, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
-
-interface MenuStyles {
-  left: string,
-  top: string,
-  opacity: number;
-}
-
-export enum ContextMenuEnum {
-  addNode = 'addNode',
-  deleteNode = 'deleteNode',
-  addDiv = 'addDiv',
-  cloneNode = 'cloneNode'
-}
-
+import { ContextMenuEnum, MenuStyles } from '@libs/builder-feature/src/lib/types/form-types';
 @Component({
   selector: 'context-memu',
   templateUrl: './context-menu.component.html',
@@ -20,11 +7,13 @@ export enum ContextMenuEnum {
 })
 export class ContextMenuComponent {
   @ViewChild('contextPanel', { static: true }) public contextPanel!: ElementRef;
-  @Output() contextAction: EventEmitter<ContextMenuEnum> = new EventEmitter();
+  @Output() contextAction: EventEmitter<{type: ContextMenuEnum, payload?: any}> = new EventEmitter();
   public contextMenuStyles: MenuStyles = { left: '', top: '', opacity: 0 };
   public contextMenuEnum = ContextMenuEnum;
-  
+  public cloneQty = 1;
+
   public toogleContextMenu(event?: PointerEvent | undefined): void {
+    this.cloneQty = 1;
     this.contextMenuStyles.opacity = 0;
     this.contextMenuStyles.left = '';
     this.contextMenuStyles.top = '';
@@ -43,8 +32,8 @@ export class ContextMenuComponent {
     }
   }
 
-  public emitActionEvent(type: ContextMenuEnum): void {
+  public emitActionEvent(payload: {type: ContextMenuEnum, payload?: any}): void {
     this.toogleContextMenu();
-    this.contextAction.emit(type);
+    this.contextAction.emit(payload);
   }
 }
