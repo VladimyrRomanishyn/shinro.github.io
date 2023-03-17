@@ -9,10 +9,10 @@ import { Subject } from 'rxjs';
 import { BuilderFeatureState } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
 import { Store } from '@ngrx/store';
 import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
-import { ContextMenuEnum } from './components/context-menu/context-menu.component';
 import { TagsModalComponent } from './components/tags-modal/tags-modal.component';
 import { NgElementsService } from '../../../services/ng-elements.service';
 import { BUILDER_EDITOR_SELECTOR, EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../../../constants/class-names';
+import { ContextMenuEnum } from '../../../types/form-types';
 
 @Component({
   selector: BUILDER_EDITOR_SELECTOR,
@@ -41,16 +41,15 @@ export class EditorComponent {
   }
   
   set clickTargetElement(target: HTMLElement | undefined) {
-    this._clickTargetElement?.classList?.toggle(EDITOR_CLICK_CLASSNAME);
-    this._clickTargetElement = target;
-    this._clickTargetElement?.classList?.toggle(EDITOR_CLICK_CLASSNAME);
-
-    if (target && target?.parentElement?.localName === BUILDER_EDITOR_SELECTOR) {
-      this._clickTargetElement?.classList?.remove(EDITOR_CLICK_CLASSNAME);
-      this._clickTargetElement = undefined;
+    if (target?.parentElement?.localName === BUILDER_EDITOR_SELECTOR) {
+      target = undefined;
     }
 
-    this.store.dispatch(setTarget({target: this._clickTargetElement}))
+    
+    this.toggleSelectedStatus(target);
+    this.toggleContentEditableStatus(target);
+    this._clickTargetElement = target;
+    this.store.dispatch(setTarget({target}))
   }
   
   public _ctxTargetElement: HTMLElement | undefined;
@@ -65,8 +64,18 @@ export class EditorComponent {
   ) {
   }
 
-  contextMenuActionHandler(action: string): void {
-    switch (action) {
+  private toggleSelectedStatus(target: HTMLElement | undefined): void {
+    this._clickTargetElement?.classList.remove(EDITOR_CLICK_CLASSNAME);
+    target && target.classList.add(EDITOR_CLICK_CLASSNAME);
+  }
+
+  private toggleContentEditableStatus(target: HTMLElement | undefined): void {
+    !target && this._clickTargetElement?.removeAttribute('contenteditable');
+    target && target.setAttribute('contenteditable', 'true');
+  }
+
+  contextMenuActionHandler({type, payload}: {type: ContextMenuEnum, payload?: any}): void {
+    switch (type) {
       case ContextMenuEnum.addNode:
         this.tagsModal?.openNodesModal();
         return;
@@ -81,8 +90,12 @@ export class EditorComponent {
         return;
 
       case ContextMenuEnum.cloneNode:
-        this.elementsSrc.cloneNode(this.ctxTargetElement);
+        this.elementsSrc.cloneNode(this.ctxTargetElement, payload);
         return;
+          
+      case ContextMenuEnum.clearNode:
+        this.elementsSrc.clearNode(this.ctxTargetElement);
+        return;      
     }
   }
 }

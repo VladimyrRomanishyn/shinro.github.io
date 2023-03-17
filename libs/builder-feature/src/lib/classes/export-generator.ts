@@ -57,7 +57,7 @@ export class ExportGenerator {
     private static createRulesList(element: HTMLElement): string {
         let root = '';
 
-        if (element.className !== EDITOR_CLASSNAME) {
+        if (element?.className !== EDITOR_CLASSNAME) {
             root = this.createRule(element);
         }
         

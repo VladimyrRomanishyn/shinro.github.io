@@ -1,14 +1,22 @@
 <div #contextPanel class="contextmenu" [ngStyle]="contextMenuStyles">
-    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.addDiv)">
+    <div class="contextmenu__item" (click)="emitActionEvent({type: contextMenuEnum.addDiv})">
         Add Division tag
     </div>
-    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.cloneNode)">
+    <div class="contextmenu__item" (click)="emitActionEvent({type: contextMenuEnum.cloneNode, payload: cloneQty})">
         Clone Node
+        <div class="contextmenu__qt-selector" (click)="$event.preventDefault(); $event.stopPropagation()">
+            <div class="contextmenu__qt-button" (click)="cloneQty = cloneQty + 1">+</div>
+            {{cloneQty}}
+            <div class="contextmenu__qt-button" (click)="cloneQty = cloneQty - 1">-</div>
+        </div>
     </div>
-    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.addNode)">
+    <div class="contextmenu__item" (click)="emitActionEvent({type: contextMenuEnum.addNode})">
         Add Node
     </div>
-    <div class="contextmenu__item" (click)="emitActionEvent(contextMenuEnum.deleteNode)">
+    <div class="contextmenu__item" (click)="emitActionEvent({type: contextMenuEnum.deleteNode})">
         Delete Node
+    </div>
+    <div class="contextmenu__item" (click)="emitActionEvent({type: contextMenuEnum.clearNode})">
+        Clear Node
     </div>
 </div>

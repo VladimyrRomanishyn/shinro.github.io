@@ -6,11 +6,13 @@ export interface NodeParams {
 }
 
 export class NgElementCreator {
-    public static cloneElement(source: HTMLElement | undefined): void {
-        if (source && source.className !== EDITOR_CLASSNAME) {
-            const clone = source?.cloneNode(true) as HTMLElement;
-            clone.classList.remove(EDITOR_CLICK_CLASSNAME);
-            source.after(clone);
+    public static cloneElement(source: HTMLElement | undefined, qty: number): void {
+        if (source && source.className !== EDITOR_CLASSNAME && qty > 0) {
+            Array(qty).fill(0).map(() => {
+                const clone = source?.cloneNode(true) as HTMLElement;
+                clone.classList.remove(EDITOR_CLICK_CLASSNAME);
+                source.after(clone);
+            }) 
           }
     }
 
@@ -25,6 +27,12 @@ export class NgElementCreator {
             const nodeElement = document.createElement(type);
             nodeElement.classList.add(EDITOR_CHILD_CLASSNAME);
             context.append(nodeElement);
+        }
+    }
+
+    public static clearNode(source: HTMLElement | undefined): void {
+        if (source) {
+            source.innerHTML = '';
         }
     }
 }
