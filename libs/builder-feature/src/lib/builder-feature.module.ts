@@ -20,7 +20,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ContextMenuComponent } from './views/builder-view/editor/components/context-menu/context-menu.component';
 import { TagsModalComponent } from './views/builder-view/editor/components/tags-modal/tags-modal.component';
-
+import { TabViewModule } from 'primeng/tabview';
+import { CSSListingComponent } from './views/builder-view/style-section/components/css-listing/css-listing.component';
+import { HtmlListingComponent } from './views/builder-view/style-section/components/html-listing/html-listing.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -33,7 +35,8 @@ import { TagsModalComponent } from './views/builder-view/editor/components/tags-
     SliderModule,
     ReactiveFormsModule,
     InputSwitchModule,
-    DropdownModule
+    DropdownModule,
+    TabViewModule,
   ],
   declarations: [
     BuilderViewComponent,
@@ -45,6 +48,8 @@ import { TagsModalComponent } from './views/builder-view/editor/components/tags-
     DragdropDirective,
     ContextMenuComponent,
     TagsModalComponent,
+    CSSListingComponent,
+    HtmlListingComponent,
   ],
 })
 export class BuilderFeatureModule {}

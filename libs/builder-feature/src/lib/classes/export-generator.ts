@@ -29,12 +29,12 @@ export class ExportGenerator {
         return new File([CSS_BASE,rules], CSS_FILE_NAME, {type: 'text/css'});
     }
 
-    private static reformatHTML(element: HTMLElement, depth = 0): string {
+    public static reformatHTML(element: HTMLElement, depth = 0): string {
         const childOffset = Array(depth).fill(0).map(() => '\t').join('');
         const parentOffset = childOffset.slice(0,-1);
 
         if (!element.childNodes.length) {
-            return `${element.outerHTML}`
+            return element.outerHTML ? `${element.outerHTML}`: `${element.parentElement?.innerText}`;
         }
 
         const newInner = (Array.from(element.childNodes) as HTMLElement[])
@@ -54,7 +54,7 @@ export class ExportGenerator {
             : `${element.outerHTML}`;
     }
 
-    private static createRulesList(element: HTMLElement): string {
+    public static createRulesList(element: HTMLElement): string {
         let root = '';
 
         if (element?.className !== EDITOR_CLASSNAME) {
@@ -72,8 +72,10 @@ export class ExportGenerator {
     }
 
     private static createRule(el: HTMLElement): string {
+        if (!el.style) { return ''}
+
         const selector = this.createSelector(el);
-        const styles = el.style.cssText.split(';').map(el => el.trim()).join(';\n\t').slice(0, -1);
+        const styles = el.style?.cssText.split(';').map(el => el.trim()).join(';\n\t').slice(0, -1);
         el.removeAttribute('style');
 
         return `${selector} {\n\t${styles}}\n`;
@@ -101,7 +103,7 @@ export class ExportGenerator {
         })
     }
 
-    private static addClassNames(element: HTMLElement): void {
+    public static addClassNames(element: HTMLElement): void {
         const children = Array.from(element.childNodes) as HTMLElement[];
         if (element.className == EDITOR_CLASSNAME) {
             children.map((el: HTMLElement, i: number) => el.className = 'section-' + i)

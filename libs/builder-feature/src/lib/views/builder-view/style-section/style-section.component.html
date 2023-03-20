@@ -1,12 +1,28 @@
-<div class="editorStyles">
-  <div class="accordion">
-    <ng-container class="accordion__panel">
-      <ng-container *ngIf="section; else accordionList">
-          <ng-container *ngTemplateOutlet="propertiesList"></ng-container>
-      </ng-container>
-    </ng-container>
-  </div>
-</div>
+<p-tabView>
+  <p-tabPanel header="CSS Editor">
+    <div class="editorStyles">
+      <div class="accordion">
+        <ng-container class="accordion__panel">
+          <ng-container *ngIf="section; else accordionList">
+              <ng-container *ngTemplateOutlet="propertiesList"></ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </p-tabPanel>
+  <p-tabPanel #cssTab header="CSS code">
+    <ng-template pTemplate="content">
+      <css-listing *ngIf="cssTab.selected"></css-listing>
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel #htmlTab header="HTML code">
+    <ng-template pTemplate="content">
+      <html-listing *ngIf="htmlTab.selected"></html-listing>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>
+
+
 
 <ng-template #propertiesList>
   <ng-container *ngTemplateOutlet="header; context: {$implicit: section}"></ng-container>
