@@ -13,6 +13,6 @@ export class HtmlListingComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.listing = this.codeEditorSvc.getHTMLListing();
-    this.root.nativeElement.innerText = this.listing;
+    this.root.nativeElement.textContent = this.listing;
   }
 }
