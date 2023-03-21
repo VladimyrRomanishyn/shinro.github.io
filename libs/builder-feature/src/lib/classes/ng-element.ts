@@ -25,6 +25,7 @@ export class NgElementCreator {
     public static createElement ({context, type}: NodeParams) {
         if (context) {
             const nodeElement = document.createElement(type);
+            nodeElement.style.height = '50px';
             nodeElement.classList.add(EDITOR_CHILD_CLASSNAME);
             context.append(nodeElement);
         }

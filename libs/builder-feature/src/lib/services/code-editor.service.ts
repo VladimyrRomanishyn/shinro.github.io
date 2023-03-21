@@ -23,4 +23,8 @@ export class CodeEditorService {
     root.remove();
     return listing
   }
+
+  private replace(listing: string): string {
+    return listing.replace(/\s/, '&nbsp;');
+  }
 }

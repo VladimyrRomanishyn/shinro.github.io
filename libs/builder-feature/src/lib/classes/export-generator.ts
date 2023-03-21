@@ -30,18 +30,26 @@ export class ExportGenerator {
     }
 
     public static reformatHTML(element: HTMLElement, depth = 0): string {
-        const childOffset = Array(depth).fill(0).map(() => '\t').join('');
-        const parentOffset = childOffset.slice(0,-1);
+        if (element.className === EDITOR_CLASSNAME && !element.childNodes.length) {
+            return '';
+        }
+
+        this.removeArrtibutes(element);
+
+        const childOffset = Array(depth).fill(0).map(() => '\t').join('') || '';
+        const parentOffset = childOffset.slice(0,-1) || '';
 
         if (!element.childNodes.length) {
-            return element.outerHTML ? `${element.outerHTML}`: `${element.parentElement?.innerText}`;
+            return element.outerHTML ? `${element.outerHTML}`: `${element.nodeValue}`;
         }
+        
+        depth++
 
         const newInner = (Array.from(element.childNodes) as HTMLElement[])
             .reduce((acc, el, i) => {
                 acc += i 
-                    ? `\n${childOffset}${this.reformatHTML(el, ++depth)}`
-                    : `${childOffset}${this.reformatHTML(el, ++depth)}`;
+                    ? `\n${childOffset}${this.reformatHTML(el, depth)}`
+                    : `${childOffset}${this.reformatHTML(el, depth)}`;
                 return acc;
         }, '')
         
@@ -55,6 +63,10 @@ export class ExportGenerator {
     }
 
     public static createRulesList(element: HTMLElement): string {
+        if (element.className === EDITOR_CLASSNAME && !element.childNodes.length) {
+            return '';
+        }
+
         let root = '';
 
         if (element?.className !== EDITOR_CLASSNAME) {
@@ -71,25 +83,37 @@ export class ExportGenerator {
         }, root)
     }
 
+    private static removeArrtibutes(element: HTMLElement): void {
+        if (
+            (element.className === EDITOR_CLASSNAME && !element.childNodes.length)
+            || element.nodeName === '#text'
+            ) {
+            return;
+        }
+
+        const attribs =  ['style', 'contenteditable'];
+        attribs.map(attr => element.removeAttribute(attr));
+        (Array.from(element.childNodes) as HTMLElement[]).map(el => this.removeArrtibutes(el))
+    }
+
     private static createRule(el: HTMLElement): string {
         if (!el.style) { return ''}
 
         const selector = this.createSelector(el);
         const styles = el.style?.cssText.split(';').map(el => el.trim()).join(';\n\t').slice(0, -1);
-        el.removeAttribute('style');
 
-        return `${selector} {\n\t${styles}}\n`;
+        return styles ?  `${selector} {\n\t${styles}}\n\n` : `${selector} {}\n\n`;
     };
 
     private static createSelector(el: HTMLElement): string {
-        let selector = `.${el.className}`;
-        let parentNode = el;
-        
-        while(parentNode?.className === EDITOR_CLASSNAME) {
-            selector += `.${parentNode.className}`
-            parentNode = el.parentNode as HTMLElement;
+        let selector = '';
+        let parentElement = el;
+       
+        while(parentElement?.className !== EDITOR_CLASSNAME) {
+            selector = `.${parentElement.className} ${selector}`
+            parentElement = parentElement.parentElement as HTMLElement;
         }
-
+        
         return selector;
     }
 
@@ -109,7 +133,7 @@ export class ExportGenerator {
             children.map((el: HTMLElement, i: number) => el.className = 'section-' + i)
         } else if (/^section-\d+$/.test(element.className)) {
             children.map((el: HTMLElement, i: number) => 
-                el.className = `${el.parentElement?.className}__sub-${i}`);
+                el.className = `sub-${i}`);
         } else {
             children.map((el: HTMLElement, i: number) => 
                 el.className = `${el.tagName}-${i}`);
