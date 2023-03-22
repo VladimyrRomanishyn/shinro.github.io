@@ -95,7 +95,10 @@ export class EditorComponent {
           
       case ContextMenuEnum.clearNode:
         this.elementsSrc.clearNode(this.ctxTargetElement);
-        return;      
+        return;    
+      case ContextMenuEnum.fullScreen:
+          this.elementsSrc.fullScreen(this.ctxTargetElement);
+          return;        
     }
   }
 }

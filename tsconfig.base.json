@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@builder-feature/images/*": ["libs/builder-feature/src/assets/images/*"],
       "@libs/*": ["libs/*"],
       "@pets/builder-feature": ["libs/builder-feature/src/index.ts"]
     }

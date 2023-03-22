@@ -36,4 +36,11 @@ export class NgElementCreator {
             source.innerHTML = '';
         }
     }
+
+    public static fullScreen(source: HTMLElement | undefined): void {
+        if (source) {
+            source.style.width = '100%';
+            source.style.height = '100%';
+        }
+    }
 }

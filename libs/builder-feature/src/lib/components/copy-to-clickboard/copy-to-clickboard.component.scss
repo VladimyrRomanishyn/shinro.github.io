@@ -1,0 +1,22 @@
+:host {
+    display: block;
+    zoom: .8
+}
+
+.copy-to-cb {
+    user-select: none;
+    cursor: pointer;
+    width: 30px;
+
+    .section-0, .section-1  {
+	    height: 25px;
+	    width: 22px;
+	    border-radius: 5px;
+	    border: 2px solid rgb(178, 174, 174);
+	    background: rgb(255, 255, 255);
+    }
+
+    .section-1  {
+	    margin: -17px 5px;
+    }
+}

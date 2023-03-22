@@ -1,3 +1,13 @@
+:host {
+    position: relative;
+}
+
+copy-to-clickboard {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 .html-listing {
     white-space: break-spaces;
 }

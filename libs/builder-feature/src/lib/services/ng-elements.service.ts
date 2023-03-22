@@ -20,4 +20,8 @@ export class NgElementsService {
   public clearNode(context: HTMLElement | undefined) {
     NgElementCreator.clearNode(context);
   }
+
+  public fullScreen(context: HTMLElement | undefined) {
+    NgElementCreator.fullScreen(context);
+  }
 }
