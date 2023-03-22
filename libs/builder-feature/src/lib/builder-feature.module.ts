@@ -23,6 +23,8 @@ import { TagsModalComponent } from './views/builder-view/editor/components/tags-
 import { TabViewModule } from 'primeng/tabview';
 import { CSSListingComponent } from './views/builder-view/style-section/components/css-listing/css-listing.component';
 import { HtmlListingComponent } from './views/builder-view/style-section/components/html-listing/html-listing.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { CopyToClickboardComponent } from './components/copy-to-clickboard/copy-to-clickboard.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -37,6 +39,7 @@ import { HtmlListingComponent } from './views/builder-view/style-section/compone
     InputSwitchModule,
     DropdownModule,
     TabViewModule,
+    ClipboardModule,
   ],
   declarations: [
     BuilderViewComponent,
@@ -50,6 +53,7 @@ import { HtmlListingComponent } from './views/builder-view/style-section/compone
     TagsModalComponent,
     CSSListingComponent,
     HtmlListingComponent,
+    CopyToClickboardComponent,
   ],
 })
 export class BuilderFeatureModule {}

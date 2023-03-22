@@ -63,5 +63,6 @@ export enum ContextMenuEnum {
     deleteNode = 'deleteNode',
     addDiv = 'addDiv',
     cloneNode = 'cloneNode',
-    clearNode = 'clearNode'
+    clearNode = 'clearNode',
+    fullScreen = 'fullScreen'
 }

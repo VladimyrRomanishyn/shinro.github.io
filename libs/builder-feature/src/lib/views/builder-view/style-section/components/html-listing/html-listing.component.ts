@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { CodeEditorService } from '@libs/builder-feature/src/lib/services/code-editor.service';
 
 @Component({
@@ -6,13 +6,16 @@ import { CodeEditorService } from '@libs/builder-feature/src/lib/services/code-e
   templateUrl: './html-listing.component.html',
   styleUrls: ['./html-listing.component.scss'],
 })
-export class HtmlListingComponent implements AfterViewInit {
+export class HtmlListingComponent implements AfterViewInit, OnInit {
   @ViewChild('htmlEditor') root!: ElementRef;
   public listing!: string;
   constructor(private codeEditorSvc: CodeEditorService) {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.listing = this.codeEditorSvc.getHTMLListing();
+  }
+
+  ngAfterViewInit(): void {
     this.root.nativeElement.textContent = this.listing;
   }
 }
