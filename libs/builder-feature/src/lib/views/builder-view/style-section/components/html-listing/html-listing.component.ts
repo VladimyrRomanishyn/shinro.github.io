@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { CodeEditorService } from '@libs/builder-feature/src/lib/services/code-editor.service';
+import { SyntaxHighlightService } from '@libs/builder-feature/src/lib/services/syntax-highlight.service';
 
 @Component({
   selector: 'html-listing',
@@ -9,10 +10,15 @@ import { CodeEditorService } from '@libs/builder-feature/src/lib/services/code-e
 export class HtmlListingComponent implements AfterViewInit, OnInit {
   @ViewChild('htmlEditor') root!: ElementRef;
   public listing!: string;
-  constructor(private codeEditorSvc: CodeEditorService) {}
+  constructor
+  (
+    private codeEditorSvc: CodeEditorService,
+    private highLightSvc: SyntaxHighlightService
+  ) {}
 
   ngOnInit(): void {
     this.listing = this.codeEditorSvc.getHTMLListing();
+    console.log(this.highLightSvc.setHTMLHightlight(this.listing));
   }
 
   ngAfterViewInit(): void {
