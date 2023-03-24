@@ -8,6 +8,50 @@ copy-to-clickboard {
     right: 0;
 }
 
-.html-listing {
+::ng-deep.html-listing {
     white-space: break-spaces;
+
+    .less,.greater,.tag{
+        color: #0e60d0;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+    }
+
+    .text,.value {
+        color: #7c7777;
+        font-size: 14px;
+        letter-spacing: 1px;
+        font-weight: 400;
+        outline: none;
+    }
+
+    .quote {
+        color: #a6b40d;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .equal {
+        color: #0abb9b;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 3px;
+    }
+
+    .attr-name {
+        color: #ff3900c7;
+        font-size: 12px;
+        font-weight: 700;
+        font-variant: petite-caps;
+        letter-spacing: 1.5px;
+    }
+
+    .value {
+        color: #496ea8;
+        font-size: 16px;
+        letter-spacing: 1px;
+        font-style: italic;
+        font-weight: 400;
+    }
 }
