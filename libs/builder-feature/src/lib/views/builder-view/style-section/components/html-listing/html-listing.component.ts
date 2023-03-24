@@ -10,6 +10,7 @@ import { SyntaxHighlightService } from '@libs/builder-feature/src/lib/services/s
 export class HtmlListingComponent implements AfterViewInit, OnInit {
   @ViewChild('htmlEditor') root!: ElementRef;
   public listing!: string;
+
   constructor
   (
     private codeEditorSvc: CodeEditorService,
@@ -18,10 +19,10 @@ export class HtmlListingComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.listing = this.codeEditorSvc.getHTMLListing();
-    console.log(this.highLightSvc.setHTMLHightlight(this.listing));
+    
   }
 
   ngAfterViewInit(): void {
-    this.root.nativeElement.textContent = this.listing;
+    this.root.nativeElement.innerHTML = this.highLightSvc.setHTMLHightlight(this.listing);
   }
 }

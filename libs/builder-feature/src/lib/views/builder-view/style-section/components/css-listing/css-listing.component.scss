@@ -8,6 +8,40 @@ copy-to-clickboard {
     right: 0;
 }
 
-.css-listing {
+::ng-deep.css-listing {
     white-space: break-spaces;
+    
+    .brace {
+        font-size: 15px;
+        font-weight: 700;
+        color: #989410;
+    } 
+    
+    .prop {
+        font-size: 15px;
+        color: #d06f6f;
+        font-weight: 600;
+        letter-spacing: 1px;
+    } 
+    
+    .colon, .semi {
+        font-size: 16px;
+        font-weight: 900;
+        color: #493815;
+    }
+    
+    .selector, .dot {
+        color: #445bde;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-style: normal;
+    }
+    
+    .value {
+        color: #057114;
+        font-size: 15px;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
 }
