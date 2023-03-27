@@ -22,4 +22,8 @@ export class CodeEditorService {
     root.remove();
     return listing
   }
+
+  setClassNames(el: HTMLElement): void {
+    ExportGenerator.addClassNames(el, false);
+  }
 }
