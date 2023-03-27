@@ -122,8 +122,6 @@ export class SyntaxHighlightService {
       }, '');
     });
 
-    console.log(result);
-
     return result.join('\n');
   }
 }

@@ -13,6 +13,8 @@ import { TagsModalComponent } from './components/tags-modal/tags-modal.component
 import { NgElementsService } from '../../../services/ng-elements.service';
 import { BUILDER_EDITOR_SELECTOR, EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../../../constants/class-names';
 import { ContextMenuEnum } from '../../../types/form-types';
+import { AfterViewInit } from '@angular/core';
+import { CodeEditorService } from '../../../services/code-editor.service';
 
 @Component({
   selector: BUILDER_EDITOR_SELECTOR,
@@ -21,7 +23,7 @@ import { ContextMenuEnum } from '../../../types/form-types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class EditorComponent {
+export class EditorComponent implements AfterViewInit {
   @ViewChild(EDITOR_CLASSNAME, { static: true }) editor: ElementRef | undefined;
   @ViewChild(TagsModalComponent) tagsModal: TagsModalComponent | undefined;
   
@@ -60,8 +62,13 @@ export class EditorComponent {
   constructor
   (
     private store: Store<BuilderFeatureState>,
-    public elementsSrc: NgElementsService
+    public elementsSrc: NgElementsService,
+    public codeEditorSvc: CodeEditorService,
   ) {
+  }
+
+  ngAfterViewInit(): void {
+    
   }
 
   private toggleSelectedStatus(target: HTMLElement | undefined): void {
@@ -72,6 +79,11 @@ export class EditorComponent {
   private toggleContentEditableStatus(target: HTMLElement | undefined): void {
     !target && this._clickTargetElement?.removeAttribute('contenteditable');
     target && target.setAttribute('contenteditable', 'true');
+  }
+
+  public createNode(node: string): void {
+    this.elementsSrc.createNode(node, this.ctxTargetElement);
+    this.codeEditorSvc.setClassNames(this.editor?.nativeElement);
   }
 
   contextMenuActionHandler({type, payload}: {type: ContextMenuEnum, payload?: any}): void {
@@ -87,6 +99,7 @@ export class EditorComponent {
 
       case ContextMenuEnum.addDiv:
         this.elementsSrc.createNode('div', this.ctxTargetElement);
+        this.codeEditorSvc.setClassNames(this.editor?.nativeElement);
         return;
 
       case ContextMenuEnum.cloneNode:

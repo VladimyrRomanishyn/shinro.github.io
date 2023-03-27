@@ -1,4 +1,4 @@
-import { EDITOR_CLASSNAME } from '../constants/class-names';
+import { EDITOR_CLASSNAME, EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../constants/class-names';
 import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME } from '../constants/export-blueprints';
 
 export class ExportGenerator {
@@ -127,20 +127,38 @@ export class ExportGenerator {
         })
     }
 
-    public static addClassNames(element: HTMLElement): void {
+    public static addClassNames(element: HTMLElement, removeSystem = true): void {
         const children = Array.from(element.childNodes) as HTMLElement[];
+        
+        const classListCheck = (el: HTMLElement): boolean => {
+            
+            if (removeSystem) {
+                el.classList.remove(EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME);
+            }
+
+            return !Array.from(el.classList)
+                .filter(name => (![EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME]
+                    .includes(name))).length;        
+        }
+
         if (element.className == EDITOR_CLASSNAME) {
-            children.map((el: HTMLElement, i: number) => el.className = 'section-' + i)
+            children.map((el: HTMLElement, i: number) => {
+                classListCheck(el) && el.classList.add('section-' + i);
+            })
+
         } else if (/^section-\d+$/.test(element.className)) {
-            children.map((el: HTMLElement, i: number) => 
-                el.className = `sub-${i}`);
+            children.map((el: HTMLElement, i: number) => {
+                classListCheck(el) && el.classList.add(`sub-${i}`);
+            });
+
         } else {
-            children.map((el: HTMLElement, i: number) => 
-                el.className = `${el.tagName}-${i}`);
+            children.map((el: HTMLElement, i: number) => {
+                classListCheck(el) && el.classList.add(`${el.tagName.toLocaleLowerCase()}-${i}`);
+            });
         }
 
         children.map(el => {
-            if (el.childNodes.length) {
+            if (el.childNodes.length, removeSystem) {
                 this.addClassNames(el);
             }
         })
