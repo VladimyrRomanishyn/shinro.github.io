@@ -18,7 +18,7 @@ export class CodeEditorService {
   getHTMLListing(): string {
     const root = document.querySelector(`.${EDITOR_CLASSNAME}`)?.cloneNode(true) as HTMLElement;
     ExportGenerator.addClassNames(root);
-    const listing = ExportGenerator.reformatHTML(root);
+    const listing = ExportGenerator.reformatHTML(root, ['data-id']);
     root.remove();
     return listing
   }

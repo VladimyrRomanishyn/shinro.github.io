@@ -1,32 +1,32 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MutationObserverService {
   
-  createDOMobserverStream(el: HTMLElement) {
-    const config = { 
-      attributes: true,
+  createDOM$(el: HTMLElement, config?: MutationObserverInit): Observable<MutationRecord[]> {
+    config = config ?? { 
       childList: true,
       subtree: true,
-      attributeFilter: ['contenteditable', 'class'],
-      attributeOldValue: true,
       characterData: true,
       characterDataOldValue: true,
     };
     
-    const observable = new Observable(subscriber => {
+    return new Observable(observer => {
+      const callback = (mutations: MutationRecord[]) => {
+        observer.next(mutations);
+      };
+
+      const unsubscribe = () => {
+        mutObserver.disconnect();
+      };
+  
+      const mutObserver = new MutationObserver(callback);
+      mutObserver.observe(el, config);
+      
+      return {unsubscribe};
     });
-
-    const callback = (mutations: MutationRecord[], observer: MutationObserver) => {
-      console.log('mutationList', mutations);
-      console.log('observer', observer);
-    };
-
-    const observer = new MutationObserver(callback);
-    observer.observe(el, config);
-
   } 
 }

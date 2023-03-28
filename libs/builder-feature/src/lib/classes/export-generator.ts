@@ -29,12 +29,12 @@ export class ExportGenerator {
         return new File([CSS_BASE,rules], CSS_FILE_NAME, {type: 'text/css'});
     }
 
-    public static reformatHTML(element: HTMLElement, depth = 0): string {
+    public static reformatHTML(element: HTMLElement, whiteList: string[] = [], depth = 0): string {
         if (element.className === EDITOR_CLASSNAME && !element.childNodes.length) {
             return '';
         }
 
-        this.removeArrtibutes(element);
+        this.removeArrtibutes(element, whiteList);
 
         const childOffset = Array(depth).fill(0).map(() => '\t').join('') || '';
         const parentOffset = childOffset.slice(0,-1) || '';
@@ -48,8 +48,8 @@ export class ExportGenerator {
         const newInner = (Array.from(element.childNodes) as HTMLElement[])
             .reduce((acc, el, i) => {
                 acc += i 
-                    ? `\n${childOffset}${this.reformatHTML(el, depth)}`
-                    : `${childOffset}${this.reformatHTML(el, depth)}`;
+                    ? `\n${childOffset}${this.reformatHTML(el, whiteList, depth)}`
+                    : `${childOffset}${this.reformatHTML(el, whiteList ,depth)}`;
                 return acc;
         }, '')
         
@@ -83,17 +83,19 @@ export class ExportGenerator {
         }, root)
     }
 
-    private static removeArrtibutes(element: HTMLElement): void {
+    private static removeArrtibutes(element: HTMLElement, whiteList: string[] = []): void {
         if (
             (element.className === EDITOR_CLASSNAME && !element.childNodes.length)
             || element.nodeName === '#text'
             ) {
             return;
         }
-
-        const attribs =  ['style', 'contenteditable'];
+        
+        const attribs =  ['style', 'contenteditable', 'data-id']
+            .filter(e => !whiteList.includes(e));
+            
         attribs.map(attr => element.removeAttribute(attr));
-        (Array.from(element.childNodes) as HTMLElement[]).map(el => this.removeArrtibutes(el))
+        (Array.from(element.childNodes) as HTMLElement[]).map(el => this.removeArrtibutes(el, whiteList))
     }
 
     private static createRule(el: HTMLElement): string {
@@ -131,6 +133,7 @@ export class ExportGenerator {
         const children = Array.from(element.childNodes) as HTMLElement[];
         
         const classListCheck = (el: HTMLElement): boolean => {
+            if (el.nodeName === '#text') { return false }
             
             if (removeSystem) {
                 el.classList.remove(EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME);

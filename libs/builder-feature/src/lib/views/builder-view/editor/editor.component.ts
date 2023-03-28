@@ -5,16 +5,19 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { BuilderFeatureState } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
 import { Store } from '@ngrx/store';
-import { setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
+import { editorDomChanged, setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
 import { TagsModalComponent } from './components/tags-modal/tags-modal.component';
 import { NgElementsService } from '../../../services/ng-elements.service';
-import { BUILDER_EDITOR_SELECTOR, EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../../../constants/class-names';
+import { BUILDER_EDITOR_SELECTOR, EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME, EDITOR_CHILD_CLASSNAME } from '../../../constants/class-names';
 import { ContextMenuEnum } from '../../../types/form-types';
-import { AfterViewInit } from '@angular/core';
+import { AfterViewInit, OnDestroy } from '@angular/core';
 import { CodeEditorService } from '../../../services/code-editor.service';
+import { MutationObserverService } from '../../../services/mutation-observer.service';
+import { stylesChanged, listingChanges } from '../../../state/builder-feature.actions';
+import { builderFeatureKey, ListingChanges } from '../../../state/builder-feature.reducer';
 
 @Component({
   selector: BUILDER_EDITOR_SELECTOR,
@@ -23,7 +26,7 @@ import { CodeEditorService } from '../../../services/code-editor.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class EditorComponent implements AfterViewInit {
+export class EditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild(EDITOR_CLASSNAME, { static: true }) editor: ElementRef | undefined;
   @ViewChild(TagsModalComponent) tagsModal: TagsModalComponent | undefined;
   
@@ -57,18 +60,43 @@ export class EditorComponent implements AfterViewInit {
   public _ctxTargetElement: HTMLElement | undefined;
   public _clickTargetElement: HTMLElement | undefined;
   public dragdrop = false;
-
+  private domSubscription!: Subscription;
 
   constructor
   (
-    private store: Store<BuilderFeatureState>,
+    private store: Store<{[builderFeatureKey]: BuilderFeatureState}>,
     public elementsSrc: NgElementsService,
     public codeEditorSvc: CodeEditorService,
+    private domObserverSvc: MutationObserverService,
   ) {
   }
 
   ngAfterViewInit(): void {
-    
+    this.domSubscription = this.domObserverSvc.createDOM$(this.editor?.nativeElement)
+      .subscribe(() => {
+        this.store.dispatch(editorDomChanged())
+      });
+
+    this.store.select(state => state[builderFeatureKey].listingChanges)
+      .subscribe((changes: ListingChanges | undefined) => {
+        if (!changes) { return;}
+        
+        const element = this.editor?.nativeElement.querySelector(`[data-id="${changes.id}"]`);
+        console.log('element: ', element);
+        switch(changes.changeType) {
+          case 'text': element.textContent = changes.data;
+            break;
+          case 'class-value': 
+            element.className = element.className.split(' ')
+              .filter((e: string) => [EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME].includes(e)).join(' ');
+            changes.data.split(' ').map(e => element.classList.add(e));
+            break;
+        }
+      })  
+  }
+
+  ngOnDestroy(): void {
+      this.domSubscription.unsubscribe();
   }
 
   private toggleSelectedStatus(target: HTMLElement | undefined): void {
@@ -111,6 +139,7 @@ export class EditorComponent implements AfterViewInit {
         return;    
       case ContextMenuEnum.fullScreen:
           this.elementsSrc.fullScreen(this.ctxTargetElement);
+          this.store.dispatch(stylesChanged())
           return;        
     }
   }
