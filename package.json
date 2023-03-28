@@ -47,6 +47,7 @@
     "@nrwl/workspace": "14.4.2",
     "@types/jest": "27.4.1",
     "@types/node": "16.11.7",
+    "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "cypress": "^9.1.0",
