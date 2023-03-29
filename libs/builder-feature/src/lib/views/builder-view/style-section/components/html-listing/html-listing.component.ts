@@ -3,7 +3,7 @@ import { CodeEditorService } from '@libs/builder-feature/src/lib/services/code-e
 import { SyntaxHighlightService } from '@libs/builder-feature/src/lib/services/syntax-highlight.service';
 import { Store } from '@ngrx/store';
 import { builderFeatureKey, BuilderFeatureState } from '../../../../../state/builder-feature.reducer';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime, filter, takeUntil } from 'rxjs';
 import { MutationObserverService } from '@libs/builder-feature/src/lib/services/mutation-observer.service';
 import { listingChanges } from '../../../../../state/builder-feature.actions';
 
@@ -16,6 +16,7 @@ export class HtmlListingComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('htmlEditor') root!: ElementRef;
   public listing!: string;
   private destroy$: EventEmitter<void> = new EventEmitter();
+  public typing = false;
 
   constructor
   (
@@ -47,17 +48,29 @@ export class HtmlListingComponent implements AfterViewInit, OnInit, OnDestroy {
       )
       .subscribe((changes: MutationRecord[]) => {
           const id = changes[0].target.parentElement?.dataset['id'] || '';
-          const data = changes[0].target.nodeValue || '';
+          const data = changes[0].target.parentElement?.innerHTML || '';
           const changeType = changes[0].target.parentElement?.className || '';
           
           this.store.dispatch(listingChanges({listingChanges: {id, data, changeType}}))
       });
 
     this.store.select((state) => state[builderFeatureKey].editorDomChanged)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(() => !this.typing)
+      )
       .subscribe(() => {
         this.listing = this.codeEditorSvc.getHTMLListing();
         this.root.nativeElement.innerHTML = this.highLightSvc.setHTMLHightlight(this.listing);
+        this.addListeners();
+      })
+  }
+
+  private addListeners() {
+    Array.from(this.root.nativeElement.querySelectorAll('[contenteditable]') as HTMLElement[])
+      .map((node: HTMLElement) => {
+        node.addEventListener('focus', () => this.typing = true)
+        node.addEventListener('blur', () => this.typing = false)
       })
   }
 }
