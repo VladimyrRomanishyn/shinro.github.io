@@ -4,9 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SyntaxHighlightService {
-
-  constructor() { }
-
   setHTMLHightlight(listing: string): string {
     if (!listing) {return ''}
   
@@ -17,7 +14,8 @@ export class SyntaxHighlightService {
       result += match?.groups.tag ? `<span class="tag">${match.groups.tag}</span>` : '';
       
       if (match?.groups.attr) {
-          const byLine = match.groups.attr.split(' ');
+          const byLine = match.groups.attr.split('\b');
+      
           result += byLine.reduce((acc: string, line: string) => {
             const match = line.match(attrRegex);
             // @ts-ignore
@@ -30,7 +28,7 @@ export class SyntaxHighlightService {
     }
 
     const textContentCb = (match: {groups: any} | null, dataId: string): string => {
-      return  match?.groups.text && /\w+/.test(match.groups.text)
+      return  match?.groups.text
         ? `<span contenteditable data-id="${dataId}" class="text">${match.groups.text}</span>`
         : `<span contenteditable data-id="${dataId}" class="text"></span>`;
     }
@@ -53,7 +51,7 @@ export class SyntaxHighlightService {
     };
 
     const tagStartRegex = /^(?<sline>\s+)?(?<less><)(?<tag>\w+)(?:\s(?<attr>.*?))?(?<greater>>)(?<eline>\s+$)?/;
-    const textContentRegex = /(?:>|^)(?<text>(?:\s|\w)+)(?:<|$)/;
+    const textContentRegex = /(?:>|^)(?<text>[\w\s(&nbsp;)]+)(?:<|$)/;
     const tagEndRegex = /(?<less><)(?<etag>\/\w+)(?<greater>>)(?<eline>\s+$)?/;
     const attrRegex = /^(?<sline>\s+)?(?<name>[\w-]+)(?:(?<eq>=)(?<qu>'|")(?<value>.+)(?<lqu>'|"))?$/;
     
@@ -87,29 +85,29 @@ export class SyntaxHighlightService {
   setCSSHightlight(listing: string): string {
     if (!listing) {return ''}
     
-    const ruleStartRegex = /(?<dot>\.)(?<name>[\w-]+)\s+(?<brace>{)/;
+    const ruleStartRegex = /(?<dot>\.)(?<name>[.\w-]+)\s+(?<brace>{)/;
     const propRegex = /^(?<sline>\s+)?(?<prop>[\w-]+)\s*(?<colon>:)\s*(?<value>.+?)(?<semi>;)/;
     const ruleEndRexeg = /(?<brace>})/;
 
     const ruleEndCb = (match: {groups: any}): string => {
-      return match?.groups.brace ? '<span class="brace">}\n</span>' : '';
+      return match?.groups.brace ? '</span><span class="brace">}\n</span>' : '';
 
     };
 
     const propCb = (match: {groups: any}): string => {
       let result = match?.groups.sline || '';
 
-      result += match?.groups.prop ? `<span contenteditable class="prop">${match.groups.prop}</span>` : '';
+      result += match?.groups.prop ? `<span class="remove-prop">x</span><span contenteditable class="prop">${match.groups.prop}</span>` : '';
       result += match?.groups.colon ? `<span class="colon">&nbsp;:</span>` : '';
       result += match?.groups.value ? ` <span contenteditable class="value">${match.groups.value}</span>` : '';
-      return result += match?.groups.semi ? `<span class="semi">&nbsp;;</span>` : '';
+      return result += match?.groups.semi ? `<span class="semi">&nbsp;;</span><span class="add-prop">+</span>` : '';
     };
     
     const ruleStartCb = (match: {groups: any}): string => {
       let result = match?.groups.dot ? '<span class="dot">.</span>' :'';
 
-      result += match?.groups.name ? `<span contenteditable class="selector">${match.groups.name}</span>` : '';
-      return result += match?.groups.brace ? `<span class="brace">&nbsp;&nbsp;{</span>` : '';
+      result += match?.groups.name ? `<span class="selector">${match.groups.name}</span>` : '';
+      return result += match?.groups.brace ? `<span class="brace">&nbsp;&nbsp;{</span><span class="rule">` : '';
     };
     
     const searchParams = [

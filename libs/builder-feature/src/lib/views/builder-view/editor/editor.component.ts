@@ -5,7 +5,7 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 import { BuilderFeatureState } from '@libs/builder-feature/src/lib/state/builder-feature.reducer';
 import { Store } from '@ngrx/store';
 import { editorDomChanged, setTarget } from '@libs/builder-feature/src/lib/state/builder-feature.actions';
@@ -16,7 +16,7 @@ import { ContextMenuEnum } from '../../../types/form-types';
 import { AfterViewInit, OnDestroy } from '@angular/core';
 import { CodeEditorService } from '../../../services/code-editor.service';
 import { MutationObserverService } from '../../../services/mutation-observer.service';
-import { stylesChanged, listingChanges } from '../../../state/builder-feature.actions';
+import { stylesChanged } from '../../../state/builder-feature.actions';
 import { builderFeatureKey, ListingChanges } from '../../../state/builder-feature.reducer';
 
 @Component({
@@ -73,6 +73,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.domSubscription = this.domObserverSvc.createDOM$(this.editor?.nativeElement)
+      .pipe(debounceTime(300))
       .subscribe(() => {
         this.store.dispatch(editorDomChanged())
       });
@@ -82,14 +83,17 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         if (!changes) { return;}
         
         const element = this.editor?.nativeElement.querySelector(`[data-id="${changes.id}"]`);
-        console.log('element: ', element);
+    
         switch(changes.changeType) {
           case 'text': element.textContent = changes.data;
             break;
+          
           case 'class-value': 
             element.className = element.className.split(' ')
-              .filter((e: string) => [EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME].includes(e)).join(' ');
-            changes.data.split(' ').map(e => element.classList.add(e));
+              .filter((e: string) => [EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME].includes(e))
+              .join(' ');
+               
+              changes.data.split(' ').filter(Boolean).map(e => element.classList.add(e));
             break;
         }
       })  

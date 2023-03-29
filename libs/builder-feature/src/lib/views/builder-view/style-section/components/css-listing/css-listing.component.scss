@@ -11,6 +11,37 @@ copy-to-clickboard {
 ::ng-deep.css-listing {
     white-space: break-spaces;
     
+    span {outline: none;}
+    
+    .remove-prop, .add-prop {
+        background: red;
+        display: inline-flex;
+        width: 14px;
+        opacity: 0;
+        height: 14px;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        text-align: center;
+        font-weight: 300;
+        padding-bottom: 2px;
+        border-radius: 3px;
+        margin-right: 3px;
+        cursor: pointer;
+        user-select: none;
+        transition: opacity .5s ease;
+        
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .add-prop {
+        background: green;
+        margin-left: 3px;
+    }
+
     .brace {
         font-size: 15px;
         font-weight: 700;

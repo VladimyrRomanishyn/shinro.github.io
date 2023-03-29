@@ -112,7 +112,12 @@ export class ExportGenerator {
         let parentElement = el;
        
         while(parentElement?.className !== EDITOR_CLASSNAME) {
-            selector = `.${parentElement.className} ${selector}`
+            const classLine = Array.from(parentElement.classList)
+                .reduce((acc, e) => {
+                    acc += `.${e}`
+                    return acc;
+                }, '')
+            selector = `${classLine} ${selector}`
             parentElement = parentElement.parentElement as HTMLElement;
         }
         
