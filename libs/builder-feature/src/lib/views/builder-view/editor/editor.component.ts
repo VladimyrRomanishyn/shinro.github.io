@@ -81,12 +81,24 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.store.select(state => state[builderFeatureKey].listingChanges)
       .subscribe((changes: ListingChanges | undefined) => {
         if (!changes) { return;}
-        
+        console.log(changes);
         const element = this.editor?.nativeElement.querySelector(`[data-id="${changes.id}"]`);
     
         switch(changes.changeType) {
           case 'text': element.textContent = changes.data;
             break;
+
+          case 'remove-property': 
+            element.style[changes.data] = null;
+            this.store.dispatch(stylesChanged())
+            break;
+          
+          case 'set-property': 
+            // eslint-disable-next-line no-case-declarations
+            const [prop, value] = changes.data.split(':');
+            element.style[prop] = value;
+            
+            break;    
           
           case 'class-value': 
             element.className = element.className.split(' ')

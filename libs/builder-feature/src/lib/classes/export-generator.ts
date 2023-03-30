@@ -62,7 +62,7 @@ export class ExportGenerator {
             : `${element.outerHTML}`;
     }
 
-    public static createRulesList(element: HTMLElement): string {
+    public static createRulesList(element: HTMLElement, dataId = false): string {
         if (element.className === EDITOR_CLASSNAME && !element.childNodes.length) {
             return '';
         }
@@ -70,7 +70,7 @@ export class ExportGenerator {
         let root = '';
 
         if (element?.className !== EDITOR_CLASSNAME) {
-            root = this.createRule(element);
+            root = this.createRule(element, dataId);
         }
         
         if (!element.childNodes.length) {
@@ -78,7 +78,7 @@ export class ExportGenerator {
         }
         
         return (Array.from(element.childNodes) as HTMLElement[]).reduce((acc, el) => {
-            acc += this.createRulesList(el);
+            acc += this.createRulesList(el, dataId);
             return acc;
         }, root)
     }
@@ -98,13 +98,15 @@ export class ExportGenerator {
         (Array.from(element.childNodes) as HTMLElement[]).map(el => this.removeArrtibutes(el, whiteList))
     }
 
-    private static createRule(el: HTMLElement): string {
+    private static createRule(el: HTMLElement, dataId = false): string {
         if (!el.style) { return ''}
-
+        const id = dataId ? `<${el.dataset['id']}>`: '';
         const selector = this.createSelector(el);
         const styles = el.style?.cssText.split(';').map(el => el.trim()).join(';\n\t').slice(0, -1);
 
-        return styles ?  `${selector} {\n\t${styles}}\n\n` : `${selector} {}\n\n`;
+        return styles 
+            ?  `${selector} {${id}\n\t${styles}}\n\n`
+            : `${selector} {}\n\n`;
     };
 
     private static createSelector(el: HTMLElement): string {

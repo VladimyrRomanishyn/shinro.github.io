@@ -7,18 +7,20 @@ import { EDITOR_CLASSNAME } from '../constants/class-names';
 })
 export class CodeEditorService {
 
-  getCSSListing(): string {
+  getCSSListing(dataId = true): string {
     const root = document.querySelector(`.${EDITOR_CLASSNAME}`)?.cloneNode(true) as HTMLElement;
     ExportGenerator.addClassNames(root);
-    const listing = ExportGenerator.createRulesList(root);
+    const listing = ExportGenerator.createRulesList(root, dataId);
     root.remove();
     return listing;
   }
 
-  getHTMLListing(): string {
+
+  getHTMLListing(dataId = true): string {
     const root = document.querySelector(`.${EDITOR_CLASSNAME}`)?.cloneNode(true) as HTMLElement;
     ExportGenerator.addClassNames(root);
-    const listing = ExportGenerator.reformatHTML(root, ['data-id']);
+    const whiteList = dataId ? ['data-id'] : [];
+    const listing = ExportGenerator.reformatHTML(root, whiteList);
     root.remove();
     return listing
   }
