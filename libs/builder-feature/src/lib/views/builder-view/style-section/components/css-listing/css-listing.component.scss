@@ -61,7 +61,7 @@ copy-to-clickboard {
         color: #493815;
     }
     
-    .selector, .dot {
+    .className, .dot {
         color: #445bde;
         font-size: 14px;
         font-weight: 700;
@@ -74,5 +74,16 @@ copy-to-clickboard {
         font-size: 15px;
         letter-spacing: 1px;
         font-weight: 600;
+    }
+    
+    .dot {
+        color: #e28405;
+        font-weight: 900;
+        font-size: 16px;
+    }
+
+    .prop, .value {
+        display: inline-block;
+        min-width: 30px;
     }
 }
