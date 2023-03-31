@@ -81,7 +81,6 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     this.store.select(state => state[builderFeatureKey].listingChanges)
       .subscribe((changes: ListingChanges | undefined) => {
         if (!changes) { return;}
-        console.log(changes);
         const element = this.editor?.nativeElement.querySelector(`[data-id="${changes.id}"]`);
     
         switch(changes.changeType) {

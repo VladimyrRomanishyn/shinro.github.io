@@ -16,7 +16,6 @@ import { SyntaxHighlightService } from '../../../../../services/syntax-highlight
 export class CSSListingComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('cssEditor') root!: ElementRef;
   public listing!: string;
-  public copyListing!: string;
   private destroy$: EventEmitter<void> = new EventEmitter();
   
   constructor
@@ -29,7 +28,6 @@ export class CSSListingComponent implements AfterViewInit, OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.listing = this.codeEditorSvc.getCSSListing();
-    this.copyListing = this.codeEditorSvc.getCSSListing(false);
   }
 
   ngAfterViewInit(): void {
@@ -44,7 +42,6 @@ export class CSSListingComponent implements AfterViewInit, OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.listing = this.codeEditorSvc.getCSSListing();
-        this.copyListing = this.codeEditorSvc.getCSSListing(false);
         this.root.nativeElement.innerHTML = this.highlightSvc.setCSSHightlight(this.listing);
         this.addHandlers(this.root.nativeElement);
       });
@@ -66,7 +63,7 @@ export class CSSListingComponent implements AfterViewInit, OnInit, OnDestroy {
             const value = (propWrapper?.querySelector('.value') as HTMLElement).innerText;
             const id = ruleElement?.dataset['id'] || '';
             const changeType = 'set-property';
-
+            
             if (prop && value && id) {
               this.store.dispatch(listingChanges({listingChanges: {id, data: `${prop}:${value}`, changeType}}));
             }
@@ -79,10 +76,10 @@ export class CSSListingComponent implements AfterViewInit, OnInit, OnDestroy {
 
   private getElement(target: HTMLElement, className: string): HTMLElement | null {
     let parent = target as HTMLElement;
-    if (!parent) {return null}
 
-    while(parent?.className as string != className ) {
-      
+    if (parent.className === 'css-listing') {return null}
+
+    while(parent && parent.className as string != className ) {   
       parent = parent?.parentElement as HTMLElement;
     }
 
@@ -94,43 +91,59 @@ export class CSSListingComponent implements AfterViewInit, OnInit, OnDestroy {
     const inserters = Array.from(el.querySelectorAll('.add-prop')) as HTMLElement[];
     const contenteditable = Array.from(el.querySelectorAll('[contenteditable]')) as HTMLElement[];
 
-    removers.map(el => {
-      el.onclick = (event: MouseEvent) => {
-        const target = event.target as HTMLElement;
-        const ruleElement = this.getElement(target, 'rule');
+    const insertHandler = (event: MouseEvent) => {
+      const newLine = document.createElement('span');
+      newLine.className = 'prop-wrapper';
+      newLine.innerHTML = '\n&nbsp;&nbsp;'+
+                          '<span class="remove-prop">x</span>' +
+                          '<span contenteditable class="prop"></span>' +
+                          '<span class="colon">&nbsp;:&nbsp;</span>' +
+                          '<span contenteditable class="value"></span>' + 
+                          '<span class="semi">&nbsp;;</span>' +
+                          '<span class="add-prop">+</span>';
+      (event.target as HTMLElement).parentElement?.after(newLine);
+      (newLine.querySelector('.prop') as HTMLElement).focus();
 
-        const data = (target.parentElement?.querySelector('.prop')as HTMLElement)?.innerText as string;
-        const id = ruleElement?.dataset['id'] as string;
-        const changeType = 'remove-property';
+      this.addHandlers(newLine);
+    };
+    const removeHandler = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const ruleElement = this.getElement(target, 'rule');
+
+      const data = (target.parentElement?.querySelector('.prop')as HTMLElement)?.innerText as string;
+      const id = ruleElement?.dataset['id'] as string;
+      const changeType = 'remove-property';
+      
+      if (data && id) {
         this.store.dispatch(listingChanges({listingChanges: {id, data, changeType}}));
+      } else {
+        const propWrap = this.getElement(target, 'prop-wrapper');
+        propWrap?.remove();
       }
+    }
+    const keydownHandler = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const addButton = (event.target as HTMLElement).parentElement?.querySelector('.add-prop') as HTMLElement;
+        addButton?.click();
+      }
+    }
+    
+    
+    removers.map(el => {
+      el.onclick = removeHandler
     });
 
     inserters.map(el => {
-      el.onclick = (event: MouseEvent) => {
-        const newLine = document.createElement('span');
-        newLine.className = 'prop-wrapper';
-        newLine.innerHTML = '\n&nbsp;&nbsp;'+
-                            '<span class="remove-prop">x</span>' +
-                            '<span contenteditable class="prop"></span>' +
-                            '<span class="colon">&nbsp;:&nbsp;</span>' +
-                            '<span contenteditable class="value"></span>' + 
-                            '<span class="semi">&nbsp;;</span>' +
-                            '<span class="add-prop">+</span>';
-        (event.target as HTMLElement).parentElement?.after(newLine);
-        //this.addHandlers(newLine);
-        (newLine.querySelector('.prop') as HTMLElement).focus();
-      }
+      el.onclick = insertHandler
     })
 
     contenteditable.map(el => {
-      el.onkeydown = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          const addButton = (event.target as HTMLElement).parentElement?.querySelector('.add-prop') as HTMLElement;
-          addButton?.click();
-        }
-      }
+      el.onkeydown = keydownHandler
     })
+  }
+
+  public copyListing(): () => string {
+    return () => this.codeEditorSvc.getCSSListing(false);
   }
 }

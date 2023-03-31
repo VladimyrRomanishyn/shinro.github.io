@@ -7,10 +7,10 @@ import { Clipboard } from '@angular/cdk/clipboard';
   styleUrls: ['./copy-to-clickboard.component.scss'],
 })
 export class CopyToClickboardComponent {
-  @Input() source!: string;
+  @Input() callback!: () => string;
   constructor(private clipboard: Clipboard) {}
 
   copySource() {
-    this.clipboard.copy(this.source);
+    this.clipboard.copy(this.callback());
   }
 }

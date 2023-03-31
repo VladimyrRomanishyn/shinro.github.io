@@ -15,7 +15,7 @@ import { listingChanges } from '../../../../../state/builder-feature.actions';
 export class HtmlListingComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('htmlEditor') root!: ElementRef;
   public listing!: string;
-  public copyListing!: string;
+  public !: string;
   private destroy$: EventEmitter<void> = new EventEmitter();
   public typing = false;
 
@@ -29,7 +29,6 @@ export class HtmlListingComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.listing = this.codeEditorSvc.getHTMLListing();
-    this.copyListing = this.codeEditorSvc.getHTMLListing(false);
   }
 
   ngOnDestroy(): void {
@@ -61,7 +60,6 @@ export class HtmlListingComponent implements AfterViewInit, OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.listing = this.codeEditorSvc.getHTMLListing();
-        this.copyListing = this.codeEditorSvc.getHTMLListing(false);
         this.root.nativeElement.innerHTML = this.highLightSvc.setHTMLHightlight(this.listing);
         this.addListeners();
       })
@@ -73,5 +71,9 @@ export class HtmlListingComponent implements AfterViewInit, OnInit, OnDestroy {
         node.addEventListener('focus', () => this.typing = true)
         node.addEventListener('blur', () => this.typing = false)
       })
+  }
+
+  public copyListing(): () => string {
+    return () => this.codeEditorSvc.getHTMLListing(false);
   }
 }
