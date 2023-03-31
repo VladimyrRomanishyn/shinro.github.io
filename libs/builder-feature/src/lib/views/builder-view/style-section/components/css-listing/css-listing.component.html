@@ -1,3 +1,4 @@
 <div class="css-listing" #cssEditor></div>
-<copy-to-clickboard *ngIf="listing" [source]="copyListing"></copy-to-clickboard>
+<copy-to-clickboard *ngIf="listing" 
+    [callback]="copyListing()"></copy-to-clickboard>
 

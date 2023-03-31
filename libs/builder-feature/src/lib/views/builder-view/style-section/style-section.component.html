@@ -1,5 +1,5 @@
 <p-tabView>
-  <p-tabPanel header="CSS Editor">
+  <p-tabPanel header="Editor">
     <div class="editorStyles">
       <div class="accordion">
         <ng-container class="accordion__panel">
@@ -10,16 +10,21 @@
       </div>
     </div>
   </p-tabPanel>
-  <p-tabPanel #cssTab header="CSS code">
+  <p-tabPanel #cssTab header="CSS">
     <ng-template pTemplate="content">
       <css-listing *ngIf="cssTab.selected"></css-listing>
     </ng-template>
   </p-tabPanel>
-  <p-tabPanel #htmlTab header="HTML code">
+  <p-tabPanel #htmlTab header="HTML">
     <ng-template pTemplate="content">
       <html-listing *ngIf="htmlTab.selected"></html-listing>
     </ng-template>
   </p-tabPanel>
+  <!-- <p-tabPanel #exportTab header="Export">
+    <ng-template pTemplate="content">
+      <export-template *ngIf="exportTab.selected"></export-template>
+    </ng-template>
+  </p-tabPanel> -->
 </p-tabView>
 
 

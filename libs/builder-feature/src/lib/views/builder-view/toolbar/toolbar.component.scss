@@ -8,6 +8,12 @@
 }
 
 .toolbar {
+  display: flex;
+
+  &__prop {
+    margin-right: 10px;
+  }
+
   &__export-button {
     display: flex;
     align-items: center;

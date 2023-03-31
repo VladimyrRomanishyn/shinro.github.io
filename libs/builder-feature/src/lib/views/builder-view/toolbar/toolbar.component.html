@@ -1,9 +1,16 @@
 <div class="toolbar">
   <div class="toolbar__prop">
     <button class="toolbar__export-button"
-      (click)="export()"
+      (click)="exportSvc.exportSepateFiles()"
      >
       Export
+    </button>
+  </div>
+  <div class="toolbar__prop">
+    <button class="toolbar__export-button"
+      (click)="exportImage()"
+     >
+      Export as Image
     </button>
   </div>
 </div>
