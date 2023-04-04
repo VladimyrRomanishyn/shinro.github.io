@@ -14,6 +14,56 @@
     margin-right: 10px;
   }
 
+  &__export {
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+    width: 32px;
+    height: 32px;
+    
+    .export-bottom  {
+      height: 32px;
+      width: 30px;
+      border-radius: 3px;
+      border: 2px solid rgb(211, 211, 211);
+    }
+    
+    .export-overflow  {
+      height: 16px;
+      width: 30px;
+      border-radius: 3px;
+      border: 0px solid rgb(152, 144, 144);
+      margin-top: -32px;
+      background: rgb(255, 255, 255);
+    }
+    
+    .arrow-base  {
+      height: 18px;
+      width: 2px;
+      border: 1px solid rgb(211, 211, 211);
+      margin-top: -14px;
+      margin-left: 14px;
+    }
+    
+    .arrow-left  {
+      height: 10px;
+      width: 2px;
+      border: 1px solid rgb(211, 211, 211);
+      margin-top: -18px;
+      margin-left: 12px;
+      rotate: 30deg;
+    }
+    
+    .arrow-right  {
+      height: 10px;
+      width: 2px;
+      border: 1px solid rgb(211, 211, 211);
+      margin-top: -10px;
+      margin-left: 16px;
+      rotate: 150deg;
+    }    
+  }
+
   &__export-button {
     display: flex;
     align-items: center;

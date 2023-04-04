@@ -1,16 +1,26 @@
 <div class="toolbar">
-  <div class="toolbar__prop">
+  <div class="toolbar__export" (click)="exportModal.toggleStatus()">
+    <div class="export-bottom"></div>
+    <div class="export-overflow"></div>
+    <div class="arrow-base"></div>
+    <div class="arrow-left"></div>
+    <div class="arrow-right"></div>
+  </div>
+  <!-- <div class="toolbar__prop">
     <button class="toolbar__export-button"
       (click)="exportSvc.exportSepateFiles()"
      >
       Export
     </button>
-  </div>
-  <div class="toolbar__prop">
+  </div> -->
+  <!-- <div class="toolbar__prop">
     <button class="toolbar__export-button"
       (click)="exportImage()"
      >
       Export as Image
     </button>
-  </div>
+  </div> -->
 </div>
+<modal-container #exportModal>
+  <export></export>
+</modal-container>

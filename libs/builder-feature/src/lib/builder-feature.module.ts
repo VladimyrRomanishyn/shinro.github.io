@@ -24,6 +24,8 @@ import { CSSListingComponent } from './views/builder-view/style-section/componen
 import { HtmlListingComponent } from './views/builder-view/style-section/components/html-listing/html-listing.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CopyToClickboardComponent } from './components/copy-to-clickboard/copy-to-clickboard.component';
+import { ModalContainerComponent } from './components/modal-container/modal-container.component';
+import { ExportComponent } from './components/export/export.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -52,6 +54,8 @@ import { CopyToClickboardComponent } from './components/copy-to-clickboard/copy-
     CSSListingComponent,
     HtmlListingComponent,
     CopyToClickboardComponent,
+    ModalContainerComponent,
+    ExportComponent,
   ],
 })
 export class BuilderFeatureModule {}
