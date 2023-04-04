@@ -13,6 +13,9 @@
         "polyfills": "apps/template-builder/src/polyfills.ts",
         "tsConfig": "apps/template-builder/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
+        "allowedCommonJsDependencies": [
+          "html2canvas"
+        ],
         "assets": [
           "apps/template-builder/src/favicon.ico",
           "apps/template-builder/src/assets"

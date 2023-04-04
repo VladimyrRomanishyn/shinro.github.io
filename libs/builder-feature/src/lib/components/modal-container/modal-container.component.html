@@ -1,0 +1,9 @@
+<div *ngIf="status" class="modal-container">
+    <div class="modal-container__close" (click)="status = false">
+        <div class="first"></div>
+        <div class="last"></div>
+    </div>
+    <div class="modal-container__content">
+        <ng-content></ng-content>
+    </div>
+</div>
