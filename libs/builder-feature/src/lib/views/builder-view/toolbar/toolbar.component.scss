@@ -10,6 +10,16 @@
 .toolbar {
   display: flex;
 
+  button {
+    background: #fff;
+    border: none;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+  }
+  }
+
   &__prop {
     margin-right: 10px;
   }
@@ -25,14 +35,14 @@
       height: 32px;
       width: 30px;
       border-radius: 3px;
-      border: 2px solid rgb(211, 211, 211);
+      border: 2px solid rgb(120 117 117);
     }
     
     .export-overflow  {
       height: 16px;
       width: 30px;
       border-radius: 3px;
-      border: 0px solid rgb(152, 144, 144);
+      border: 0px solid rgb(120 117 117);
       margin-top: -32px;
       background: rgb(255, 255, 255);
     }
@@ -40,7 +50,7 @@
     .arrow-base  {
       height: 18px;
       width: 2px;
-      border: 1px solid rgb(211, 211, 211);
+      border: 1px solid rgb(120 117 117);
       margin-top: -14px;
       margin-left: 14px;
     }
@@ -48,7 +58,7 @@
     .arrow-left  {
       height: 10px;
       width: 2px;
-      border: 1px solid rgb(211, 211, 211);
+      border: 1px solid rgb(120 117 117);
       margin-top: -18px;
       margin-left: 12px;
       rotate: 30deg;
@@ -57,37 +67,10 @@
     .arrow-right  {
       height: 10px;
       width: 2px;
-      border: 1px solid rgb(211, 211, 211);
+      border: 1px solid rgb(120 117 117);
       margin-top: -10px;
       margin-left: 16px;
       rotate: 150deg;
     }    
-  }
-
-  &__export-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    width: 140px;
-    border-radius: 5px; 
-    box-shadow: rgba(44, 41, 214, .5) 5px 5px 10px;
-    border: 1px solid rgb(44, 41, 214); 
-    background: rgb(66, 84, 174);
-    color: #fff;
-    font-size: 16px;
-    user-select: none;
-    transition: all .3s ease;
-
-    &:hover:enabled {
-      color: rgb(66, 84, 174);
-      background: #fff;
-      cursor: pointer;
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: .5;
-    }
   }
 }

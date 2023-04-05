@@ -1,8 +1,8 @@
 import { EDITOR_CLASSNAME, EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../constants/class-names';
-import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME } from '../constants/export-blueprints';
+import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME, HTML_BLUEPRINT_INTERNAL } from '../constants/export-blueprints';
 
 export class ExportGenerator {
-    public static generate(element: HTMLElement): void {
+    public static generateExport(element: HTMLElement, internalStyles = false): void {
         if (!element.innerHTML) {  
             throw new Error('There is nothing to export!');
         }
@@ -11,15 +11,25 @@ export class ExportGenerator {
         // add classes
         this.addClassNames(cloned);
         // generate files
-        const files = [this.generateCSS(cloned), this.generateHTML(cloned)];
+        const files = internalStyles 
+            ? [this.generateHTML(cloned, true)]
+            : [this.generateCSS(cloned), this.generateHTML(cloned)];
         // download files
         this.downloadFiles(files);
         cloned.remove();
     }
 
-    private static generateHTML(element: HTMLElement): File {
+    private static generateHTML(element: HTMLElement, internalStyles = false): File {
+        const styles = internalStyles ? this.createRulesList(element) : '';
         const content = this.reformatHTML(element);
-        const template = HTML_BLUEPRINT.replace(/{{innerHTML}}/, content);
+        
+        const blueprint = internalStyles 
+            ? HTML_BLUEPRINT_INTERNAL.replace(/{{innerHTML}}/, content) 
+            : HTML_BLUEPRINT.replace(/{{innerHTML}}/, content);
+        
+        const template = internalStyles 
+            ? blueprint.replace(/{{STYLES}}/, styles)
+            : blueprint;
 
         return new File([template], HTML_FILE_NAME, {type: 'text/html'});
     }

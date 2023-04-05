@@ -1,1 +1,17 @@
-<p>export works!</p>
+<div class="export-layout">
+    <div class="export-layout__options">
+        <div class="export-layout__option" *ngFor="let option of exportTypes">
+            <p-radioButton name="export-type"
+                [value]="option.exportType"
+                [(ngModel)]="exportType"
+                [inputId]="option.exportType"
+            ></p-radioButton>
+            <label [for]="option.exportType">{{option.exportLabel}}</label>
+        </div>
+    </div>
+    <div class="export-layout__button-container">
+        <button [disabled]="!exportType"
+            (click)="generateExport()"
+            class="export-layout__export-button">Export</button>
+    </div>
+</div>

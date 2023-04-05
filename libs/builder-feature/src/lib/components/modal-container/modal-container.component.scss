@@ -1,5 +1,5 @@
 .modal-container {
-    padding: 56px;
+    
     position: fixed;
     top: 0;
     left: 0;
@@ -15,10 +15,11 @@
         align-items: center;
         justify-content: center;
         position: absolute;
-        right: 40px;
-        top: 20px;
+        right: 10px;
+        top: 10px;
         user-select: none;
         cursor: pointer;
+        z-index: 10;
         
         .first, .last {
             background: grey;
@@ -39,6 +40,8 @@
     }
 
     &__content {
+        padding: 56px;
+        height: 100%;
         display: flex;
         justify-content: center;
     }
