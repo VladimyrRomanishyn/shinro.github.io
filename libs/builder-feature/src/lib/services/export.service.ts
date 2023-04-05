@@ -7,10 +7,9 @@ import { EDITOR_CLASSNAME } from '../constants/class-names';
   providedIn: 'root'
 })
 export class ExportService {
-  exportAsImage(target: HTMLElement = this.getRoot()) {
+  exportAsImage(target: HTMLElement = this.getRoot()): void {
     html2canvas(target)
     .then((canvas: HTMLCanvasElement) => {
-      console.log(canvas);
       const url = canvas.toDataURL();
       const link = document.createElement('a');
       link.download = 'image'
@@ -20,9 +19,8 @@ export class ExportService {
     })
   }
 
-  exportSepateFiles() {
-    
-    ExportGenerator.generate(this.getRoot());
+  generateExport(internalStyles = false): void {
+    ExportGenerator.generateExport(this.getRoot(), internalStyles);
   }
 
   private getRoot(): HTMLElement {

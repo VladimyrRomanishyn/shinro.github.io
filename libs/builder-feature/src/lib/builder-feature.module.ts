@@ -26,6 +26,8 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CopyToClickboardComponent } from './components/copy-to-clickboard/copy-to-clickboard.component';
 import { ModalContainerComponent } from './components/modal-container/modal-container.component';
 import { ExportComponent } from './components/export/export.component';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { CheckEditorContentPipe } from './pipes/check-editor-content.pipe';
 @NgModule({
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { ExportComponent } from './components/export/export.component';
     DropdownModule,
     TabViewModule,
     ClipboardModule,
+    RadioButtonModule
   ],
   declarations: [
     BuilderViewComponent,
@@ -56,6 +59,7 @@ import { ExportComponent } from './components/export/export.component';
     CopyToClickboardComponent,
     ModalContainerComponent,
     ExportComponent,
+    CheckEditorContentPipe,
   ],
 })
 export class BuilderFeatureModule {}

@@ -1,26 +1,14 @@
 <div class="toolbar">
-  <div class="toolbar__export" (click)="exportModal.toggleStatus()">
-    <div class="export-bottom"></div>
-    <div class="export-overflow"></div>
-    <div class="arrow-base"></div>
-    <div class="arrow-left"></div>
-    <div class="arrow-right"></div>
-  </div>
-  <!-- <div class="toolbar__prop">
-    <button class="toolbar__export-button"
-      (click)="exportSvc.exportSepateFiles()"
-     >
-      Export
-    </button>
-  </div> -->
-  <!-- <div class="toolbar__prop">
-    <button class="toolbar__export-button"
-      (click)="exportImage()"
-     >
-      Export as Image
-    </button>
-  </div> -->
+  <button [disabled]=" ('' | checkEditorContent) ? false : true" (click)="exportModal.toggleStatus()">
+    <div  class="toolbar__export">
+      <div class="export-bottom"></div>
+      <div class="export-overflow"></div>
+      <div class="arrow-base"></div>
+      <div class="arrow-left"></div>
+      <div class="arrow-right"></div>
+    </div>
+  </button>
 </div>
 <modal-container #exportModal>
-  <export></export>
+  <export (exportGenerated)="exportModal.toggleStatus()"></export>
 </modal-container>

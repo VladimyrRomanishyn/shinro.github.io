@@ -1,0 +1,59 @@
+:host {
+    display: block;
+    width: 100%;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 12px 13px 30px 1px;
+    padding: 20px; 
+}
+
+.export-layout { 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+
+    &__option {
+        display: flex;
+        align-items: center;
+        font-family: sans-serif;
+        color: grey;
+        height: 40px;
+
+        label {
+            margin-left: 10px;
+        }
+    }
+
+    &__export-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 30px;
+        width: 140px;
+        border-radius: 5px; 
+        box-shadow: rgba(44, 41, 214, .5) 5px 5px 10px;
+        border: 1px solid rgb(44, 41, 214); 
+        background: rgb(66, 84, 174);
+        color: #fff;
+        font-size: 16px;
+        user-select: none;
+        transition: all .3s ease;
+
+        &:hover:enabled {
+            color: rgb(66, 84, 174);
+            background: #fff;
+            cursor: pointer;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: .5;
+        }
+    }
+
+    &__button-container {
+        display: flex;
+        justify-content: flex-end;
+    }
+}
