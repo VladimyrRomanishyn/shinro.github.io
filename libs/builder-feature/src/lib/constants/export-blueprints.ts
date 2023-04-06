@@ -1,3 +1,14 @@
+export const CSS_BASE = 
+`* {
+    margin: 0;
+    padding:0
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}\n\n`;
+
 export const HTML_BLUEPRINT = 
 `<!DOCTYPE HTML>
 <html>
@@ -18,10 +29,7 @@ export const HTML_BLUEPRINT_INTERNAL =
     <meta charset="utf-8">
     <base href="/">
     <style>
-* {
-    margin: 0;
-    padding:0
-}
+${CSS_BASE}    
 
 {{STYLES}}
     </style>
@@ -30,17 +38,6 @@ export const HTML_BLUEPRINT_INTERNAL =
 {{innerHTML}}
 </body>
 </html>`;
-
-export const CSS_BASE = 
-`* {
-    margin: 0;
-    padding:0
-}
-
-body {
-    width: 100vw;
-    height: 100vh;
-}\n\n`;
 
 export const HTML_FILE_NAME = 'index.html';
 export const CSS_FILE_NAME = 'styles.css';

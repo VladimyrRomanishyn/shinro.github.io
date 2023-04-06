@@ -41,7 +41,6 @@ export class NgElementCreator {
 
     public static fullScreen(source: HTMLElement | undefined): void {
         if (source) {
-            source.style.width = '100%';
             source.style.height = '100%';
         }
     }
