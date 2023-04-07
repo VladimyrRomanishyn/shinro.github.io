@@ -381,7 +381,7 @@ const GRID_STYLES: Array<StylesFormConfig> = [
     },
     {
         property: 'grid-template',
-        ngStyle: {'grid-row-end': 'span 2'},
+        ngStyle: {'grid-row-end': 'span 2', 'height': '162px'},
         valueTypes: [
             ['textarea', {...controlsBlueprint, controlChecker: defaultChecker}],
         ]

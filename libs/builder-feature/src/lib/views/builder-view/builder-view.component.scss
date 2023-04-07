@@ -10,6 +10,13 @@
   margin-bottom: 20px;
 }
 
+.bv-editor, .bv-styles, .bv-toolbar {
+  builder-editor, builder-toolbar, builder-style-section {
+    border-radius: 3px;
+    border: 1px solid lightgrey;
+  }
+  
+}
 .bv-editor {
   grid-area: editor;
 }
@@ -18,7 +25,4 @@
 }
 .bv-styles {
   grid-area: styles;
-}
-.bv-markup {
-  grid-area: markup;
 }
