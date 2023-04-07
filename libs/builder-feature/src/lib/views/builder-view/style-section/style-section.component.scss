@@ -2,7 +2,6 @@
   display: block;
   width: 100%;
   height: 100%;
-  border: 2px solid lightgrey;
   padding: 10px;
 }
 
@@ -29,13 +28,13 @@
 }
 
 .properties-wrapper {
+  margin-top: 10px;
   display: grid;
-  grid-template: repeat(auto-fill, 60px) / 1fr 1fr;
+  grid-template: repeat(auto-fill, 80px) / 1fr 1fr;
+  grid-gap: 2px;
 }
 
 .accordion {
-  &__panel {}
-
   &__panel-header {
     cursor: pointer;
     display: flex;
@@ -46,12 +45,26 @@
 
   &__back-button {
     text-align: center;
-    margin-right: 2px;
-    width: 30px;
+    margin-right: 12px;
+    padding-right: 10px;
+    width: 36px;
     height: 30px;
     line-height: 27px;
     border-width: 0 1px 0 0;
     border-style: solid;
+    display: flex;
+    align-items: center;
+    font-weight: 900;
+    font-family: none;
+    font-size: 20px;
+
+    .arrow-base {
+      width: 20px;
+      height: 3px;
+      background: #6d757d;
+      margin-top: 2px;
+      margin-left: -8px;
+    }
   }
 
   &__list {
@@ -59,23 +72,49 @@
     flex-direction: column;
   }
 
-  &__list-item {
+  &__list-item, &__panel-header {
     cursor: pointer;
-    height: 30px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 37px;
     border: 1px solid;
     margin-bottom: 2px;
-    padding: 0 5px;
+    padding: 0 15px;
+    border-radius: 3px;
+    color: #6d757d;
   }
 }
 
 .property {
+  &__measurement-unit {
+    font-size: 16px;
+    color: #6f777f;
+    font-style: italic;
+    letter-spacing: .7px;
+    font-weight: 300;
+    height: 26px;
+    margin-left: 12px;
+    padding: 2px 0;
+  }
+
+  &__cell {
+    height: 80px;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+  }
+
   &__wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 90%;
-    padding-left: 4%;
+    width: 100%;
+    padding: 0 10px;
+    
+    input {
+      height: 26px;
+      color: #6d757d;
+      border: 1px solid #6d757d;
+      border-radius: 3px;
+      padding: 0 4px;
+    }
 
     ::ng-deep .p-inputtext {
       padding: 3px;
@@ -84,12 +123,22 @@
     textarea {
       resize: none;
       width: 100%;
-    }
+      height: 128px;
+      padding: 8px;
+      border: 1px solid #6d757d;
+      border-radius: 3px;
+      color: #6d757d;
+  }
   }
 
   &__name {
-    margin: 2% 0 2% 4%;
-  }
+    padding: 3px 10px;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: revert;
+    font-style: italic;
+    letter-spacing: .7px;
+}
 
   &__subprop {
     display: flex;

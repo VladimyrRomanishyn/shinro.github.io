@@ -3,7 +3,6 @@
   width: 100%;
   max-width: 100%;
   min-height: 100%;
-  border: 2px solid lightgrey;
   padding: 10px;
 }
 
@@ -38,13 +37,14 @@
       border: 2px solid rgb(120 117 117);
     }
     
-    .export-overflow  {
+    .export-overflow {
       height: 16px;
-      width: 30px;
+      width: 34px;
       border-radius: 3px;
-      border: 0px solid rgb(120 117 117);
+      border: none;
       margin-top: -32px;
       background: rgb(255, 255, 255);
+      margin-left: -2px;
     }
     
     .arrow-base  {
