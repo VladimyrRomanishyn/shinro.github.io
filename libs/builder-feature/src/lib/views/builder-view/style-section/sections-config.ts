@@ -224,9 +224,15 @@ const COMMON_STYLES: Array<StylesFormConfig> = [
         ]
     },
     {
-        property: 'margin',
+        property: 'background',
         valueTypes: [
-            ['short', {...controlsBlueprint, controlChecker: shortChecker}],
+            ['shortWithColorPicker', {...controlsBlueprint, controlChecker: bgChecker}],
+        ]
+    },
+    {
+        property: 'border',
+        valueTypes: [
+            ['shortWithColorPicker', {...controlsBlueprint, controlChecker: borderChecker}],
         ]
     },
     {
@@ -242,37 +248,31 @@ const COMMON_STYLES: Array<StylesFormConfig> = [
         ]
     },
     {
-        property: 'padding',
-        valueTypes: [
-            ['short', {...controlsBlueprint, controlChecker: shortChecker}],
-        ]
-    },
-    {
         property: 'padding-left',
         valueTypes: [
-            ['percentage', {...controlsBlueprint, minValue: -100, maxValue: 100, controlChecker: percChecker}],
+            ['percentage', {...controlsBlueprint, minValue: 0, maxValue: 100, controlChecker: percChecker}],
         ]
     },
     {
         property: 'padding-top',
         valueTypes: [
-            ['percentage', {...controlsBlueprint, minValue: -100, maxValue: 100, controlChecker: percChecker}],
-        ]
-    },
-    {
-        property: 'border',
-        valueTypes: [
-            ['shortWithColorPicker', {...controlsBlueprint, controlChecker: borderChecker}],
-        ]
-    },
-    {
-        property: 'background',
-        valueTypes: [
-            ['shortWithColorPicker', {...controlsBlueprint, controlChecker: bgChecker}],
+            ['percentage', {...controlsBlueprint, minValue: 0, maxValue: 100, controlChecker: percChecker}],
         ]
     },
     {
         property: 'border-radius',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: shortChecker}],
+        ]
+    },
+    {
+        property: 'margin',
+        valueTypes: [
+            ['short', {...controlsBlueprint, controlChecker: shortChecker}],
+        ]
+    },
+    {
+        property: 'padding',
         valueTypes: [
             ['short', {...controlsBlueprint, controlChecker: shortChecker}],
         ]

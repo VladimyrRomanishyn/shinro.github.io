@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NgElementCreator } from '../classes/ng-element';
+import { EDITOR_CLASSNAME } from '../constants/class-names';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class NgElementsService {
   }
 
   public deleteNode(context: HTMLElement | undefined): void {
+    if (context?.className === EDITOR_CLASSNAME) {return; }
     NgElementCreator.deleteElement(context);
   }
 

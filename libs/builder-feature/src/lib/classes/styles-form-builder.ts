@@ -141,11 +141,12 @@ export class StylesFormBuilder extends FormBuilder {
         const parentValue = +getComputedStyle(parent).getPropertyValue(property).slice(0, -2);
         const targetValue = +getComputedStyle(this.node).getPropertyValue(property).slice(0, -2);
         // @ts-ignore
-        const styleTextValue = this.node.style[property as string] ? this.node.style[property as string].replace(/(?!-)\D/, '') : null
+        //const styleTextValue = this.node.style[property as string] ? this.node.style[property as string].replace(/(?!-)\D/, '') : null
         const calcValue = isFinite(targetValue) && (isFinite(parentValue) && !!parentValue)
             ? +Math.ceil(targetValue / parentValue * 100).toFixed()
             : 0;
-        control.value = styleTextValue ?? calcValue;
+        // control.value = styleTextValue ?? calcValue;
+        control.value = calcValue;
         return { ...control };
     }
 
