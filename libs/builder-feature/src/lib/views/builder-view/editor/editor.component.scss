@@ -13,12 +13,14 @@ builder-editor {
   overflow-y: scroll;
   position: absolute;
   padding: 2px;
+  background-image: url(../../../assets/images/alpha.png);
 
   &__child, .drag-active {
     border: 1px solid black;
     background: transparent;
     overflow: auto;
-    width: 100%;
+    opacity: 1;
+    //width: 100%;
   }
 
   &__droppable {
