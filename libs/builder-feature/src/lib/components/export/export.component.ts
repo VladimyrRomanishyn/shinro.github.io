@@ -19,19 +19,19 @@ export class ExportComponent implements OnInit {
     public exportSvc: ExportService
   ) {}
 
-  public exportImage(): void {
-    this.store.select(state => state[builderFeatureKey].target)
-      .pipe(first())
-      .subscribe((target: HTMLElement | undefined) => {
-        this.exportSvc.exportAsImage(target);
-      })
+  // public exportImage(): void {
+  //   this.store.select(state => state[builderFeatureKey].target)
+  //     .pipe(first())
+  //     .subscribe((target: HTMLElement | undefined) => {
+  //       this.exportSvc.exportAsImage(target);
+  //     })
     
-  }
+  // }
 
   public generateExport(): void {
     switch(this.exportType) {
       case 'Image': 
-        this.exportImage();
+        this.exportSvc.exportAsImage();
         break;
 
       case 'Separate': 

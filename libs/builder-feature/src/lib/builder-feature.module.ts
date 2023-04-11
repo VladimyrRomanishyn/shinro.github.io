@@ -28,6 +28,8 @@ import { ModalContainerComponent } from './components/modal-container/modal-cont
 import { ExportComponent } from './components/export/export.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CheckEditorContentPipe } from './pipes/check-editor-content.pipe';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
   imports: [
     CommonModule,
@@ -43,7 +45,9 @@ import { CheckEditorContentPipe } from './pipes/check-editor-content.pipe';
     DropdownModule,
     TabViewModule,
     ClipboardModule,
-    RadioButtonModule
+    RadioButtonModule,
+    ToastModule,
+    TooltipModule
   ],
   declarations: [
     BuilderViewComponent,
@@ -60,6 +64,6 @@ import { CheckEditorContentPipe } from './pipes/check-editor-content.pipe';
     ModalContainerComponent,
     ExportComponent,
     CheckEditorContentPipe,
-  ],
+  ]
 })
 export class BuilderFeatureModule {}

@@ -8,9 +8,12 @@ import { Clipboard } from '@angular/cdk/clipboard';
 })
 export class CopyToClickboardComponent {
   @Input() callback!: () => string;
+  public tooltipOpacity = 0;
   constructor(private clipboard: Clipboard) {}
 
   copySource() {
     this.clipboard.copy(this.callback());
+    this.tooltipOpacity = 1;
+    setTimeout(() => this.tooltipOpacity = 0, 300);
   }
 }
