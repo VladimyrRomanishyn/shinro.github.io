@@ -165,7 +165,7 @@ export class StylesFormBuilder extends FormBuilder {
     }    
 
     private setShort(property: CSSProperty, control: FormControlsShape): FormControlsShape {
-        const regex = new RegExp(`${property}:(.+?);`);
+        const regex = new RegExp(`^${property}:(.+?);`);
         const textValue = this.node?.style?.cssText?.match(regex);
         control.value = textValue ? textValue[1].trim() : getComputedStyle(this.node).getPropertyValue(property);
 

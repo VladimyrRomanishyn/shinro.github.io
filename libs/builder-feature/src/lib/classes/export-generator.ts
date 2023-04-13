@@ -136,7 +136,8 @@ export class ExportGenerator {
         return selector;
     }
 
-    private static downloadFiles(files: File[]): void {
+    private static async downloadFiles(files: File[]): Promise<void> {
+       
         files.map((file: File) => {
             const link = document.createElement('a');
             link.download = file.name;
