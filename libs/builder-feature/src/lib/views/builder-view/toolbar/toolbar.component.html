@@ -10,5 +10,6 @@
   </button>
 </div>
 <modal-container #exportModal>
-  <export (exportGenerated)="exportModal.toggleStatus()"></export>
+  <export (exportGenerated)="exportModal.toggleStatus(); showExportMessage()"></export>
 </modal-container>
+<p-toast></p-toast>

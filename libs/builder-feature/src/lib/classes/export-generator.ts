@@ -1,8 +1,9 @@
+import { Observable, delay, filter, first, interval, map, tap } from 'rxjs';
 import { EDITOR_CLASSNAME, EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../constants/class-names';
-import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME, HTML_BLUEPRINT_INTERNAL } from '../constants/export-blueprints';
+import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME, HTML_BLUEPRINT_INTERNAL, DUMB } from '../constants/export-blueprints';
 
 export class ExportGenerator {
-    public static generateExport(element: HTMLElement, internalStyles = false): void {
+    public static generateExport(element: HTMLElement, internalStyles = false, electron = false): void {
         if (!element.innerHTML) {  
             throw new Error('There is nothing to export!');
         }
@@ -15,7 +16,7 @@ export class ExportGenerator {
             ? [this.generateHTML(cloned, true)]
             : [this.generateCSS(cloned), this.generateHTML(cloned)];
         // download files
-        this.downloadFiles(files);
+        this.downloadFiles(files, electron);
         cloned.remove();
     }
 
@@ -136,15 +137,51 @@ export class ExportGenerator {
         return selector;
     }
 
-    private static async downloadFiles(files: File[]): Promise<void> {
-       
-        files.map((file: File) => {
-            const link = document.createElement('a');
-            link.download = file.name;
-            link.href = URL.createObjectURL(file);
-            link.click();
-            URL.revokeObjectURL(link.href)
+    private static async downloadFiles(files: File[], electron = false): Promise<void> {
+       if (electron) {
+        this.setSavePathElectron();
+        this.checkDownloadPath()
+            .subscribe((path) => {
+            if (path) {
+                files.map((file: File) => {
+                    const link = document.createElement('a');
+                    link.download = file.name;
+                    link.href = URL.createObjectURL(file);
+                    link.click();
+                    URL.revokeObjectURL(link.href)
+                });
+            }   
         })
+       } else {
+            files.map((file: File) => {
+                const link = document.createElement('a');
+                link.download = file.name;
+                link.href = URL.createObjectURL(file);
+                link.click();
+                URL.revokeObjectURL(link.href)
+            });
+       }  
+    }
+
+    public static checkDownloadPath(): Observable<boolean> {
+        return interval(200)
+            .pipe(
+                tap(() => {console.log(localStorage.getItem('downloadPath'))}),
+                filter(() =>!!localStorage.getItem('downloadPath')),
+                map(() => localStorage.getItem('downloadPath') !== 'undefined'),
+                first(),
+                delay(1000)
+            );
+    }
+
+    public static setSavePathElectron(): void {
+        localStorage.removeItem('downloadPath');
+        const file = new File([''], DUMB);
+        const link = document.createElement('a');
+        link.download = file.name;
+        link.href = URL.createObjectURL(file);
+        link.click();
+        URL.revokeObjectURL(link.href)
     }
 
     public static addClassNames(element: HTMLElement, removeSystem = true): void {

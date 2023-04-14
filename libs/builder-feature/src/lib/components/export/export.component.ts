@@ -1,13 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ExportService } from '../../services/export.service';
 import { Store } from '@ngrx/store';
-import { first } from 'rxjs';
 import { builderFeatureKey, BuilderFeatureState } from '../../state/builder-feature.reducer';
 
 @Component({
   selector: 'export',
   templateUrl: './export.component.html',
-  styleUrls: ['./export.component.scss'],
+  styleUrls: ['./export.component.scss']
 })
 export class ExportComponent implements OnInit {
   @Output() exportGenerated: EventEmitter<void> = new EventEmitter();
@@ -18,15 +17,6 @@ export class ExportComponent implements OnInit {
     private store: Store<{ [builderFeatureKey]: BuilderFeatureState }>,
     public exportSvc: ExportService
   ) {}
-
-  // public exportImage(): void {
-  //   this.store.select(state => state[builderFeatureKey].target)
-  //     .pipe(first())
-  //     .subscribe((target: HTMLElement | undefined) => {
-  //       this.exportSvc.exportAsImage(target);
-  //     })
-    
-  // }
 
   public generateExport(): void {
     switch(this.exportType) {
@@ -42,7 +32,7 @@ export class ExportComponent implements OnInit {
         this.exportSvc.generateExport(true);
         break;  
     }
-
+    
     this.exportGenerated.emit();
   }
 
