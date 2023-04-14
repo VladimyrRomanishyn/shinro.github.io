@@ -41,3 +41,4 @@ ${CSS_BASE}
 
 export const HTML_FILE_NAME = 'index.html';
 export const CSS_FILE_NAME = 'styles.css';
+export const DUMB = 'dumb.txt';

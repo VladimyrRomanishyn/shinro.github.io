@@ -50,6 +50,15 @@
           ],
           "outputHashing": "all"
         },
+        "electron": {
+          "fileReplacements": [
+            {
+              "replace": "apps/template-builder/src/environments/environment.ts",
+              "with": "apps/template-builder/src/environments/environment.electron.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
         "development": {
           "buildOptimizer": false,
           "optimization": false,
