@@ -10,6 +10,9 @@
   </button>
 </div>
 <modal-container #exportModal>
-  <export (exportGenerated)="exportModal.toggleStatus(); showExportMessage()"></export>
+  <export 
+    [messageSvc]="messageSvc"
+    (exportGenerated)="exportModal.toggleStatus()"
+  ></export>
 </modal-container>
 <p-toast></p-toast>

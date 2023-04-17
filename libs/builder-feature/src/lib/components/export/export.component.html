@@ -1,12 +1,19 @@
 <div class="export-layout">
     <div class="export-layout__options">
-        <div class="export-layout__option" *ngFor="let option of exportTypes">
+        <div class="export-layout__option" *ngFor="let eType of exportTypes">
             <p-radioButton name="export-type"
-                [value]="option.exportType"
+                [value]="eType[0]"
                 [(ngModel)]="exportType"
-                [inputId]="option.exportType"
+                [inputId]="eType[0]"
             ></p-radioButton>
-            <label [for]="option.exportType">{{option.exportLabel}}</label>
+            <label [for]="eType[0]">{{eType[1].label}}</label>
+            <br>
+            <div class="export-layout__fileNames" *ngIf="exportType === eType[0]">
+                <div class="export-layout__fileName" *ngFor="let file of eType[1].fileNames">
+                    <span (blur)="nameChange($event, file[0])" contenteditable>{{file[1].name}}</span>
+                    <span>{{file[1].ext}}</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="export-layout__button-container">

@@ -15,10 +15,6 @@ export class ToolbarComponent  {
   (
     private store: Store<{ [builderFeatureKey]: BuilderFeatureState }>,
     public exportSvc: ExportService,
-    private messageSvc: MessageService
+    public messageSvc: MessageService
   ) {}
-
-  showExportMessage(): void {
-    this.messageSvc.add({severity: 'success', summary: 'Exported!'})
-  }
 }

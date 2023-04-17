@@ -41,4 +41,43 @@ ${CSS_BASE}
 
 export const HTML_FILE_NAME = 'index.html';
 export const CSS_FILE_NAME = 'styles.css';
+export const TS_FILE_NAME = 'component.ts';
 export const DUMB = 'dumb.txt';
+
+export type ExportMapKey = 'Separate' | 'Internal' | 'Image' | 'Angular';
+export type FileNameMapKey = 'styles' | 'markup' | 'code' | 'image';
+export interface ExportMapValue {
+    label: string
+    fileNames: [FileNameMapKey, {name: string, ext: string}][]
+}
+
+export const ExportConfig: Map<ExportMapKey, ExportMapValue> = new Map([
+    [
+        'Separate', 
+        {   
+            label: 'Separate HTML and CSS files',
+            fileNames: [
+                ['markup', {name: 'index', ext: '.html'}],
+                ['styles', {name: 'styles', ext: '.css'}],
+            ]
+        }
+    ],
+    [
+        'Internal', 
+        {   
+            label: 'HTML file with internal styling',
+            fileNames: [
+                ['markup', {name: 'index', ext: '.html'}],
+            ]
+        }
+    ],
+    [
+        'Image', 
+        {   
+            label: 'PNG image',
+            fileNames: [
+                ['image', {name: 'image', ext: '.png'}],
+            ]
+        }
+    ]
+])
