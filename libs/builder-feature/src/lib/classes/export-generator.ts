@@ -1,9 +1,10 @@
-import { Observable, delay, filter, first, interval, map, tap } from 'rxjs';
+import { Observable, concatMap, delay, filter, first, from, interval, map, of, switchMap, tap } from 'rxjs';
 import { EDITOR_CLASSNAME, EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../constants/class-names';
 import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME, HTML_BLUEPRINT_INTERNAL, DUMB } from '../constants/export-blueprints';
+import { MessageService } from 'primeng/api';
 
 export class ExportGenerator {
-    public static generateExport(element: HTMLElement, internalStyles = false, electron = false): void {
+    public static generateExport(element: HTMLElement, names: Map<string, string>, internalStyles = false, electron = false, messageSvc?: MessageService): void {
         if (!element.innerHTML) {  
             throw new Error('There is nothing to export!');
         }
@@ -13,14 +14,14 @@ export class ExportGenerator {
         this.addClassNames(cloned);
         // generate files
         const files = internalStyles 
-            ? [this.generateHTML(cloned, true)]
-            : [this.generateCSS(cloned), this.generateHTML(cloned)];
+            ? [this.generateHTML(cloned, names, true)]
+            : [this.generateCSS(cloned, names), this.generateHTML(cloned, names)];
         // download files
-        this.downloadFiles(files, electron);
+        this.downloadFiles(files, electron, messageSvc);
         cloned.remove();
     }
 
-    private static generateHTML(element: HTMLElement, internalStyles = false): File {
+    private static generateHTML(element: HTMLElement, names: Map<string, string>, internalStyles = false): File {
         const styles = internalStyles ? this.createRulesList(element) : '';
         const content = this.reformatHTML(element);
         
@@ -32,12 +33,16 @@ export class ExportGenerator {
             ? blueprint.replace(/{{STYLES}}/, styles)
             : blueprint;
 
-        return new File([template], HTML_FILE_NAME, {type: 'text/html'});
+        const name = names.get('markup') as string;
+
+        return new File([template], name, {type: 'text/html'});
     }
 
-    private static generateCSS(element: HTMLElement): File {
-        const rules = this.createRulesList(element);   
-        return new File([CSS_BASE,rules], CSS_FILE_NAME, {type: 'text/css'});
+    private static generateCSS(element: HTMLElement, names: Map<string,string>): File {
+        const rules = this.createRulesList(element);  
+        const name = names.get('styles') as string;
+
+        return new File([CSS_BASE,rules], name, {type: 'text/css'});
     }
 
     public static reformatHTML(element: HTMLElement, whiteList: string[] = [], depth = 0): string {
@@ -137,21 +142,28 @@ export class ExportGenerator {
         return selector;
     }
 
-    private static async downloadFiles(files: File[], electron = false): Promise<void> {
+    private static async downloadFiles(files: File[], electron = false, messageSvc?: MessageService): Promise<void> {
        if (electron) {
         this.setSavePathElectron();
         this.checkDownloadPath()
-            .subscribe((path) => {
-            if (path) {
-                files.map((file: File) => {
-                    const link = document.createElement('a');
-                    link.download = file.name;
-                    link.href = URL.createObjectURL(file);
-                    link.click();
-                    URL.revokeObjectURL(link.href)
-                });
-            }   
-        })
+            .pipe(
+                filter(Boolean),
+                tap(() => {
+                    if (messageSvc) {
+                        messageSvc.add({severity: 'success', summary: 'Exported'})
+                    }
+                }),
+                switchMap(() => from(files)),
+                concatMap(file => of(file)
+                 .pipe(delay(300)))
+            )
+            .subscribe((file) => {
+                const link = document.createElement('a');
+                link.download = file.name;
+                link.href = URL.createObjectURL(file);
+                link.click();
+                URL.revokeObjectURL(link.href)
+            })
        } else {
             files.map((file: File) => {
                 const link = document.createElement('a');
@@ -160,17 +172,19 @@ export class ExportGenerator {
                 link.click();
                 URL.revokeObjectURL(link.href)
             });
+
+            if (messageSvc) {
+                messageSvc.add({severity: 'success', summary: 'Exported'})
+            }
        }  
     }
 
     public static checkDownloadPath(): Observable<boolean> {
         return interval(200)
             .pipe(
-                tap(() => {console.log(localStorage.getItem('downloadPath'))}),
                 filter(() =>!!localStorage.getItem('downloadPath')),
                 map(() => localStorage.getItem('downloadPath') !== 'undefined'),
-                first(),
-                delay(1000)
+                first()
             );
     }
 

@@ -14,14 +14,25 @@
     height: 100%;
 
     &__option {
-        display: flex;
-        align-items: center;
         font-family: sans-serif;
         color: grey;
-        height: 40px;
+        min-height: 40px;
 
         label {
             margin-left: 10px;
+        }
+    }
+
+    &__fileNames {
+        margin-left: 50px;
+        padding: 20px 0;
+    }
+
+    &__fileName {
+        height: 30px;
+
+        span {
+            outline: none;
         }
     }
 
