@@ -47,7 +47,7 @@ import { TooltipModule } from 'primeng/tooltip';
     ClipboardModule,
     RadioButtonModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
   ],
   declarations: [
     BuilderViewComponent,

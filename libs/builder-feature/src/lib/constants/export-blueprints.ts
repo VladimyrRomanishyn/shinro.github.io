@@ -39,6 +39,18 @@ ${CSS_BASE}
 </body>
 </html>`;
 
+export const TS_ANGULAR_BLUEPRINT =
+`import { Component } from '@angular/core';
+
+@Component({
+  standalone: true,  
+  selector: '{{SELECTOR}}',
+  templateUrl: './{{FILE_NAME}}.html',
+  styleUrls: ['./{{FILE_NAME}}.css']
+})
+export class {{COMPONENT_NAME}} {}
+`
+
 export const HTML_FILE_NAME = 'index.html';
 export const CSS_FILE_NAME = 'styles.css';
 export const TS_FILE_NAME = 'component.ts';
@@ -52,6 +64,15 @@ export interface ExportMapValue {
 }
 
 export const ExportConfig: Map<ExportMapKey, ExportMapValue> = new Map([
+    [
+        'Angular', 
+        {   
+            label: 'Angular component',
+            fileNames: [
+                ['code', {name: 'angular-component', ext: ''}],
+            ]
+        }
+    ],
     [
         'Separate', 
         {   
