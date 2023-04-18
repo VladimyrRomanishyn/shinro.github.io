@@ -1,18 +1,19 @@
 {
-  "name": "pets",
+  "name": "template-builder",
   "version": "0.0.0",
   "license": "MIT",
   "main": "apps/template-builder/main.js",
   "scripts": {
     "start:template-builder": "nx serve --project='template-builder'",
     "build:template-builder": "nx build --project='template-builder'",
-    "build-electron:template-builder": "nx build --project='template-builder' -c=electron && electron .",
+    "build-electron:template-builder": "nx build --project='template-builder' -c=electron",
+    "start-electron:template-builder": "nx build --project='template-builder' -c=electron && electron .",
     "test:template-builder": "nx test --project='template-builder'",
     "test:builder-feature": "nx test --project='builder-feature'",
     "postinstall": "ngcc --properties es2020 browser module main",
     "forge-start": "electron-forge start",
     "forge-package": "electron-forge package",
-    "forge-make": "electron-forge make"
+    "forge-make": "npm run build-electron:template-builder && electron-forge make"
   },
   "private": true,
   "dependencies": {

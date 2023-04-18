@@ -1,48 +1,102 @@
-import { Observable, concatMap, delay, filter, first, from, interval, map, of, switchMap, tap } from 'rxjs';
+import { Observable, concatMap, delay, filter, first, from, interval, map, of, switchAll, switchMap, tap } from 'rxjs';
 import { EDITOR_CLASSNAME, EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../constants/class-names';
-import { HTML_BLUEPRINT, HTML_FILE_NAME, CSS_BASE, CSS_FILE_NAME, HTML_BLUEPRINT_INTERNAL, DUMB } from '../constants/export-blueprints';
+import { HTML_BLUEPRINT, CSS_BASE, HTML_BLUEPRINT_INTERNAL, DUMB, TS_ANGULAR_BLUEPRINT } from '../constants/export-blueprints';
 import { MessageService } from 'primeng/api';
 
+export type FileType = 'Angular' | 'internalStyles' | 'separate';
+export interface ExportParams {
+    element: HTMLElement;
+    names: Map<string, string>;
+    fileType: FileType;  
+    messageSvc?: MessageService;
+    electron?: boolean;
+}
 export class ExportGenerator {
-    public static generateExport(element: HTMLElement, names: Map<string, string>, internalStyles = false, electron = false, messageSvc?: MessageService): void {
-        if (!element.innerHTML) {  
+    public static generateExport(params: ExportParams): void {
+        if (!params.element.innerHTML) {  
             throw new Error('There is nothing to export!');
         }
         
-        const cloned = element.cloneNode(true) as HTMLElement; 
-        // add classes
-        this.addClassNames(cloned);
-        // generate files
-        const files = internalStyles 
-            ? [this.generateHTML(cloned, names, true)]
-            : [this.generateCSS(cloned, names), this.generateHTML(cloned, names)];
-        // download files
-        this.downloadFiles(files, electron, messageSvc);
-        cloned.remove();
+        params.element = params.element.cloneNode(true) as HTMLElement; 
+        this.addClassNames(params.element);
+        const files = this.getFiles(params);
+        this.downloadFiles(files, params.electron, params.messageSvc);
+        params.element.remove();
     }
 
-    private static generateHTML(element: HTMLElement, names: Map<string, string>, internalStyles = false): File {
-        const styles = internalStyles ? this.createRulesList(element) : '';
-        const content = this.reformatHTML(element);
-        
-        const blueprint = internalStyles 
-            ? HTML_BLUEPRINT_INTERNAL.replace(/{{innerHTML}}/, content) 
-            : HTML_BLUEPRINT.replace(/{{innerHTML}}/, content);
-        
-        const template = internalStyles 
-            ? blueprint.replace(/{{STYLES}}/, styles)
-            : blueprint;
+    private static getFiles(params: ExportParams): File[] {
+        switch(params.fileType) {
+            case 'internalStyles': 
+                return [this.generateHTML(params)];
+            case 'separate' :
+                return [this.generateCSS(params), this.generateHTML(params)];
+            case 'Angular':
+                return [this.generateCSS(params), this.generateHTML(params), this.generateCode(params)];         
+        }
+    }
 
-        const name = names.get('markup') as string;
+    private static generateCode(params: ExportParams): File {
+        const name = params.names.get('code') as string;
+        const componentName = this.getName(name, 'component');
+        const selector = this.getName(name, 'selector');
+        const fileName = this.getName(name, 'file');
+        const template = TS_ANGULAR_BLUEPRINT
+                            .replace('{{SELECTOR}}', selector)
+                            .replaceAll('{{FILE_NAME}}', fileName)
+                            .replace('{{COMPONENT_NAME}}', componentName);
+
+        return new File([template],fileName + '.ts', {type: 'application/typescript'});
+    }
+
+    private static getName(name: string, type: 'file' | 'component' | 'selector'): string {
+        const filtered: string = name.replace('component', '').replace(/\W/, '').toLocaleLowerCase();
+        
+        switch(type) {
+            case 'file': 
+                return filtered + '-component';
+            case 'selector': 
+                return filtered;    
+            case 'component':
+                return filtered.charAt(0).toLocaleUpperCase() + filtered.slice(1) +  'Component';
+        }
+    }
+
+    private static generateHTML(params: ExportParams): File {
+        const styles = params.fileType === 'internalStyles' ? this.createRulesList(params.element) : '';
+        const content = this.reformatHTML(params.element);
+        let name = params.names.get('markup') as string || '';
+        let template = '';
+
+        switch(params.fileType) {
+            case 'internalStyles':
+                template = HTML_BLUEPRINT_INTERNAL
+                            .replace(/{{innerHTML}}/, content)
+                            .replace(/{{STYLES}}/, styles);
+                break;
+
+            case 'separate': 
+                template = HTML_BLUEPRINT.replace(/{{innerHTML}}/, content);
+                break;
+                
+            case 'Angular':
+                name = this.getName(params.names.get('code') as string, 'file');     
+                template = content;
+        }
 
         return new File([template], name, {type: 'text/html'});
     }
 
-    private static generateCSS(element: HTMLElement, names: Map<string,string>): File {
-        const rules = this.createRulesList(element);  
-        const name = names.get('styles') as string;
+    private static generateCSS(params: ExportParams): File {
+        const rules = this.createRulesList(params.element);
+        let fileBits =  [CSS_BASE,rules];
+        let name =  params.names.get('styles') as string;
 
-        return new File([CSS_BASE,rules], name, {type: 'text/css'});
+        if (params.fileType === 'Angular') {
+            name = this.getName(params.names.get('code') as string, 'file');
+            fileBits = [rules];
+        }
+
+        return new File(fileBits, name, {type: 'text/css'});
     }
 
     public static reformatHTML(element: HTMLElement, whiteList: string[] = [], depth = 0): string {

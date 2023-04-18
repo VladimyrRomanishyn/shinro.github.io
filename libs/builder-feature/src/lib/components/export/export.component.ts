@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ExportService } from '../../services/export.service';
-import { Store } from '@ngrx/store';
-import { builderFeatureKey, BuilderFeatureState } from '../../state/builder-feature.reducer';
 import { MessageService } from 'primeng/api';
 import { ExportConfig, ExportMapKey, ExportMapValue } from '../../constants/export-blueprints';
+import { ExportParams } from '../../classes/export-generator';
 
 @Component({
   selector: 'export',
@@ -17,24 +16,31 @@ export class ExportComponent implements OnInit {
   public exportType: string | undefined;
   constructor
   (
-    //private store: Store<{ [builderFeatureKey]: BuilderFeatureState }>,
     public exportSvc: ExportService
   ) {}
 
   public generateExport(): void {
-    const names = this.getFileNames();
-
+    const params: Partial<ExportParams> = {
+      names: this.getFileNames(),
+      messageSvc: this.messageSvc
+    };
     switch(this.exportType) {
       case 'Image': 
-        this.exportSvc.exportAsImage(this.messageSvc, names);
+        this.exportSvc.exportAsImage(params);
         break;
 
       case 'Separate': 
-        this.exportSvc.generateExport(this.messageSvc, names);
+        params.fileType = 'separate';
+        this.exportSvc.generateExport(params);
         break;
       
       case 'Internal':
-        this.exportSvc.generateExport(this.messageSvc, names, true);
+        params.fileType = 'internalStyles';
+        this.exportSvc.generateExport(params);
+        break;  
+      case 'Angular':
+        params.fileType = 'Angular';
+        this.exportSvc.generateExport(params);
         break;  
     }
     
