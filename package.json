@@ -13,7 +13,9 @@
     "postinstall": "ngcc --properties es2020 browser module main",
     "forge-start": "electron-forge start",
     "forge-package": "electron-forge package",
-    "forge-make": "npm run build-electron:template-builder && electron-forge make"
+    "forge-make:macos": "npm run build-electron:template-builder && electron-forge make --platform=darwin",
+    "forge-make:win32": "npm run build-electron:template-builder && electron-forge make --platform=win32",
+    "forge-make:linux": "npm run build-electron:template-builder && electron-forge make --platform=linux"
   },
   "private": true,
   "dependencies": {
@@ -26,6 +28,8 @@
     "@angular/platform-browser": "~14.0.0",
     "@angular/platform-browser-dynamic": "~14.0.0",
     "@angular/router": "~14.0.0",
+    "@electron-forge/maker-dmg": "^6.1.1",
+    "@electron-forge/maker-wix": "^6.1.1",
     "@ngrx/store": "^14.1.0",
     "@ngrx/store-devtools": "^14.1.0",
     "electron-squirrel-startup": "^1.0.0",
@@ -76,5 +80,34 @@
     "ts-jest": "27.1.4",
     "ts-node": "~10.8.0",
     "typescript": "~4.7.2"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-wix",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "description": "Template-builder tool"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin",
+            "win32",
+            "linux"
+          ]
+        }
+      ]
+    }
   }
 }
