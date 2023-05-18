@@ -6,5 +6,11 @@
     "types": ["jest", "node"]
   },
   "files": ["src/test-setup.ts"],
-  "include": ["jest.config.ts", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts", "src/lib/types/form-types.ts"]
+  "include": [
+    "jest.config.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/*.d.ts",
+    "src/lib/types/form-types.ts"
+  ]
 }
