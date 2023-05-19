@@ -1,4 +1,6 @@
 {
+  "name": "template-builder",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/template-builder/src",
   "prefix": "pets",
@@ -13,9 +15,7 @@
         "polyfills": "apps/template-builder/src/polyfills.ts",
         "tsConfig": "apps/template-builder/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "allowedCommonJsDependencies": [
-          "html2canvas"
-        ],
+        "allowedCommonJsDependencies": ["html2canvas"],
         "assets": [
           "apps/template-builder/src/favicon.ico",
           "apps/template-builder/src/assets"
@@ -89,7 +89,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "options": {
         "lintFilePatterns": [
           "apps/template-builder/**/*.ts",
@@ -98,8 +98,8 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/template-builder"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/template-builder"],
       "options": {
         "jestConfig": "apps/template-builder/jest.config.ts",
         "passWithNoTests": true
