@@ -16,6 +16,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "esnext",
+    "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
