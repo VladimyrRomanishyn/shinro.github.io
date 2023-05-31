@@ -77,7 +77,8 @@
           "browserTarget": "template-builder:build:production"
         },
         "development": {
-          "browserTarget": "template-builder:build:development"
+          "browserTarget": "template-builder:build:development",
+          "port": 3000
         }
       },
       "defaultConfiguration": "development"
