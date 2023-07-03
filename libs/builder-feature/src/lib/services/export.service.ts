@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import html2canvas from 'html2canvas';
-import { ExportGenerator, ExportParams } from '../classes/export-generator';
-import { EDITOR_CLASSNAME } from '../constants/class-names';
 import { environment } from '../../../../../apps/template-builder/src/environments/environment';
+import { ExportGenerator, ExportParams, EDITOR_CLASSNAME } from '@core-tb';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ExportGenerator } from '../classes/export-generator';
-import { EDITOR_CLASSNAME } from '../constants/class-names';
+import { ExportGenerator, EDITOR_CLASSNAME } from '@core-tb';
 
 @Injectable({
   providedIn: 'root'

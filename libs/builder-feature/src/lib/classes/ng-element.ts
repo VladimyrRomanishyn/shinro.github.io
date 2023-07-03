@@ -1,4 +1,4 @@
-import { EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME, EDITOR_CHILD_CLASSNAME } from "../constants/class-names";
+import { EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME, EDITOR_CHILD_CLASSNAME } from "@core-tb";
 import { v4 } from "uuid";
 export interface NodeParams {
     type: string;
