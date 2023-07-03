@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ExportService } from '../../services/export.service';
 import { MessageService } from 'primeng/api';
-import { ExportConfig, ExportMapKey, ExportMapValue } from '../../constants/export-blueprints';
-import { ExportParams } from '../../classes/export-generator';
+import { ExportConfig, ExportMapKey, ExportMapValue, ExportParams } from '@core-tb'
 
 @Component({
   selector: 'export',

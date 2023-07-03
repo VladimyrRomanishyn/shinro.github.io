@@ -7,7 +7,7 @@ const elRefStub = {
   }
 };
 const eventStub = {
-  preventDefault: () => {},
+  preventDefault: () => ({}),
   target: {
     localName: 'div',
     parentElement: {

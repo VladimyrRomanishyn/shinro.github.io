@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { EDITOR_CLASSNAME } from '../constants/class-names';
+import { EDITOR_CLASSNAME } from '@core-tb';
 
 @Pipe({
   name: 'checkEditorContent',
