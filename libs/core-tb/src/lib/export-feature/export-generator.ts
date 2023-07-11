@@ -1,31 +1,34 @@
-import { Observable, concatMap, delay, filter, first, from, interval, map, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, concatMap, delay, filter, first, from, interval, map, of, scan, switchMap, tap } from 'rxjs';
 import { EDITOR_CLASSNAME, EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME } from '../constants/class-names';
 import { HTML_BLUEPRINT, CSS_BASE, HTML_BLUEPRINT_INTERNAL, DUMB, TS_ANGULAR_BLUEPRINT } from '../constants/export-blueprints';
-import { MessageService } from 'primeng/api';
 import { ExportParams } from '../models/export-types';
 
 
 export class ExportGenerator {
-    public static generateExport(params: ExportParams): void {
-        if (!params.element.innerHTML) {  
+    public static generateExport(params: ExportParams): Observable<boolean> {
+        if (!params.element.innerHTML) {
             throw new Error('There is nothing to export!');
         }
-        
-        params.element = params.element.cloneNode(true) as HTMLElement; 
+
+        params.element = params.element.cloneNode(true) as HTMLElement;
         this.addClassNames(params.element);
-        const files = this.getFiles(params);
-        this.downloadFiles(files, params.electron, params.messageSvc);
-        params.element.remove();
+        params.files = this.getFiles(params);
+
+        return this.downloadFiles(params)
+            .pipe(tap(() => {
+                params.element.remove();
+            }));
+
     }
 
     private static getFiles(params: ExportParams): File[] {
-        switch(params.fileType) {
-            case 'internalStyles': 
+        switch (params.fileType) {
+            case 'internalStyles':
                 return [this.generateHTML(params)];
-            case 'separate' :
+            case 'separate':
                 return [this.generateCSS(params), this.generateHTML(params)];
             case 'Angular':
-                return [this.generateCSS(params), this.generateHTML(params), this.generateCode(params)];         
+                return [this.generateCSS(params), this.generateHTML(params), this.generateCode(params)];
         }
     }
 
@@ -35,23 +38,23 @@ export class ExportGenerator {
         const selector = this.getName(name, 'selector');
         const fileName = this.getName(name, 'file');
         const template = TS_ANGULAR_BLUEPRINT
-                            .replace('{{SELECTOR}}', selector)
-                            .replaceAll('{{FILE_NAME}}', fileName)
-                            .replace('{{COMPONENT_NAME}}', componentName);
+            .replace('{{SELECTOR}}', selector)
+            .replaceAll('{{FILE_NAME}}', fileName)
+            .replace('{{COMPONENT_NAME}}', componentName);
 
-        return new File([template],fileName + '.ts', {type: 'application/typescript'});
+        return new File([template], fileName + '.ts', { type: 'application/typescript' });
     }
 
     private static getName(name: string, type: 'file' | 'component' | 'selector'): string {
         const filtered: string = name.replace('component', '').replace(/\W/, '').toLocaleLowerCase();
-        
-        switch(type) {
-            case 'file': 
+
+        switch (type) {
+            case 'file':
                 return filtered + '-component';
-            case 'selector': 
-                return filtered;    
+            case 'selector':
+                return filtered;
             case 'component':
-                return filtered.charAt(0).toLocaleUpperCase() + filtered.slice(1) +  'Component';
+                return filtered.charAt(0).toLocaleUpperCase() + filtered.slice(1) + 'Component';
         }
     }
 
@@ -61,36 +64,36 @@ export class ExportGenerator {
         let name = params.names.get('markup') as string || '';
         let template = '';
 
-        switch(params.fileType) {
+        switch (params.fileType) {
             case 'internalStyles':
                 template = HTML_BLUEPRINT_INTERNAL
-                            .replace(/{{innerHTML}}/, content)
-                            .replace(/{{STYLES}}/, styles);
+                    .replace(/{{innerHTML}}/, content)
+                    .replace(/{{STYLES}}/, styles);
                 break;
 
-            case 'separate': 
+            case 'separate':
                 template = HTML_BLUEPRINT.replace(/{{innerHTML}}/, content);
                 break;
-                
+
             case 'Angular':
-                name = this.getName(params.names.get('code') as string, 'file');     
+                name = this.getName(params.names.get('code') as string, 'file');
                 template = content;
         }
 
-        return new File([template], name, {type: 'text/html'});
+        return new File([template], name, { type: 'text/html' });
     }
 
     private static generateCSS(params: ExportParams): File {
         const rules = this.createRulesList(params.element);
-        let fileBits =  [CSS_BASE,rules];
-        let name =  params.names.get('styles') as string;
+        let fileBits = [CSS_BASE, rules];
+        let name = params.names.get('styles') as string;
 
         if (params.fileType === 'Angular') {
             name = this.getName(params.names.get('code') as string, 'file');
             fileBits = [rules];
         }
 
-        return new File(fileBits, name, {type: 'text/css'});
+        return new File(fileBits, name, { type: 'text/css' });
     }
 
     public static reformatHTML(element: HTMLElement, whiteList: string[] = [], depth = 0): string {
@@ -101,28 +104,28 @@ export class ExportGenerator {
         this.removeArrtibutes(element, whiteList);
 
         const childOffset = Array(depth).fill(0).map(() => '\t').join('') || '';
-        const parentOffset = childOffset.slice(0,-1) || '';
+        const parentOffset = childOffset.slice(0, -1) || '';
 
         if (!element.childNodes.length) {
-            return element.outerHTML ? `${element.outerHTML}`: `${element.nodeValue}`;
+            return element.outerHTML ? `${element.outerHTML}` : `${element.nodeValue}`;
         }
-        
+
         depth++
 
         const newInner = (Array.from(element.childNodes) as HTMLElement[])
             .reduce((acc, el, i) => {
-                acc += i 
+                acc += i
                     ? `\n${childOffset}${this.reformatHTML(el, whiteList, depth)}`
-                    : `${childOffset}${this.reformatHTML(el, whiteList ,depth)}`;
+                    : `${childOffset}${this.reformatHTML(el, whiteList, depth)}`;
                 return acc;
-        }, '')
-        
-        element.innerHTML = element.className === EDITOR_CLASSNAME 
-            ? newInner 
-            :`\n${newInner}\n${parentOffset}`;
-        
+            }, '')
+
+        element.innerHTML = element.className === EDITOR_CLASSNAME
+            ? newInner
+            : `\n${newInner}\n${parentOffset}`;
+
         return element.className === EDITOR_CLASSNAME
-            ? `${element.innerHTML}` 
+            ? `${element.innerHTML}`
             : `${element.outerHTML}`;
     }
 
@@ -136,11 +139,11 @@ export class ExportGenerator {
         if (element?.className !== EDITOR_CLASSNAME) {
             root = this.createRule(element, dataId);
         }
-        
+
         if (!element.childNodes.length) {
             return root;
         }
-        
+
         return (Array.from(element.childNodes) as HTMLElement[]).reduce((acc, el) => {
             acc += this.createRulesList(el, dataId);
             return acc;
@@ -151,33 +154,33 @@ export class ExportGenerator {
         if (
             (element.className === EDITOR_CLASSNAME && !element.childNodes.length)
             || element.nodeName === '#text'
-            ) {
+        ) {
             return;
         }
-        
-        const attribs =  ['style', 'contenteditable', 'data-id']
+
+        const attribs = ['style', 'contenteditable', 'data-id']
             .filter(e => !whiteList.includes(e));
-            
+
         attribs.map(attr => element.removeAttribute(attr));
         (Array.from(element.childNodes) as HTMLElement[]).map(el => this.removeArrtibutes(el, whiteList))
     }
 
     private static createRule(el: HTMLElement, dataId = false): string {
-        if (!el.style) { return ''}
-        const id = dataId ? `<${el.dataset['id']}>`: '';
+        if (!el.style) { return '' }
+        const id = dataId ? `<${el.dataset['id']}>` : '';
         const selector = this.createSelector(el);
         const styles = el.style?.cssText.split(';').map(el => el.trim()).join(';\n\t').slice(0, -1);
 
-        return styles 
-            ?  `${selector} {${id}\n\t${styles}}\n\n`
+        return styles
+            ? `${selector} {${id}\n\t${styles}}\n\n`
             : `${selector} {}\n\n`;
     };
 
     private static createSelector(el: HTMLElement): string {
         let selector = '';
         let parentElement = el;
-       
-        while(parentElement?.className !== EDITOR_CLASSNAME) {
+
+        while (parentElement?.className !== EDITOR_CLASSNAME) {
             const classLine = Array.from(parentElement.classList)
                 .reduce((acc, e) => {
                     acc += `.${e}`
@@ -186,51 +189,41 @@ export class ExportGenerator {
             selector = `${classLine} ${selector}`
             parentElement = parentElement.parentElement as HTMLElement;
         }
-        
+
         return selector;
     }
 
-    private static async downloadFiles(files: File[], electron = false, messageSvc?: MessageService): Promise<void> {
-       if (electron) {
-        this.setSavePathElectron();
-        this.checkDownloadPath()
+    private static downloadFiles(params: ExportParams): Observable<boolean> {
+        return of(params)
             .pipe(
-                filter(Boolean),
-                tap(() => {
-                    if (messageSvc) {
-                        messageSvc.add({severity: 'success', summary: 'Exported'})
-                    }
+                switchMap((params: ExportParams) => {
+                    return params.electron
+                        ? (this.setSavePathElectron(), this.checkDownloadPath())
+                            .pipe(switchMap(() => from(params.files)))
+                        : from(params.files)
                 }),
-                switchMap(() => from(files)),
-                concatMap(file => of(file)
-                 .pipe(delay(300)))
-            )
-            .subscribe((file) => {
-                const link = document.createElement('a');
-                link.download = file.name;
-                link.href = URL.createObjectURL(file);
-                link.click();
-                URL.revokeObjectURL(link.href)
-            })
-       } else {
-            files.map((file: File) => {
-                const link = document.createElement('a');
-                link.download = file.name;
-                link.href = URL.createObjectURL(file);
-                link.click();
-                URL.revokeObjectURL(link.href)
-            });
 
-            if (messageSvc) {
-                messageSvc.add({severity: 'success', summary: 'Exported'})
-            }
-       }  
+                concatMap(file => of(file)
+                    .pipe(
+                        delay(300),
+                        tap(file => {
+                            const link = document.createElement('a');
+                            link.download = file.name;
+                            link.href = URL.createObjectURL(file);
+                            link.click();
+                            URL.revokeObjectURL(link.href)
+                        })
+                    )
+                ),
+                catchError(() => of(false)),
+                scan((_, curr) => !!curr, true)
+            );
     }
 
     public static checkDownloadPath(): Observable<boolean> {
         return interval(200)
             .pipe(
-                filter(() =>!!localStorage.getItem('downloadPath')),
+                filter(() => !!localStorage.getItem('downloadPath')),
                 map(() => localStorage.getItem('downloadPath') !== 'undefined'),
                 first()
             );
@@ -248,17 +241,17 @@ export class ExportGenerator {
 
     public static addClassNames(element: HTMLElement, removeSystem = true): void {
         const children = Array.from(element.childNodes) as HTMLElement[];
-        
+
         const classListCheck = (el: HTMLElement): boolean => {
             if (el.nodeName === '#text') { return false }
-            
+
             if (removeSystem) {
                 el.classList.remove(EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME);
             }
 
             return !Array.from(el.classList)
                 .filter(name => (![EDITOR_CHILD_CLASSNAME, EDITOR_CLICK_CLASSNAME]
-                    .includes(name))).length;        
+                    .includes(name))).length;
         }
 
         if (element.className == EDITOR_CLASSNAME) {
