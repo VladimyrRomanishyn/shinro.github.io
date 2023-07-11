@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NgElementCreator } from '../classes/ng-element';
-import { EDITOR_CLASSNAME } from '@core-tb';
+import { EDITOR_CLASSNAME, NgElementCreator } from '@core-tb';
 
 @Injectable({
   providedIn: 'root'

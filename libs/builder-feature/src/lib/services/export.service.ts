@@ -46,7 +46,8 @@ export class ExportService {
       names: params.names || new Map(),
       electron: environment.electron,
       fileType: params.fileType || 'internalStyles',
-      element: this.getRoot()
+      element: this.getRoot(),
+      files: []
     }
 
     ExportGenerator.generateExport(exportParams).subscribe(
