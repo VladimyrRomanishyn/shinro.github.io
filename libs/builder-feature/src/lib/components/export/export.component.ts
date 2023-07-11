@@ -20,26 +20,25 @@ export class ExportComponent implements OnInit {
 
   public generateExport(): void {
     const params: Partial<ExportParams> = {
-      names: this.getFileNames(),
-      messageSvc: this.messageSvc
+      names: this.getFileNames()
     };
     switch(this.exportType) {
       case 'Image': 
-        this.exportSvc.exportAsImage(params);
+        this.exportSvc.exportAsImage(params, this.messageSvc);
         break;
 
       case 'Separate': 
         params.fileType = 'separate';
-        this.exportSvc.generateExport(params);
+        this.exportSvc.generateExport(params, this.messageSvc);
         break;
       
       case 'Internal':
         params.fileType = 'internalStyles';
-        this.exportSvc.generateExport(params);
+        this.exportSvc.generateExport(params, this.messageSvc);
         break;  
       case 'Angular':
         params.fileType = 'Angular';
-        this.exportSvc.generateExport(params);
+        this.exportSvc.generateExport(params, this.messageSvc);
         break;  
     }
     
