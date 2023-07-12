@@ -3,8 +3,7 @@ import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { StylesFormConfig, StyleFormValue, CSSProperty, ValueType, StyleFormPropertyValue, FormControlsShape, rgba2hex } from '@core-tb';
 
-
-
+// TODO: refactor styles-form-builder class
 export class StylesFormBuilder extends FormBuilder {
     private _stylesFormGroup!: FormGroup;
     private config!: Array<StylesFormConfig>;
@@ -184,3 +183,4 @@ export class StylesFormBuilder extends FormBuilder {
         StylesFormBuilder.subscriptions.map(subscription => subscription.unsubscribe());
     }
 }
+
