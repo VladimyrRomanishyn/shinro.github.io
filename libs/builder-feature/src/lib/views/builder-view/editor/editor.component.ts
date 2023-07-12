@@ -12,7 +12,7 @@ import { editorDomChanged, setTarget } from '@libs/builder-feature/src/lib/state
 import { TagsModalComponent } from './components/tags-modal/tags-modal.component';
 import { NgElementsService } from '../../../services/ng-elements.service';
 import { BUILDER_EDITOR_SELECTOR, EDITOR_CLASSNAME, EDITOR_CLICK_CLASSNAME, EDITOR_CHILD_CLASSNAME } from '@core-tb';
-import { ContextMenuEnum } from '../../../types/form-types';
+import { ContextMenuEnum } from '@core-tb';
 import { AfterViewInit, OnDestroy } from '@angular/core';
 import { CodeEditorService } from '../../../services/code-editor.service';
 import { MutationObserverService } from '../../../services/mutation-observer.service';

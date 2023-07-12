@@ -1,2 +1,2 @@
-export * from './export-feature/export-generator';
-export * from './dom-operations/dom-operations';
+export * from './src/export-feature/export-generator';
+export * from './src/dom-operations/dom-operations';

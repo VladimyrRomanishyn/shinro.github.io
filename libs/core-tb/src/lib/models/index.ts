@@ -1,2 +1,2 @@
-export * from './export-types';
-export * from './form-types';
+export * from './src/export-types';
+export * from './src/form-types';

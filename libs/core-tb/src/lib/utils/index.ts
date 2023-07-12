@@ -1,1 +1,1 @@
-export * from './rgba2hex';
+export * from './src/rgba2hex';
