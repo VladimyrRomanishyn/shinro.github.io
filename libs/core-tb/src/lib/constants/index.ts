@@ -1,2 +1,2 @@
-export * from './class-names';
-export * from './export-blueprints';
+export * from './src/class-names';
+export * from './src/export-blueprints';
