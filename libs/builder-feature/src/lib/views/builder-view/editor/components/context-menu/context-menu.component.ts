@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
-import { ContextMenuEnum, MenuStyles } from '@libs/builder-feature/src/lib/types/form-types';
+import { ContextMenuEnum, MenuStyles } from '@core-tb';
 @Component({
-  selector: 'context-memu',
+  selector: 'context-menu',
   templateUrl: './context-menu.component.html',
   styleUrls: ['./context-menu.component.scss'],
 })

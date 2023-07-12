@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 import { takeUntil } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { StylesFormBuilder } from '../../../classes/styles-form-builder';
-import { SectionsEnum, Section } from '../../../types/form-types';
+import { SectionsEnum, Section } from '@core-tb';
 import { sectionsCofig } from './sections-config';
 
 @Component({

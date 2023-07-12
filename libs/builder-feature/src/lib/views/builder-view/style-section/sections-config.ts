@@ -1,4 +1,4 @@
-import { FormControlsShape, Section, SectionsEnum, StylesFormConfig } from '../../../types/form-types';
+import { FormControlsShape, Section, SectionsEnum, StylesFormConfig } from '@core-tb';
 
 const controlsBlueprint = {
     changed: false, value: '',

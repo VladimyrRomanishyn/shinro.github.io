@@ -1,8 +1,7 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { StylesFormConfig, StyleFormValue, CSSProperty, ValueType, StyleFormPropertyValue, FormControlsShape } from '../types/form-types';
-import { rgba2hex } from '@core-tb';
+import { StylesFormConfig, StyleFormValue, CSSProperty, ValueType, StyleFormPropertyValue, FormControlsShape, rgba2hex } from '@core-tb';
 
 
 
